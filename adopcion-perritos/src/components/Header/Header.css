@@ -6,21 +6,24 @@ header {
     gap: 20px;
     padding-top: 10px;
     padding-bottom: 25px;
-    img {
-        width: 120px;
-        border-radius: 100%;
-    }
+}
+
+header img {
+    width: 120px;
+    border-radius: 100%;
 }
 
 nav {
     display: flex;
     gap: 20px;
-    a {
-        color: var(--white);
-        text-decoration: none;
-        font-weight: bold;
-        &:hover {
-            color: rgb(234 179 8 / 1)
-        }
-    }
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: rgb(234, 179, 8);
 }

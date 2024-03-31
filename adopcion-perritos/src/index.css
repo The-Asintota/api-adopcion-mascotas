@@ -17,8 +17,8 @@ html {
 }
 
 body {
-  display: grid;
-  place-content: center;
+/*   display: grid;
+  place-content: center; */
   background-color: var(--white);
   
 }

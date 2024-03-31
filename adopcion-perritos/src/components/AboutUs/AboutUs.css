@@ -1,12 +1,14 @@
 .about-section {
-    background-color: var(--dark-green);
-    color: var(--white);
-    padding: 20px 0;
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 20px;
-  
-    h2 {
-      margin-bottom: 10px;
-    }
+  background-color: var(--dark-green);
+  color: var(--white);
+  padding: 20px 0;
+  /*     max-width: 1200px; */
+  width: 100%; /* línea añadida */
+  margin: 0 auto; /* linea añadida */
+  /*     margin: 20px auto; */
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 10px;
   }
+}
