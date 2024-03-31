@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx"
-import Protectoras from './pages/Protectoras'
+import Shelters from './pages/Shelters'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 
@@ -11,8 +11,8 @@ const router = createBrowserRouter([
     element: <App/>,
   },
   {
-    path: "/protectoras",
-    element: <Protectoras/>
+    path: "/shelters",
+    element: <Shelters/>
   },
 ]);
 

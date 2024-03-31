@@ -1,0 +1,16 @@
+.info-protectoras-section {
+  background-color: var(--dark-green);
+  color: var(--white);
+  padding: 20px 0;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+}
+h2 {
+  margin-bottom: 10px;
+}
+
+p {
+  margin: 0 0 0.75em;
+  padding: 12px;
+}

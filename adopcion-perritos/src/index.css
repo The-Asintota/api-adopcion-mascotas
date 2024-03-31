@@ -1,9 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   --green: #4DB8C0;
   --dark-green: #118A95;
   --white: #fff;
   --black: #000;
+  line-height: 1.5;
 }
 
 html {
