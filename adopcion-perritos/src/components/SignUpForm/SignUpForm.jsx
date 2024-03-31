@@ -14,7 +14,7 @@ const SignUpForm = () => {
         <div className="relative">
           <input
             placeholder="john@prueba.com"
-            className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-purple-500"
+            className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
             required=""
             id="email"
             name="email"
@@ -24,7 +24,7 @@ const SignUpForm = () => {
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
             htmlFor="email"
           >
-            Email address
+            Correo Electronico
           </label>
         </div>
         <div className="relative">
@@ -40,13 +40,13 @@ const SignUpForm = () => {
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
             htmlFor="password"
           >
-            Password
+            Contraseña
           </label>
         </div>
         <div className="flex items-center justify-between">
           <label className="flex items-center text-sm text-gray-200">
             <input
-              className="form-checkbox h-4 w-4 text-purple-600 bg-gray-800 border-gray-300 rounded"
+              className="form-checkbox h-4 w-4 text-[#118A95] bg-gray-800 border-gray-300 rounded"
               type="checkbox"
             />
             <span className="ml-2">Remember me</span>
@@ -56,13 +56,13 @@ const SignUpForm = () => {
           className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
           type="submit"
         >
-          Sign In
+          Registro
         </button>
       </form>
       <div className="text-center text-gray-300">
-        Don't have an account?
-        <a className="text-purple-300 hover:underline" href="#">
-          Sign up
+        Ya estas registrado? 
+        <a className="text-[#118A95] hover:underline" href="#">
+          Sign in
         </a>
       </div>
     </div>
