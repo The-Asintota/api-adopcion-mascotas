@@ -6,6 +6,11 @@ import "./InfoProtectoras.css";
 const InfoProtectoras = () => {
   const [showSignIn, setShowSignIn] = useState(false)
 
+  function handleShowSignIn() {
+    setShowSignIn(true)
+  }
+
+
   return (
     <section className="info-protectoras-section">
       <h2>¿Eres una asociación o protectora de animales?</h2>
@@ -55,9 +60,9 @@ const InfoProtectoras = () => {
         amantes de los animales!
       </p>
       <div className="flex items-center justify-center">
-        <SignUp/>
+        <SignUp onClick={handleShowSignIn}/>
       </div>
-        <SignIn/>
+      <SignIn isActive={showSignIn} onClose={() => setShowSignIn(false)}/>
     </section>
   );
 };

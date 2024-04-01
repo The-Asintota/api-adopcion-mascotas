@@ -1,6 +1,6 @@
 import React from "react";
 
-const SignUp= ({link}) => {
+const SignUp= ({link, onClick}) => {
   return (
     <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-8 mt-6">
       <h2 className="text-center text-4xl font-extrabold text-white">
@@ -123,10 +123,11 @@ const SignUp= ({link}) => {
       </form>
       <div className="text-center text-gray-300">
         Ya estas registrado?
-        <a className="text-[#118A95] hover:underline" href={link}>
+        <a className="text-[#118A95] hover:underline" href={link} onClick={onClick}>
           Sign in
         </a>
       </div>
+    
     </div>
   );
 };
