@@ -7,7 +7,7 @@ export default function Header() {
         <nav>
             <a href="/">Inicio</a>
             <a href="/shelters">Protectoras</a>
-            <a href="">Adopcion</a>
+            <a href="/animals-for-adoption">Adopcion</a>
             <a href="">¿Quienes Somos?</a>
         </nav>
     </header>

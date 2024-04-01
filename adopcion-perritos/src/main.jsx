@@ -4,6 +4,7 @@ import App from "./App.jsx"
 import Shelters from './pages/Shelters'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
+import Adoption from "./pages/Adoption.jsx";
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
   {
     path: "/shelters",
     element: <Shelters/>
+  },
+  {
+    path: "/animals-for-adoption",
+    element: <Adoption/>
   },
 ]);
 
