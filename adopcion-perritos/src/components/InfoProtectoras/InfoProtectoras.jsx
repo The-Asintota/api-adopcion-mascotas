@@ -1,8 +1,11 @@
-import React from "react";
-import SignUpForm from "../SignUpForm/SignUpForm";
+import React, { useState } from "react";
+import SignIn from "../Forms/SignIn/SignIn";
+import SignUp from "../Forms/SignUp/SignUp";
 import "./InfoProtectoras.css";
 
 const InfoProtectoras = () => {
+  const [showSignIn, setShowSignIn] = useState(false)
+
   return (
     <section className="info-protectoras-section">
       <h2>¿Eres una asociación o protectora de animales?</h2>
@@ -52,8 +55,9 @@ const InfoProtectoras = () => {
         amantes de los animales!
       </p>
       <div className="flex items-center justify-center">
-        <SignUpForm/>
+        <SignUp/>
       </div>
+        <SignIn/>
     </section>
   );
 };
