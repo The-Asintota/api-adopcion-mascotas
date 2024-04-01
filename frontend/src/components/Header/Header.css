@@ -1,0 +1,29 @@
+header {
+    background-color: var(--green);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 10px;
+    padding-bottom: 25px;
+}
+
+header img {
+    width: 120px;
+    border-radius: 100%;
+}
+
+nav {
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: rgb(234, 179, 8);
+}
