@@ -67,12 +67,7 @@ const SignIn = ({ isActive, onClose }) => {
               Iniciar sesion
             </button>
           </form>
-          <div className="text-center text-gray-300">
-            Aun no tienes una cuenta?
-            <a className="text-[#118A95] hover:underline" href="#">
-              Sign Up
-            </a>
-          </div>
+
         </div>
       </div>
     </div>
