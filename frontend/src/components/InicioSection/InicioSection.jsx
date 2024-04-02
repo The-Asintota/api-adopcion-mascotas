@@ -7,7 +7,7 @@ const InicioSection = () => {
       <h1>Adopta un Animalito</h1>
       <div>
         <img
-          src="./public/images/imagen-home.jpg"
+          src="/images/imagen-home.jpg"
           alt="Imagen con eslogan no compres, adopta"
         />
         <p>

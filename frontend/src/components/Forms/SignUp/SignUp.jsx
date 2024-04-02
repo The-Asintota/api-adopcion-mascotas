@@ -44,7 +44,7 @@ const SignUp= ({link, onClick}) => {
             <input
                 placeholder="Numero de telefono"
                 className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-                required=""
+                required
                 id="phoneNumber"
                 name="phoneNumber"
                 type="number"
@@ -60,7 +60,7 @@ const SignUp= ({link, onClick}) => {
             <input
                 placeholder="john@prueba.com"
                 className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-                required=""
+                required
                 id="email"
                 name="email"
                 type="email"
@@ -77,7 +77,7 @@ const SignUp= ({link, onClick}) => {
           <input
             placeholder="Direccion de la asociacion"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            required=""
+            required
             id="address"
             name="address"
             type="text"
@@ -93,7 +93,7 @@ const SignUp= ({link, onClick}) => {
           <input
             placeholder="Password"
             className="peer h-10 w-full border-b-2 border-gray-200 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-blue-500"
-            required=""
+            required
             id="password"
             name="password"
             type="password"
