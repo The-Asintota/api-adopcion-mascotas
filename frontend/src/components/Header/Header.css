@@ -1,11 +1,13 @@
 header {
     background-color: var(--green);
     display: flex;
-    flex-direction: column;
+    flex-direction: rows;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
-    padding-top: 10px;
-    padding-bottom: 25px;
+/*     padding-top: 10px;
+    padding-bottom: 25px; */
+
 }
 
 header img {
