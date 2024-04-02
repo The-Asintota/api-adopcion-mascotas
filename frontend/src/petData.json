@@ -43,7 +43,7 @@
     ],
     "gatos": [
       {
-        "id": 1,
+        "id": 5,
         "nombre": "Whiskers",
         "edad": "1 año",
         "tamaño": "Pequeño",
@@ -53,7 +53,7 @@
         "imagen": "https://picsum.photos/id/241/200/300"
       },
       {
-        "id": 2,
+        "id": 6,
         "nombre": "Mittens",
         "edad": "3 años",
         "tamaño": "Mediano",
@@ -63,7 +63,7 @@
         "imagen": "https://picsum.photos/id/242/200/300"
       },
       {
-        "id": 3,
+        "id": 7,
         "nombre": "Salem",
         "edad": "2 años",
         "tamaño": "Pequeño",
@@ -73,7 +73,7 @@
         "imagen": "https://picsum.photos/id/243/200/300"
       },
       {
-        "id": 4,
+        "id": 8,
         "nombre": "Felix",
         "edad": "4 años",
         "tamaño": "Mediano",
