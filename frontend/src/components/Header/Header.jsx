@@ -1,14 +1,15 @@
 import "./Header.css"
+import { Link } from "react-router-dom"
 
 export default function Header() {
     return (
       <header>
         <img src="./public/images/logo3.jpg" alt="logo sitio" />
         <nav>
-            <a href="/">Inicio</a>
-            <a href="/shelters">Protectoras</a>
-            <a href="/animals-for-adoption">Adopcion</a>
-            <a href="">¿Quienes Somos?</a>
+            <Link to="/">Inicio</Link>
+            <Link to="/shelters">Protectoras</Link>
+            <Link to="/animals-for-adoption">Adopcion</Link>
+            <Link to="">¿Quienes Somos?</Link>
         </nav>
     </header>
     )
