@@ -1,0 +1,87 @@
+{
+    "perros": [
+      {
+        "id": 1,
+        "nombre": "Tito",
+        "edad": "10 Meses",
+        "tamaño": "Pequeño",
+        "descripcion": "Juguetón y muy cariñoso",
+        "raza": "Chihuahua",
+        "observaciones": "Se lleva bien con otros perros",
+        "imagen": "https://picsum.photos/id/237/200/300"
+      },
+      {
+        "id": 2,
+        "nombre": "Luna",
+        "edad": "2 años",
+        "tamaño": "Mediano",
+        "descripcion": "Activo y protector",
+        "raza": "Labrador Retriever",
+        "observaciones": "Ideal para familias con niños",
+        "imagen": "https://picsum.photos/id/238/200/300"
+      },
+      {
+        "id": 3,
+        "nombre": "Buddy",
+        "edad": "3 años",
+        "tamaño": "Grande",
+        "descripcion": "Amigable y leal",
+        "raza": "Golden Retriever",
+        "observaciones": "Perfecto para actividades al aire libre",
+        "imagen": "https://picsum.photos/id/239/200/300"
+      },
+      {
+        "id": 4,
+        "nombre": "Max",
+        "edad": "1 año",
+        "tamaño": "Mediano",
+        "descripcion": "Energético y amoroso",
+        "raza": "Border Collie",
+        "observaciones": "Necesita mucho ejercicio diario",
+        "imagen": "https://picsum.photos/id/240/200/300"
+      }
+    ],
+    "gatos": [
+      {
+        "id": 1,
+        "nombre": "Whiskers",
+        "edad": "1 año",
+        "tamaño": "Pequeño",
+        "descripcion": "Cariñoso y curioso",
+        "raza": "Siamés",
+        "observaciones": "Prefiere estar en interiores",
+        "imagen": "https://picsum.photos/id/241/200/300"
+      },
+      {
+        "id": 2,
+        "nombre": "Mittens",
+        "edad": "3 años",
+        "tamaño": "Mediano",
+        "descripcion": "Independiente pero afectuoso",
+        "raza": "Maine Coon",
+        "observaciones": "Le gusta explorar el exterior",
+        "imagen": "https://picsum.photos/id/242/200/300"
+      },
+      {
+        "id": 3,
+        "nombre": "Salem",
+        "edad": "2 años",
+        "tamaño": "Pequeño",
+        "descripcion": "Misterioso y tranquilo",
+        "raza": "Bombay",
+        "observaciones": "Prefiere espacios tranquilos",
+        "imagen": "https://picsum.photos/id/243/200/300"
+      },
+      {
+        "id": 4,
+        "nombre": "Felix",
+        "edad": "4 años",
+        "tamaño": "Mediano",
+        "descripcion": "Curioso y juguetón",
+        "raza": "Gato atigrado",
+        "observaciones": "Le encanta jugar con juguetes de plumas",
+        "imagen": "https://picsum.photos/id/244/200/300"
+      }
+    ]
+  }
+  

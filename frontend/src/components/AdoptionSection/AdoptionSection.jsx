@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PetRequest from "../Forms/PetRequest/PetRequest";
+import AdoptionCard from "./AdoptionCard";
 import './AdoptionSection.css'
 
 const AdoptionSection = () => {
@@ -13,47 +14,16 @@ const AdoptionSection = () => {
     <section className="adoption-section">
       <h2>Adopción</h2>
       <ul className="animal-list">
-        <li className="animal-card">
-          <img
-            src="https://picsum.photos/id/237/200/300"
-            alt="Imagen random de perrito"
-          />
-          <div>
-            <h3>Tito</h3>
-            <p>Edad: 10 Meses</p>
-            <p>Tamaño: Pequeño</p>
-            <p>Juguetón y muy cariñoso</p>
-            <button onClick={handlePetRequest} >Adoptar</button>
-          </div>
-        </li>
-
-        <li className="animal-card">
-          <img
-            src="https://picsum.photos/id/237/200/300"
-            alt="Imagen random de perrito"
-          />
-          <div>
-            <h3>Tito</h3>
-            <p>Edad: 10 Meses</p>
-            <p>Tamaño: Pequeño</p>
-            <p>Juguetón y muy cariñoso</p>
-            <button>Adoptar</button>
-          </div>
-        </li>
-
-        <li className="animal-card">
-          <img
-            src="https://picsum.photos/id/237/200/300"
-            alt="Imagen random de perrito"
-          />
-          <div>
-            <h3>Tito</h3>
-            <p>Edad: 10 Meses</p>
-            <p>Tamaño: Pequeño</p>
-            <p>Juguetón y muy cariñoso</p>
-            <button>Adoptar</button>
-          </div>
-        </li>
+        <AdoptionCard 
+        onClick={handlePetRequest}
+        urlImage="https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?q=80&w=3387&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        petName="Tito"
+        age="10 Meses"
+        breed="De la vida"
+        size="Pequeño"
+        description="Juguetón y muy cariñoso"
+        observations="Vacunas al dia"
+        />
       </ul>
 
       <PetRequest isActive={showPetRequest} onClose={() => setShowPetRequest(false)}/>
