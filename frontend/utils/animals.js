@@ -5,8 +5,8 @@ export const mappedAnimals = () => {
     // y cambiamos el nombre de las propiedades
     // para que sea global y no dependa de la API
     // aumenta la reutilización del componente
-    const elementosArrays = Object.values(mockUpJson).flatMap(item => item);
-    elementosArrays.map(item => {
+    const animales = Object.values(mockUpJson).flatMap(item => item);
+    const mapped = animales.map(item => {
       return {
         id : item.id,
         urlImage : item.imagen,
@@ -19,5 +19,5 @@ export const mappedAnimals = () => {
       }
     })
     
-    return elementosArrays 
+    return mapped 
 }
