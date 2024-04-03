@@ -34,6 +34,13 @@ class UserRepository(IUserRepository):
 
     @classmethod
     def create_shelter(cls, data: Dict[str, str]) -> None:
+        """
+        Insert a new shelter into the database.
+
+        Parameters:
+        - data: A dictionary containing the shelter data.
+        """
+
         user = cls._create_user(data=data)
         try:
             cls.model_shelter.objects.create(

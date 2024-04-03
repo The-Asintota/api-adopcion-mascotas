@@ -12,12 +12,12 @@ class IUserRepository(ABC):
     model: User
 
     @abstractclassmethod
-    def insert(cls, data: Dict[str, Any]) -> None:
+    def create_shelter(cls, data: Dict[str, Any]) -> None:
         """
-        Insert a new user into the database.
+        Insert a new shelter into the database.
 
         Parameters:
-        - data: A dictionary containing the user data.
+        - data: A dictionary containing the shelter data.
         """
 
         pass
