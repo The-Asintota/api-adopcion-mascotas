@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     UserManager,
     PermissionsMixin,
 )
+import uuid
 
 
 class CustomUserManager(UserManager):
@@ -85,7 +86,9 @@ class CustomUserManager(UserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    uuid = models.UUIDField(db_column="uuid", primary_key=True)
+    uuid = models.UUIDField(
+        db_column="uuid", primary_key=True, default=uuid.uuid4
+    )
     email = models.EmailField(
         db_column="email",
         max_length=90,
@@ -131,7 +134,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Shelter(models.Model):
-    uuid = models.UUIDField(db_column="uuid", primary_key=True)
+    uuid = models.UUIDField(
+        db_column="uuid", primary_key=True, default=uuid.uuid4
+    )
     user = models.OneToOneField(
         to="User", to_field="uuid", db_column="user", on_delete=models.CASCADE
     )
