@@ -24,7 +24,12 @@ BASE_APPS = [
 
 LOCAL_APPS = ["apps.users"]
 
-THIRD_APPS = ["rest_framework", "corsheaders", "phonenumber_field"]
+THIRD_APPS = [
+    "rest_framework",
+    "corsheaders",
+    "phonenumber_field",
+    "drf_spectacular",
+]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
@@ -113,4 +118,26 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+# drf-spectacular settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Pet adoption API | NoCountry Cohorte17",
+    "DESCRIPTION": "This guide provides detailed information on all available endpoints, including the HTTP methods they accept, the parameters they require, and the response formats they return. This documentation is designed to be a useful reference for both developers who maintain and extend the API, and frontend developers who consume it in their client applications. If you have any questions or encounter any problems, feel free to contact the development team.",
+    "VERSION": "1.0.0",
+    "TAGS": [
+        {
+            "name": "Users",
+            "description": "It comprises all the endpoints that manage all the functionality related to a user in the API.",
+        },
+    ],
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
+    "COMPONENT_SPLIT_REQUEST": True,
+    "LICENSE": {
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
 }
