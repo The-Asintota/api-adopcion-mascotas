@@ -10,9 +10,9 @@ RUN apk add --no-cache \
   python3-dev \
   libffi-dev
 
-COPY ./src ./
+COPY ./backend/src ./
 
-COPY ./requirements.txt ./
+COPY ./backend/requirements.txt ./
 
 RUN pip install --upgrade pip && \
   pip install -r requirements.txt
