@@ -1,0 +1,213 @@
+openapi: 3.0.3
+info:
+  title: Pet adoption API | NoCountry Cohorte17
+  version: 1.0.0
+  description: This guide provides detailed information on all available endpoints,
+    including the HTTP methods they accept, the parameters they require, and the response
+    formats they return. This documentation is designed to be a useful reference for
+    both developers who maintain and extend the API, and frontend developers who consume
+    it in their client applications. If you have any questions or encounter any problems,
+    feel free to contact the development team.
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+paths:
+  /api/v1/shelter/:
+    post:
+      operationId: v1_shelter_create
+      description: |-
+        Handle POST requests for shelter registration.
+
+        This method allows the registration of a new shelter. It waits for a POST
+        request with a shelter's data, validates the information, and then creates
+        a new record if the data is valid or returns an error response if it is not.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterShelterRequest'
+            examples:
+              DataValid:
+                value:
+                  email: shelter1@example.com
+                  password: contraseña123456789
+                  confirm_password: contraseña123456789
+                  phone_number: +57 3213149578
+                  name: Refugio de animales
+                  address: 'Calle 123 # 45-67'
+                  responsible: Juan Pérez
+                  logo_url: https://example.com/logo.png
+                summary: Register a new user
+                description: |-
+                  A valid shelter registration data. The following validations will be applied:
+                  - **Email:** Must be in a valid email format, no longer than 90 characters and not in use.
+                  - **Password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
+                  - **Confirm Password:** Must match the password.
+                  - **Phone Number:** Must be a valid phone number, no longer than 25 characters.
+                  - **Name:** Must not be longer than 50 characters.
+                  - **Address:** Must not be longer than 100 characters.
+                  - **Responsible:** Must not be longer than 50 characters.
+                  - **Logo URL:** Must not be longer than 200 characters.
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterShelterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterShelterRequest'
+        required: true
+      responses:
+        '201':
+          description: '**(CREATED)** The shelter was created successfully.'
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: object
+              examples:
+                EmailInvalid:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      email:
+                      - Correo electrónico inválido.
+                      - El correo electrónico no puede tener más de 90 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      password:
+                      - La contraseña debe tener al menos 8 caracteres.
+                      - La contraseña no puede tener más de 20 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      phone_number:
+                      - Ingrese un número válido.
+                      - La nùmero no puede tener más de 25 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      name:
+                      - El nombre no puede tener más de 50 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      address:
+                      - El dirección no puede tener más de 100 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      responsible:
+                      - El nombre del responsable no puede tener más de 50 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      logo_url:
+                      - Supera el máximo de caracteres permitidos.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                  summary: Invalid request data
+                  description: These are all the basic error messages for each field,
+                    in this example you can see how the messages will be sent. In
+                    a real use case, the error message for the validation or validations
+                    that have failed will be displayed.
+                PasswordsNotMatch:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      non_field_errors:
+                      - Las contraseñas no coinciden.
+                  summary: Passwords do not match
+                  description: This error message is used when the passwords do not
+                    match. In this example you can see how the information will be
+                    represented.
+                EmailAlreadyUse:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      email:
+                      - Este correo electrónico ya está en uso.
+                  summary: Email already in use
+                  description: This error message is used when the email is already
+                    in use. In this example you can see how the information will be
+                    represented.
+          description: '**(BAD_REQUEST)**'
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: string
+              examples:
+                DatabaseConnectionError:
+                  value:
+                    code: database_connection_error
+                    detail: Unable to establish a connection with the database. Please
+                      try again later.
+                  summary: Database connection error
+                  description: This error message is used when the API cannot connect
+                    to the database. In this example you can see how the information
+                    will be represented.
+          description: '**(INTERNAL_SERVER_ERROR)**'
+components:
+  schemas:
+    RegisterShelterRequest:
+      type: object
+      description: Defines the data required to register a shelter in the system.
+      properties:
+        email:
+          type: string
+          minLength: 1
+          pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
+          maxLength: 90
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 20
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 25
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        address:
+          type: string
+          minLength: 1
+          maxLength: 100
+        responsible:
+          type: string
+          minLength: 1
+          maxLength: 50
+        logo_url:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+      required:
+      - address
+      - confirm_password
+      - email
+      - name
+      - password
+      - phone_number
+      - responsible
+tags:
+- name: Users
+  description: It comprises all the endpoints that manage all the functionality related
+    to a user in the API.
