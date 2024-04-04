@@ -6,7 +6,7 @@ export const mappedAnimals = () => {
     // para que sea global y no dependa de la API
     // aumenta la reutilización del componente
     const elementosArrays = Object.values(mockUpJson).flatMap(item => item);
-    return elementosArrays.map(item => {
+    elementosArrays.map(item => {
       return {
         id : item.id,
         urlImage : item.imagen,
@@ -19,4 +19,5 @@ export const mappedAnimals = () => {
       }
     })
     
+    return elementosArrays 
 }
