@@ -1,5 +1,4 @@
 import dj_database_url
-
 from .base import *
 
 
@@ -8,11 +7,13 @@ DEBUG = config("DEBUG", cast=bool)
 
 ALLOWED_HOSTS = [
     config("CLIENT_HOST", cast=str),
+    config("TEST_HOST", cast=str),
     config("SERVER_HOST", cast=str),
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     f"https://{config('SERVER_HOST', cast=str)}",
+    f"https://{config('TEST_HOST', cast=str)}",
     f"https://{config('CLIENT_HOST', cast=str)}",
 ]
 
@@ -24,7 +25,10 @@ SESSION_COOKIE_SECURE = True
 # CORS settings
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = [f"https://{config('CLIENT_HOST', cast=str)}"]
+CORS_ORIGIN_WHITELIST = [
+    f"https://{config('CLIENT_HOST', cast=str)}",
+    f"https://{config('TEST_HOST', cast=str)}",
+]
 
 
 # Database
