@@ -4,6 +4,7 @@ from django.contrib.auth.models import (
     UserManager,
     PermissionsMixin,
 )
+from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 
 
@@ -93,6 +94,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         db_column="email",
         max_length=90,
         unique=True,
+        db_index=True,
         blank=False,
         null=False,
     )
@@ -146,7 +148,7 @@ class Shelter(models.Model):
     address = models.CharField(
         db_column="address", max_length=100, blank=False, null=False
     )
-    phone_number = models.CharField(
+    phone_number = PhoneNumberField(
         db_column="phone_number", max_length=25, blank=False, null=False
     )
     responsible = models.CharField(

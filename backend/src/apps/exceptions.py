@@ -1,6 +1,5 @@
 from rest_framework.exceptions import APIException
 from rest_framework import status
-
 from typing import Any, Dict, Optional, Union
 
 
@@ -43,6 +42,24 @@ class DatabaseConnectionError(DetailDictMixin, APIException):
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
     default_detail = "Unable to establish a connection with the database. Please try again later."
     default_code = "database_connection_error"
+
+    def __init__(self, detail: str | Dict[str, Any] = None) -> None:
+        if isinstance(detail, dict):
+            self.detail = {"detail": detail or self.default_detail}
+        else:
+            self.detail = detail or self.default_detail
+        self.code = self.default_code
+        super().__init__(detail=self.detail, code=self.code)
+
+
+class UserNotFoundError(DetailDictMixin, APIException):
+    """
+    Exception raised when a user is not found.
+    """
+
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = "User not found."
+    default_code = "user_not_found"
 
     def __init__(self, detail: str | Dict[str, Any] = None) -> None:
         if isinstance(detail, dict):
