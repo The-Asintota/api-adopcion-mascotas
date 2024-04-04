@@ -5,6 +5,7 @@ import Shelters from './pages/Shelters'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Adoption from "./pages/Adoption.jsx";
+import Admin from "./pages/Admin.jsx";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
     path: "/animals-for-adoption",
     element: <Adoption/>
   },
+  {
+    path: "/admin",
+    element: <Admin/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
