@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from typing import Dict
 from apps.users.infrastructure.db import UserRepository
 from apps.exceptions import UserNotFoundError
+from apps.users.endpoint_schemas.register_shelter import SerializerSchema
 
 
 class ErrorMessages(serializers.Serializer):
@@ -31,6 +32,7 @@ class ErrorMessages(serializers.Serializer):
             self.fields[field_name].error_messages.update(msg)
 
 
+@SerializerSchema
 class RegisterShelterSerializer(ErrorMessages):
     """
     Defines the data required to register a shelter in the system.
@@ -70,6 +72,7 @@ class RegisterShelterSerializer(ErrorMessages):
     )
     phone_number = PhoneNumberField(
         required=True,
+        error_messages={"invalid": "Número inválido."},
         validators=[
             MaxLengthValidator(
                 limit_value=25,
