@@ -24,7 +24,7 @@ BASE_APPS = [
 
 LOCAL_APPS = ["apps.users"]
 
-THIRD_APPS = ["rest_framework", "corsheaders"]
+THIRD_APPS = ["rest_framework", "corsheaders", "phonenumber_field"]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
