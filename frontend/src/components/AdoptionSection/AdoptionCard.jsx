@@ -1,7 +1,31 @@
-import React from "react";
+import React, { useContext } from "react";
 import './AdoptionCard.css'
+import { AdminContext } from "../../context/admin";
 
 const AdoptionCard = ({urlImage, petName,age, breed, size, description, observations, onClick}) => {
+  const isAdmin = useContext(AdminContext)
+
+  function Controls() {
+    if(!isAdmin)  {
+      return (
+        <button onClick={onClick}>Adoptar</button>
+      )
+    }
+
+    if(isAdmin.user === "admin") {
+      return (
+        <button style={{ backgroundColor: "#DC2626"}} onClick={onClick}>Eliminar</button>
+      )
+    } else if(isAdmin.user === "shelter") {
+      return (
+        <>
+        <button style={{ backgroundColor: "#DC2626"}} onClick={onClick}>Eliminar</button>
+         <button style={{ backgroundColor: "#2563EB" }}  onClick={onClick}>Editar</button>
+        </>
+      )
+    }
+  }
+
   return (
     <li className="animal-card">
       <img
@@ -15,7 +39,7 @@ const AdoptionCard = ({urlImage, petName,age, breed, size, description, observat
         <p>Tamaño: {size}</p>
         <p>Juguetón y muy cariñoso{description}</p>
         <p>{observations}</p>
-        <button onClick={onClick}>Adoptar</button>
+        <Controls />
       </div>
     </li>
   );
