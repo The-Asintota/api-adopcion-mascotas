@@ -1,6 +1,18 @@
 import React from "react";
+import { useForm } from "react-hook-form";
+import ErrorMessage from "../ErrorMessage";
+
 
 const SignIn = ({ isActive, onClose }) => {
+   const {
+    register,
+    getValues,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => console.log(data)
+
   return (
     <>
       {isActive && (
@@ -14,15 +26,20 @@ const SignIn = ({ isActive, onClose }) => {
               <h2 className="text-center text-4xl font-extrabold text-white">
                 Iniciar Sesion
               </h2>
-              <form method="POST" action="#" className="space-y-6">
+              <form method="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div className="relative">
                   <input
                     placeholder="john@prueba.com"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-                    required
                     id="email"
                     name="email"
-                    type="email"
+                    {...register("email", {
+                      required: "Este campo es obligatorio",
+                      pattern: {
+                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: "Por favor, introduce un correo electronico válido"
+                      },
+                    })}
                   />
                   <label
                     className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
@@ -30,6 +47,7 @@ const SignIn = ({ isActive, onClose }) => {
                   >
                     Correo Electronico
                   </label>
+                  <ErrorMessage error={errors.email} />
                 </div>
                 <div className="relative">
                   <input
