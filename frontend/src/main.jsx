@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Adoption from "./pages/Adoption.jsx";
 import Admin from "./pages/Admin.jsx";
+import { AdminProvider } from "./context/admin.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <Admin/>
+    element: <AdminProvider> <Admin/> </AdminProvider>
   }
 ]);
 
