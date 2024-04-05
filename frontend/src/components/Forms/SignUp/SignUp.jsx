@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
 
 const SignUp = ({ link, onClick }) => {
@@ -8,9 +9,37 @@ const SignUp = ({ link, onClick }) => {
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      responsibleName: '',
+      email: '',
+      password: '',
+    },
+  });
 
-  const onSubmit = (data) => console.log(data);
+  const [userCreated, setUserCreated] = useState(false);
+
+  const urlRequest = ".../api/v1/shelter/";
+
+  const onSubmit = (data) => {
+    axios
+      .post(urlRequest, data, {
+        headers: { "Content-Type": "application/json" },
+      })
+      .then((response) => {
+        console.log(response.data);
+        response.status === 201
+          ? setUserCreated(true)
+          : console.log(response.data.error);
+      })
+      .catch((error) => console.log(error))
+  };
+
+/*   useEffect(() => {
+    if (userCreated) {
+      setOpen(true) mostrar un aviso de usuario creado exitosamente
+    }
+  }, [userCreated]); */
 
   return (
     <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-8 mt-6">
@@ -99,7 +128,7 @@ const SignUp = ({ link, onClick }) => {
                 required: "Este campo es obligatorio",
                 pattern: {
                   value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Por favor, introduce un correo electronico válido"
+                  message: "Por favor, introduce un correo electronico válido",
                 },
               })}
             />
@@ -158,7 +187,7 @@ const SignUp = ({ link, onClick }) => {
             >
               Contraseña
             </label>
-            <ErrorMessage error={errors.password}/>
+            <ErrorMessage error={errors.password} />
           </div>
           <div className="relative w-1/2 pl-2 ml-2">
             <input
@@ -171,8 +200,7 @@ const SignUp = ({ link, onClick }) => {
               {...register("confirm_password", {
                 required: "Password is required",
                 validate: (value) =>
-                  value === getValues().password ||
-                  "La contraseña no coincide",
+                  value === getValues().password || "La contraseña no coincide",
               })}
             />
             <label
@@ -181,7 +209,7 @@ const SignUp = ({ link, onClick }) => {
             >
               Confirmar password
             </label>
-            <ErrorMessage password/>
+            <ErrorMessage password />
           </div>
         </div>
         <div className="flex items-center justify-between">
