@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
@@ -11,9 +11,13 @@ const SignUp = ({ link, onClick }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      responsibleName: '',
+      name:'',
+      responsible: '',
+      phone_number:'',
       email: '',
+      address:'',
       password: '',
+      confirm_password:'',
     },
   });
 
@@ -55,29 +59,29 @@ const SignUp = ({ link, onClick }) => {
           <input
             placeholder="Nombre de tu asociacion"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="asociationName"
-            name="asociationName"
+            id="name"
+            name="name"
             autoComplete="organization"
-            {...register("asociationName", {
+            {...register("name", {
               required: "Este campo es obligatorio",
             })}
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="asociationName"
+            htmlFor="name"
           >
             Nombre de la asociacion
           </label>
-          <ErrorMessage error={errors.asociationName} />
+          <ErrorMessage error={errors.name} />
         </div>
         <div className="relative">
           <input
             placeholder="Pedro Perez"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="responsibleName"
-            name="responsibleName"
+            id="responsible"
+            name="responsible"
             autoComplete="name"
-            {...register("responsibleName", {
+            {...register("responsible", {
               required: "Este campo es obligatorio",
               pattern: {
                 value: /^([A-Za-z]+\s?)+$/,
@@ -87,21 +91,21 @@ const SignUp = ({ link, onClick }) => {
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="responsibleName"
+            htmlFor="responsible"
           >
             Nombre de la persona responsable
           </label>
-          <ErrorMessage error={errors.responsibleName} />
+          <ErrorMessage error={errors.responsible} />
         </div>
         <div className="flex flex-row w-full">
           <div className="relative w-1/2 ">
             <input
               placeholder="Numero de telefono"
               className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-              id="phoneNumber"
-              name="phoneNumber"
+              id="phone_number"
+              name="phone_number"
               autoComplete="tel-country-code"
-              {...register("phoneNumber", {
+              {...register("phone_number", {
                 required: "Este campo es obligatorio",
                 pattern: {
                   value: /^[\d\s+-]+$/,
@@ -115,7 +119,7 @@ const SignUp = ({ link, onClick }) => {
             >
               Numero de telefono
             </label>
-            <ErrorMessage error={errors.phoneNumber} />
+            <ErrorMessage error={errors.phone_number} />
           </div>
           <div className="relative w-1/2 pl-2 ml-2">
             <input
