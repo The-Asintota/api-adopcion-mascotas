@@ -1,18 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
 
 
 const SignIn = ({ isActive, onClose }) => {
-   const {
+  const {
     register,
-    getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
-  const onSubmit = (data) => console.log(data)
+  const [userLogged, setUserLogged] = useState(false)
 
+  const urlRequest = ""
+
+  const onSubmit = (data) => {
+    axios
+      .post(urlRequest, data, {
+        headers: {"Content-Type": "application/json"}
+      })
+      .then((response) => {
+        console.log(response)
+        response.status === 201 ? setUserLogged : console.log(error)
+      })
+      .catch(error => console.log(error))
+      /* considerar los errores que pueden dar el back */
+    console.log(data);
+  }
+
+/*   useEffect(() => {
+    userLogged ? enviar al dashboard correspondiente : mostrar errror
+  }, [userLogged])
+ */
   return (
     <>
       {isActive && (
@@ -20,13 +45,20 @@ const SignIn = ({ isActive, onClose }) => {
           <div className="fixed inset-0 bg-gray-400 opacity-70"></div>
           <div className="w-full max-w-md z-10 bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-8">
             <div className="relative">
-              <div className="absolute top-0 right-0 cursor-pointer" onClick={onClose}>
+              <div
+                className="absolute top-0 right-0 cursor-pointer"
+                onClick={onClose}
+              >
                 x
               </div>
               <h2 className="text-center text-4xl font-extrabold text-white">
                 Iniciar Sesion
               </h2>
-              <form method="POST" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                method="POST"
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <div className="relative">
                   <input
                     placeholder="john@prueba.com"
@@ -36,8 +68,14 @@ const SignIn = ({ isActive, onClose }) => {
                     {...register("email", {
                       required: "Este campo es obligatorio",
                       pattern: {
-                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                        message: "Por favor, introduce un correo electronico válido"
+                        value:
+                          /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message:
+                          "Por favor, introduce un correo electronico válido",
+                      },
+                      maxLength: {
+                        value: 90,
+                        message: "El correo electrónico no puede tener más de 90 caracteres",
                       },
                     })}
                   />
@@ -51,12 +89,23 @@ const SignIn = ({ isActive, onClose }) => {
                 </div>
                 <div className="relative">
                   <input
-                    placeholder="Password"
+                    placeholder="Contraseña"
                     className="peer h-10 w-full border-b-2 border-gray-200 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-blue-500"
-                    required
                     id="password"
                     name="password"
                     type="password"
+                    autoComplete="new-password"
+                    {...register("password", {
+                      required: "Este campo es obligatorio",
+                      minLength: {
+                        value: 8,
+                        message: "Debe tener al menos 8 caracteres",
+                      },
+                      maxLength: {
+                        value: 8,
+                        message: "La contraseña no puede tener más de 20 caracteres",
+                      },
+                    })}
                   />
                   <label
                     className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
@@ -64,6 +113,7 @@ const SignIn = ({ isActive, onClose }) => {
                   >
                     Contraseña
                   </label>
+                  <ErrorMessage error={errors.password} />
                 </div>
                 <div className="flex items-center justify-between">
                   <label className="flex items-center text-sm text-gray-200">
