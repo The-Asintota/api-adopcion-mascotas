@@ -5,29 +5,19 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from phonenumber_field.modelfields import PhoneNumberField
-import uuid
+from uuid import uuid4, UUID
 
 
 class CustomUserManager(UserManager):
     def _create_user(
         self,
-        uuid=None,
-        email=None,
-        password=None,
-        is_active=None,
-        is_staff=None,
-        is_superuser=None,
-        last_login=None,
-        date_joined=None,
+        uuid: UUID = None,
+        email: str = None,
+        password: str = None,
+        **extra_fields,
     ):
         user = self.model(
-            email=self.normalize_email(email),
-            uuid=uuid,
-            is_active=is_active,
-            is_staff=is_staff,
-            is_superuser=is_superuser,
-            last_login=last_login,
-            date_joined=date_joined,
+            uuid=uuid, email=self.normalize_email(email), **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -35,11 +25,9 @@ class CustomUserManager(UserManager):
 
     def create_user(
         self,
-        uuid=None,
-        email=None,
-        password=None,
-        last_login=None,
-        date_joined=None,
+        uuid: UUID = None,
+        email: str = None,
+        password: str = None,
         **extra_fields,
     ):
         """
@@ -51,45 +39,37 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault("is_active", False)
 
         return self._create_user(
-            email=email,
-            uuid=uuid,
-            password=password,
-            last_login=last_login,
-            date_joined=date_joined,
-            **extra_fields,
+            uuid=uuid, email=email, password=password, **extra_fields
         )
 
     def create_superuser(
         self,
-        uuid=None,
-        email=None,
-        password=None,
-        last_login=None,
-        date_joined=None,
+        uuid: UUID = None,
+        email: str = None,
+        password: str = None,
         **extra_fields,
     ):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
 
         if extra_fields.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
+        if extra_fields.get("is_active") is not True:
+            raise ValueError("Active user must have is_active=True.")
 
         return self._create_user(
-            email=email,
             uuid=uuid,
+            email=email,
             password=password,
-            last_login=last_login,
-            date_joined=date_joined,
             **extra_fields,
         )
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    uuid = models.UUIDField(
-        db_column="uuid", primary_key=True, default=uuid.uuid4
-    )
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
     email = models.EmailField(
         db_column="email",
         max_length=90,
@@ -136,9 +116,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Shelter(models.Model):
-    uuid = models.UUIDField(
-        db_column="uuid", primary_key=True, default=uuid.uuid4
-    )
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
     user = models.OneToOneField(
         to="User", to_field="uuid", db_column="user", on_delete=models.CASCADE
     )

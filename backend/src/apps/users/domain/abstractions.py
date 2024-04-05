@@ -1,4 +1,4 @@
-from abc import abstractclassmethod, ABC
+from abc import ABC, abstractmethod
 from typing import Dict, Any
 from apps.users.models import User
 
@@ -11,7 +11,8 @@ class IUserRepository(ABC):
 
     model: User
 
-    @abstractclassmethod
+    @classmethod
+    @abstractmethod
     def create_shelter(cls, data: Dict[str, Any]) -> None:
         """
         Insert a new shelter into the database.
