@@ -1,4 +1,6 @@
 import React from "react";
+/* import firebase from 'frontend/utils/firebaseConfig.js' */
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const UploadLogo = () => {
   /* const [uploadingLogo, setUploadingLogo] = useState(false)*/

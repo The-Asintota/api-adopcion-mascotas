@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
-import UploadLogo from "./UploadLogo";
+/* import UploadLogo from "./UploadLogo"; */
 
 const SignUp = ({ link, onClick }) => {
   const {
@@ -24,7 +24,7 @@ const SignUp = ({ link, onClick }) => {
 
   const [userCreated, setUserCreated] = useState(false);
 
-  const urlRequest = ".../api/v1/shelter/";
+  const urlRequest = "https://api-adopcion-mascotas-dev-qprf.2.us-1.fl0.io/api/v1/shelter/";
 
   const onSubmit = (data) => {
     axios
@@ -40,11 +40,11 @@ const SignUp = ({ link, onClick }) => {
       .catch((error) => console.log(error));
   };
 
-  /*   useEffect(() => {
+    useEffect(() => {
     if (userCreated) {
-      setOpen(true) mostrar un aviso de usuario creado exitosamente
+      console.log("user created")
     }
-  }, [userCreated]); */
+  }, [userCreated]);
 
   return (
     <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-8 mt-6">
@@ -152,11 +152,10 @@ const SignUp = ({ link, onClick }) => {
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
             id="address"
             name="address"
-            autoComplete="street-address"
             {...register("address", {
               required: "Este campo es obligatorio",
               pattern: {
-                value: /^[A-Za-z0-9\s.,#-]+$/,
+                value: /^[A-Za-z0-9\s.,#\-áéíóúÁÉÍÓÚ]+$/,
                 message: "Por favor, introduce una dirección válida",
               },
             })}
@@ -217,9 +216,9 @@ const SignUp = ({ link, onClick }) => {
             <ErrorMessage password />
           </div>
         </div>
-        <div className="relative">
+{/*         <div className="relative">
           <UploadLogo />
-        </div>
+        </div> */}
         <div className="flex items-center justify-between">
           <label className="flex items-center text-sm text-gray-200">
             <input
