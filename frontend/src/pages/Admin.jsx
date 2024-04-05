@@ -1,21 +1,27 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import Header from '../components/Header/Header';
-import InicioSection from '../components/InicioSection/InicioSection';
 import AdoptionSection from '../components/AdoptionSection/AdoptionSection';
 import ProtectorasSection from '../components/ProtectorasSection/ProtectorasSection';
 import Footer from '../components/Footer/Footer';
-import { AdminProvider } from '../context/admin';
+import { AdminContext } from '../context/admin';
 
 const Admin = () => {
+    const { user, setUser } = useContext(AdminContext)
+    
+    useEffect(() => {
+        setUser("admin")
+    }, [])
+    
     return (
-        <AdminProvider>
+        <>
             <Header />
             <main>
                 <AdoptionSection />
                 <ProtectorasSection />
             </main>
             <Footer />
-        </AdminProvider>
+        </>
+
     );
 }
 
