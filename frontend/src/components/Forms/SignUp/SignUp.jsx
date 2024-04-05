@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
+import UploadLogo from "./UploadLogo";
 
 const SignUp = ({ link, onClick }) => {
   const {
@@ -11,13 +12,13 @@ const SignUp = ({ link, onClick }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name:'',
-      responsible: '',
-      phone_number:'',
-      email: '',
-      address:'',
-      password: '',
-      confirm_password:'',
+      name: "",
+      responsible: "",
+      phone_number: "",
+      email: "",
+      address: "",
+      password: "",
+      confirm_password: "",
     },
   });
 
@@ -36,10 +37,10 @@ const SignUp = ({ link, onClick }) => {
           ? setUserCreated(true)
           : console.log(response.data.error);
       })
-      .catch((error) => console.log(error))
+      .catch((error) => console.log(error));
   };
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     if (userCreated) {
       setOpen(true) mostrar un aviso de usuario creado exitosamente
     }
@@ -215,6 +216,9 @@ const SignUp = ({ link, onClick }) => {
             </label>
             <ErrorMessage password />
           </div>
+        </div>
+        <div className="relative">
+          <UploadLogo />
         </div>
         <div className="flex items-center justify-between">
           <label className="flex items-center text-sm text-gray-200">
