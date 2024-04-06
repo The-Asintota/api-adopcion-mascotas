@@ -1,0 +1,41 @@
+
+{
+    "shelters": [
+        {
+            "id": "1",
+            "name": "Globant",
+            "animalsCount" : 10,
+            "location": "Montevideo, Uruguay" 
+        },
+        {
+            "id": "2",
+            "name": "Globant",
+            "animalsCount" : 10,
+            "location": "Montevideo, Uruguay"
+        },
+        {
+            "id": "3",
+            "name": "Globant",
+            "animalsCount" : 10,
+            "location": "Montevideo, Uruguay"
+        },
+        {
+            "id": "4",
+            "name": "Globant",
+            "animalsCount" : 10,
+            "location": "Montevideo, Uruguay"
+        },
+        {
+            "id": "5",
+            "name": "Globant",
+            "animalsCount" : 10,
+            "location": "Montevideo, Uruguay"
+        },
+        {
+            "id": "6",
+            "name": "Globant",
+            "animalsCount" : 10,
+            "location": "Montevideo, Uruguay"
+        }
+    ]
+}
