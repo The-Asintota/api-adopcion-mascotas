@@ -24,7 +24,7 @@ const SignUp = ({ link, onClick }) => {
 
   const [userCreated, setUserCreated] = useState(false);
 
-  const urlRequest = "https://api-adopcion-mascotas-dev-qprf.2.us-1.fl0.io/api/v1/shelter/";
+  const urlRequest = "https://api-adopcion-mascotas-production.up.railway.app/api/v1/shelter/";
 
   const onSubmit = (data) => {
     axios
