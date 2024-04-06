@@ -13,8 +13,8 @@ ALLOWED_HOSTS = [
 
 CSRF_TRUSTED_ORIGINS = [
     f"https://{config('SERVER_HOST', cast=str)}",
-    f"https://{config('TEST_HOST', cast=str)}",
     f"https://{config('CLIENT_HOST', cast=str)}",
+    f"http://{config('TEST_HOST', cast=str)}",
 ]
 
 CSRF_COOKIE_SECURE = True
@@ -27,7 +27,8 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
     f"https://{config('CLIENT_HOST', cast=str)}",
-    f"https://{config('TEST_HOST', cast=str)}",
+    f"http://{config('TEST_HOST', cast=str)}:5173",
+    f"http://{config('TEST_HOST', cast=str)}:5174",
 ]
 
 
