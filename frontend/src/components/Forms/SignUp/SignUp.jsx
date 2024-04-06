@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
-/* import UploadLogo from "./UploadLogo"; */
+import UploadLogo from "./UploadLogo";
+import SuccessfulNotification from "../SuccessfulNotification";
 
 const SignUp = ({ link, onClick }) => {
   const {
@@ -19,30 +20,53 @@ const SignUp = ({ link, onClick }) => {
       address: "",
       password: "",
       confirm_password: "",
+      logo_url: null,
     },
   });
 
   const [userCreated, setUserCreated] = useState(false);
+  const [logo, setLogo] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(true);
 
-  const urlRequest = "https://api-adopcion-mascotas-production.up.railway.app/api/v1/shelter/";
+  function handleUploadLogo(url) {
+    setLogo(url);
+  }
+
+  function handleShowSuccess() {
+    setShowSuccess(true);
+  }
+
+  const urlRequest =
+    "https://api-adopcion-mascotas-production.up.railway.app/api/v1/shelter/";
 
   const onSubmit = (data) => {
+    data.logo_url = logo;
+    console.log(data);
     axios
       .post(urlRequest, data, {
         headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
         console.log(response.data);
-        response.status === 201
+        if (response.status === 201) {
+          setUserCreated(true);
+        } else if (response.data === 400) {
+          console.log(response.data.error);
+        } else {
+          console.log(response.data.error);
+        }
+
+        /*         response.status === 201
           ? setUserCreated(true)
-          : console.log(response.data.error);
+          : console.log(response.data.error); */
       })
       .catch((error) => console.log(error));
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (userCreated) {
-      console.log("user created")
+      console.log("user created");
+      handleShowSuccess();
     }
   }, [userCreated]);
 
@@ -116,7 +140,7 @@ const SignUp = ({ link, onClick }) => {
             />
             <label
               className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-              htmlFor="phoneNumber"
+              htmlFor="phone_number"
             >
               Numero de telefono
             </label>
@@ -216,17 +240,8 @@ const SignUp = ({ link, onClick }) => {
             <ErrorMessage password />
           </div>
         </div>
-{/*         <div className="relative">
-          <UploadLogo />
-        </div> */}
-        <div className="flex items-center justify-between">
-          <label className="flex items-center text-sm text-gray-200">
-            <input
-              className="form-checkbox h-4 w-4 text-[#118A95] bg-gray-800 border-gray-300 rounded"
-              type="checkbox"
-            />
-            <span className="ml-2">Remember me</span>
-          </label>
+        <div className="relative">
+          <UploadLogo onImageUpload={handleUploadLogo} />
         </div>
         <button
           className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
@@ -245,6 +260,12 @@ const SignUp = ({ link, onClick }) => {
           Sign in
         </a>
       </div>
+      <SuccessfulNotification
+        isActive={showSuccess}
+        onClick={onClick}
+        onClose={() => setShowSuccess(false)}
+        text="Registro exitoso."
+      />
     </div>
   );
 };
