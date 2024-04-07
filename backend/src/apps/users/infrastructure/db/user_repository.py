@@ -12,9 +12,6 @@ class UserRepository(IUserRepository):
     operations for the `User` and `Shelter` models.
     """
 
-    model_user = User
-    model_shelter = Shelter
-
     @classmethod
     def _create_user(cls, email: str, password: str) -> User:
         """

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any
-from apps.users.models import User
+from apps.users.models import User, Shelter
 
 
 class IUserRepository(ABC):
@@ -9,7 +9,17 @@ class IUserRepository(ABC):
     Subclasses should implement the `insert` and `get_user` methods.
     """
 
-    model: User
+    model_user = User
+    model_shelter = Shelter
+
+    @classmethod
+    @abstractmethod
+    def _create_user(cls, email: str, password: str) -> User:
+        """
+        Inserts a new user into the database.
+        """
+
+        pass
 
     @classmethod
     @abstractmethod
@@ -19,6 +29,15 @@ class IUserRepository(ABC):
 
         Parameters:
         - data: A dictionary containing the shelter data.
+        """
+
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_shelter(cls, **filters) -> Shelter:
+        """
+        Retrieve a shelter from the database based on the provided filters.
         """
 
         pass
