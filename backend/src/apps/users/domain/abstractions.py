@@ -1,6 +1,7 @@
+from rest_framework_simplejwt.tokens import Token
 from abc import ABC, abstractmethod
-from typing import Dict, Any
-from apps.users.domain.typing import JWTPayload, JWToken
+from typing import Dict, Any, Protocol
+from apps.users.domain.typing import JWToken
 from apps.users.models import User, Shelter, JWT, JWTBlacklisted
 
 
@@ -68,16 +69,13 @@ class IJWTRepository(ABC):
 
     @classmethod
     @abstractmethod
-    def add_to_checklist(
-        cls, payload: JWTPayload, token: JWToken, user: User
-    ) -> None:
+    def add_to_checklist(cls, token: JWToken, user: User) -> None:
         """
         Add a token to the checklist.
 
         Parameters:
-        - payload: A JWTPayload instance that represents the payload of a JWT.
-        - token: A JWTType instance representing a JWT.
-        - user: A User instance representing the user.
+        - token: A JWToken.
+        - user: An instance of the User model.
         """
 
         pass
@@ -89,7 +87,25 @@ class IJWTRepository(ABC):
         Add a token to the blacklist.
 
         Parameters:
-        - token: A JWTType instance representing a JWT.
+        - token: An instance of the JWT model.
         """
 
         pass
+
+
+class ITokenClass(Protocol):
+    """
+    Interface that defines the methods that a class must implement to be used as a
+    JWT class.
+    """
+
+    def get_token(self, user: User) -> Token:
+        """
+        This method should return a JWT token for the given user.
+
+        Parameters:
+        - user: An instance of the User model. The user for which to generate the
+        token.
+        """
+
+        ...

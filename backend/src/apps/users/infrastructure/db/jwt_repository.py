@@ -51,11 +51,11 @@ class JWTRepository(IJWTRepository):
     @classmethod
     def add_to_checklist(cls, token: JWToken, user: User) -> None:
         """
-        Add a JWT to the checklist.
+        Add a token to the checklist.
 
         Parameters:
-        - token: A JWTType instance representing a JWT.
-        - user: A User instance representing the user.
+        - token: A JWToken.
+        - user: An instance of the User model.
         """
 
         payload = decode_jwt(token=token)
@@ -77,7 +77,7 @@ class JWTRepository(IJWTRepository):
         Add a token to the blacklist.
 
         Parameters:
-        - token: A JWTType instance representing a JWT.
+        - token: An instance of the JWT model.
         """
 
         try:
