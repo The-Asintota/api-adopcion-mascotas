@@ -1,1 +1,2 @@
 from .shelter import RegisterShelterSerializer
+from .authentication import AuthenticationSerializer
