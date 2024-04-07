@@ -8,6 +8,7 @@ from typing import Dict
 from apps.users.infrastructure.serializers import AuthenticationSerializer
 from apps.users.infrastructure.db import JWTRepository
 from apps.users.use_case import Authentication
+from apps.users.endpoint_schemas.authentication import APISchema
 
 
 class AuthenticationAPIView(TokenObtainPairView):
@@ -48,6 +49,7 @@ class AuthenticationAPIView(TokenObtainPairView):
             content_type="application/json",
         )
 
+    @APISchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for user authentication.
