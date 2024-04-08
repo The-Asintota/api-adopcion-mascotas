@@ -36,8 +36,9 @@ const SignUp = ({ link, onClick }) => {
     setShowSuccess(true);
   }
 
-  const urlRequest =
-    "https://api-adopcion-mascotas-production.up.railway.app/api/v1/shelter/";
+  const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/shelter/`
+
+    /* "https://api-adopcion-mascotas-production.up.railway.app/api/v1/shelter/"; */
 
   const onSubmit = (data) => {
     data.logo_url = logo;
