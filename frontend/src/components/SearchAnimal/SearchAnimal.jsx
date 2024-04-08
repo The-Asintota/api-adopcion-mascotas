@@ -1,9 +1,10 @@
+import "./SearchAnimal.css";
 
 export default function SearchAnimal ({ onChange }) {
 
     return (
-        <section className="flex gap-x-10 items-center justify-center mt-10 mb-5">
-            <form onSubmit={onChange} className="flex space-x-5"> 
+        <section className="flex items-center justify-center mt-10 mb-5">
+            <form onSubmit={onChange} className="search-animal flex gap-5 "> 
                 <input name="nombre" id="nombre" className="rounded-md text-gray-950 px-6" type="text" placeholder="Firulais" />
                 <select className="rounded-md bg-[var(--green)] px-2" name="tipo" id="tipo">
                     <option value="Tipo">Tipo</option>
