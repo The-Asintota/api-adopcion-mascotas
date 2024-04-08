@@ -32,4 +32,22 @@
   }
 }
 
+@media(width > 468px) {
+  .animal-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media(width > 768px) {
+  .animal-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media(width > 1200px) {
+  .animal-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
 
