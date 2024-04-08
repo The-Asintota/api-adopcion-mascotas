@@ -7,15 +7,14 @@ import { AdminContext } from '../context/admin';
 import { USERS } from '../../utils/constants';
 import useUser from '../hooks/useUser';
 
-const Admin = () => {
-    const { user, setUser } = useUser({ userType: USERS.ADMIN })
-    
+const Shelter = () => {
+    const { user, setUser } = useUser({ userType: USERS.SHELTER })
+
     return (
         <>
             <Header />
             <main>
                 <AdoptionSection />
-                <ProtectorasSection />
             </main>
             <Footer />
         </>
@@ -23,4 +22,4 @@ const Admin = () => {
     );
 }
 
-export default Admin;
+export default Shelter;

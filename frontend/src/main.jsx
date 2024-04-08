@@ -7,6 +7,7 @@ import "./index.css";
 import Adoption from "./pages/Adoption.jsx";
 import Admin from "./pages/Admin.jsx";
 import { AdminProvider } from "./context/admin.jsx";
+import Shelter from "./pages/Shelter.jsx";
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element: <AdminProvider> <Admin/> </AdminProvider>
+  },
+  {
+    path: "/shelter",
+    element: <AdminProvider> <Shelter/> </AdminProvider>
   }
 ]);
 
