@@ -19,7 +19,10 @@ const UploadLogo = ({onImageUpload}) => {
   );
 
   const uploadedLogo = (
-    <img src={logoURL} alt="uploaded" className= "max-w-56" />
+    <div>
+      <img src={logoURL} alt="uploaded" className= "max-w-56" />
+      <p>Imagen subida exitosamente</p>
+    </div>
   )
 
   const waitingUpload = (
