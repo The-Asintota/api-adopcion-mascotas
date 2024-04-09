@@ -4,9 +4,8 @@ import axios from "axios";
 const FormRequest = ({ endpoint, formData, onSuccess, textButton }) => {
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}${endpoint}`;
 
-  const handleRequest = async () => {
-    setLoading(true);
-    axios
+  const handleRequest = () => {
+      axios
       .post(urlRequest, formData, {
         headers: { "Content-Type": "application/json" },
       })
@@ -29,8 +28,9 @@ const FormRequest = ({ endpoint, formData, onSuccess, textButton }) => {
 
   return (
     <button
-      className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
-      onClick={handleRequest}
+    type="button"  
+    className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
+    onClick={handleRequest}
     >
       {textButton}
     </button>

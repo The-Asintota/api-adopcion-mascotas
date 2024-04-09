@@ -98,7 +98,7 @@ const SignUpForm = ({ link, onClick }) => {
       <form
         method="POST"
         className="space-y-6"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(() => {})}
       >
         <div className="relative">
           <input
