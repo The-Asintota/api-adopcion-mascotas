@@ -21,3 +21,7 @@ class UserRegister:
     def shelter_registration(self, data: Dict[str, Any]) -> None:
         del data["confirm_password"]
         self._user_repository.create_shelter(data=data)
+
+    def admin_registration(self, data: Dict[str, Any]) -> None:
+        del data["confirm_password"]
+        self._user_repository.create_admin(data=data)
