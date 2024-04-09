@@ -2,7 +2,7 @@ from rest_framework_simplejwt.tokens import Token
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Protocol
 from apps.users.domain.typing import JWToken
-from apps.users.models import User, Shelter, JWT, JWTBlacklisted
+from apps.users.models import User, Shelter, Admin, JWT, JWTBlacklisted
 
 
 class IUserRepository(ABC):
@@ -13,6 +13,7 @@ class IUserRepository(ABC):
 
     model_user = User
     model_shelter = Shelter
+    model_admin = Admin
 
     @classmethod
     @abstractmethod
@@ -40,6 +41,18 @@ class IUserRepository(ABC):
     def get_shelter(cls, **filters) -> Shelter:
         """
         Retrieve a shelter from the database based on the provided filters.
+        """
+
+        pass
+
+    @classmethod
+    @abstractmethod
+    def create_admin(cls, data: Dict[str, Any]) -> None:
+        """
+        Insert a new admin into the database.
+
+        Parameters:
+        - data: A dictionary containing the admin data.
         """
 
         pass

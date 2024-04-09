@@ -83,3 +83,25 @@ class UserRepository(IUserRepository):
             )
 
         return shelter
+
+    @classmethod
+    def create_admin(cls, data: Dict[str, str]) -> None:
+        """
+        Insert a new admin into the database.
+
+        Parameters:
+        - data: A dictionary containing the admin data.
+        """
+
+        user = cls._create_user(email=data["email"], password=data["password"])
+        del data["email"]
+        del data["password"]
+        try:
+            cls.model_admin.objects.create(
+                user=user,
+                **data,
+            )
+        except OperationalError:
+            # In the future, a retry system will be implemented when the database is
+            # suddenly unavailable.
+            raise DatabaseConnectionError()
