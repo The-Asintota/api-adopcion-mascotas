@@ -149,6 +149,25 @@ class Shelter(models.Model):
         ordering = ["-data_joined"]
 
 
+class Admin(models.Model):
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
+    user = models.OneToOneField(
+        to="User", to_field="uuid", db_column="user", on_delete=models.CASCADE
+    )
+    name = models.CharField(
+        db_column="name", max_length=50, blank=False, null=False
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "admins"
+        verbose_name = "Admin"
+        verbose_name_plural = "Admins"
+        ordering = ["-user__date_joined"]
+
+
 class JWT(models.Model):
     """
     This model represents a JWT token in the system.
