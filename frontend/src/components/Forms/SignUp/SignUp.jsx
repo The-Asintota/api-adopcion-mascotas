@@ -40,7 +40,7 @@ const SignUp = ({ link, onClick }) => {
   function handleShowPassword() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   }
-  /* "https://api-adopcion-mascotas-production.up.railway.app/api/v1/shelter/"; */
+
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/shelter/`;
 
   const openEye = (
@@ -87,7 +87,6 @@ const SignUp = ({ link, onClick }) => {
 
   const onSubmit = (data) => {
     data.logo_url = logo;
-    console.log(data);
     axios
       .post(urlRequest, data, {
         headers: { "Content-Type": "application/json" },
@@ -96,15 +95,13 @@ const SignUp = ({ link, onClick }) => {
         console.log(response.data);
         if (response.status === 201) {
           setUserCreated(true);
-        } else if (response.data === 400) {
-          console.log(response.data.error);
+        } else if (response.status === 400) {
+          console.log(response.data.detail);
+        } else if (response.status === 500){
+          console.log(response.data.detail);
         } else {
-          console.log(response.data.error);
+          console.log(response.data.error)
         }
-
-        /*         response.status === 201
-          ? setUserCreated(true)
-          : console.log(response.data.error); */
       })
       .catch((error) => console.log(error));
   };

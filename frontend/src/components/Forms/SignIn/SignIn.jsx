@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
 
-
 const SignIn = ({ isActive, onClose }) => {
   const {
     register,
@@ -11,30 +10,40 @@ const SignIn = ({ isActive, onClose }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
-  const [userLogged, setUserLogged] = useState(false)
+  const [userLogged, setUserLogged] = useState(false);
 
-  const urlRequest = ""
+  const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/`;
 
   const onSubmit = (data) => {
     axios
       .post(urlRequest, data, {
-        headers: {"Content-Type": "application/json"}
+        headers: { "Content-Type": "application/json" },
       })
       .then((response) => {
-        console.log(response)
-        response.status === 201 ? setUserLogged : console.log(error)
-      })
-      .catch(error => console.log(error))
-      /* considerar los errores que pueden dar el back */
-    console.log(data);
-  }
+        console.log(response);
+        if (response.status === 201) {
+          setUserLogged(true);
 
-/*   useEffect(() => {
+        } else if (response.status === 400) {
+          console.log(response.data.detail);
+        } else if (response.status === 401) {
+          console.log(response.data.detail);
+        } else if (response.status === 500) {
+          console.log(response.data.detail);
+        } else {
+          console.log(response.data.error);
+        }
+      })
+      .catch((error) => console.log(error));
+    console.log(data);
+  };
+
+  /*   useEffect(() => {
     userLogged ? enviar al dashboard correspondiente : mostrar errror
   }, [userLogged])
  */
@@ -75,7 +84,8 @@ const SignIn = ({ isActive, onClose }) => {
                       },
                       maxLength: {
                         value: 90,
-                        message: "El correo electrónico no puede tener más de 90 caracteres",
+                        message:
+                          "El correo electrónico no puede tener más de 90 caracteres",
                       },
                     })}
                   />
@@ -102,8 +112,9 @@ const SignIn = ({ isActive, onClose }) => {
                         message: "Debe tener al menos 8 caracteres",
                       },
                       maxLength: {
-                        value: 8,
-                        message: "La contraseña no puede tener más de 20 caracteres",
+                        value: 20,
+                        message:
+                          "La contraseña no puede tener más de 20 caracteres",
                       },
                     })}
                   />
@@ -115,7 +126,7 @@ const SignIn = ({ isActive, onClose }) => {
                   </label>
                   <ErrorMessage error={errors.password} />
                 </div>
-                <div className="flex items-center justify-between">
+{/*                 <div className="flex items-center justify-between">
                   <label className="flex items-center text-sm text-gray-200">
                     <input
                       className="form-checkbox h-4 w-4 text-[#118A95] bg-gray-800 border-gray-300 rounded"
@@ -123,7 +134,7 @@ const SignIn = ({ isActive, onClose }) => {
                     />
                     <span className="ml-2">Remember me</span>
                   </label>
-                </div>
+                </div> */}
                 <button
                   className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
                   type="submit"
