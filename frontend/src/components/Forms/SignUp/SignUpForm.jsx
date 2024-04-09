@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import FormRequest from "../FormRequest";
 import ErrorMessage from "../ErrorMessage";
 import UploadLogo from "./UploadLogo";
 import SuccessfulNotification from "../SuccessfulNotification";
 
-const SignUp = ({ link, onClick }) => {
+const SignUpForm = ({ link, onClick }) => {
   const {
     register,
     getValues,
@@ -24,8 +24,8 @@ const SignUp = ({ link, onClick }) => {
     },
   });
 
-  const [userCreated, setUserCreated] = useState(false);
   const [logo, setLogo] = useState(null);
+  const [userCreated, setUserCreated] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,8 +40,6 @@ const SignUp = ({ link, onClick }) => {
   function handleShowPassword() {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   }
-
-  const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/shelter/`;
 
   const openEye = (
     <button onClick={handleShowPassword}>
@@ -68,43 +66,22 @@ const SignUp = ({ link, onClick }) => {
   );
 
   const closeEye = (
-  <button onClick={handleShowPassword}>
-    <svg
-      className="h-4 w-4 text-white"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-      />
-    </svg>
-  </button>
+    <button onClick={handleShowPassword}>
+      <svg
+        className="h-4 w-4 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+        />
+      </svg>
+    </button>
   );
-
-  const onSubmit = (data) => {
-    data.logo_url = logo;
-    axios
-      .post(urlRequest, data, {
-        headers: { "Content-Type": "application/json" },
-      })
-      .then((response) => {
-        console.log(response.data);
-        if (response.status === 201) {
-          setUserCreated(true);
-        } else if (response.status === 400) {
-          console.log(response.data.detail);
-        } else if (response.status === 500){
-          console.log(response.data.detail);
-        } else {
-          console.log(response.data.error)
-        }
-      })
-      .catch((error) => console.log(error));
-  };
 
   useEffect(() => {
     if (userCreated) {
@@ -242,7 +219,7 @@ const SignUp = ({ link, onClick }) => {
               className="peer h-10 w-full border-b-2 border-gray-200 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-blue-500"
               id="password"
               name="password"
-              type= {showPassword ? 'text' : 'password'}
+              type={showPassword ? "text" : "password"}
               autoComplete="new-password"
               {...register("password", {
                 required: "Este campo es obligatorio",
@@ -281,19 +258,28 @@ const SignUp = ({ link, onClick }) => {
             >
               Confirmar password
             </label>
-          
+
             <ErrorMessage error={errors.password} />
           </div>
         </div>
         <div className="relative">
           <UploadLogo onImageUpload={handleUploadLogo} />
         </div>
-        <button
-          className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
-          type="submit"
-        >
-          Registro
-        </button>
+        <FormRequest
+          endpoint="/api/v1/shelter/"
+          formData={{
+            name: getValues("name"),
+            responsible: getValues("responsible"),
+            phone_number:  getValues("phone_number"),
+            email: getValues("email"),
+            address:  getValues("address"),
+            password:  getValues("password"),
+            confirm_password: getValues("confirm_password"),
+            logo_url: logo,
+          }}
+          onSuccess={() => setUserCreated(true)}
+          textButton="Registro"
+        />
       </form>
       <div className="text-center text-gray-300">
         Ya estas registrado?
@@ -315,4 +301,4 @@ const SignUp = ({ link, onClick }) => {
   );
 };
 
-export default SignUp;
+export default SignUpForm;
