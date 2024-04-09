@@ -70,7 +70,7 @@ const SignUp = ({ link, onClick }) => {
   const closeEye = (
   <button onClick={handleShowPassword}>
     <svg
-      class="h-4 w-4 text-white"
+      className="h-4 w-4 text-white"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
