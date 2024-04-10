@@ -122,3 +122,20 @@ class ITokenClass(Protocol):
         """
 
         ...
+
+
+class IPetRepository(Protocol):
+    """
+    Interface that defines the methods that a class must implement to be used as a
+    pet repository.
+    """
+
+    def create(cls, data: Dict[str, Any]) -> None:
+        """
+        Insert a new pet into the database.
+
+        Parameters:
+        - data: A dictionary containing the pet data.
+        """
+
+        ...

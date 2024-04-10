@@ -1,4 +1,4 @@
-from apps.users.domain.abstractions import IUserRepository
+from apps.users.domain.abstractions import IUserRepository, IPetRepository
 from typing import Dict, Any
 
 
@@ -25,3 +25,11 @@ class UserRegister:
     def admin_registration(self, data: Dict[str, Any]) -> None:
         del data["confirm_password"]
         self._user_repository.create_admin(data=data)
+
+
+class PetRegister:
+    def __init__(self, pet_repository: IPetRepository):
+        self._pet_repository = pet_repository
+
+    def pet_registration(self, data: Dict[str, Any]) -> None:
+        self._pet_repository.create(data=data)

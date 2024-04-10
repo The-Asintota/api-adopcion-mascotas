@@ -1,2 +1,2 @@
-from .register import UserRegister
+from .register import UserRegister, PetRegister
 from .authentication import Authentication
