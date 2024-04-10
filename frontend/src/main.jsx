@@ -8,6 +8,8 @@ import Adoption from "./pages/Adoption.jsx";
 import Admin from "./pages/Admin.jsx";
 import { AdminProvider } from "./context/admin.jsx";
 import Shelter from "./pages/Shelter.jsx";
+import Page404 from "./pages/404.jsx";
+import Animal from "./pages/Animal.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,14 @@ const router = createBrowserRouter([
   {
     path: "/shelter",
     element: <AdminProvider> <Shelter/> </AdminProvider>
+  },
+  {
+    path: "/animal/:id",
+    element: <Animal />
+  },
+  {
+    path: "*",
+    element: <Page404 />
   }
 ]);
 
