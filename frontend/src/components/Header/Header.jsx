@@ -11,7 +11,7 @@ export default function Header() {
   }
   return (
     <header className="px-8 py-6 text-xs md:text-base">
-      <img src="/images/logo3.jpg" alt="logo sitio" className="w-28 md:w-32" />
+      <img src="/images/logo3.jpg" alt="logo sitio" className="w-24 md:w-32" />
       <nav>
         <Link to="/">Inicio</Link>
         <Link to="/shelters">Protectoras</Link>

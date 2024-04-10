@@ -91,8 +91,8 @@ const SignUpForm = ({ link, onClick }) => {
   }, [userCreated]);
 
   return (
-    <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-8 mt-6">
-      <h2 className="text-center text-4xl font-extrabold text-white">
+    <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-4 md:space-y-8 mt-4 md:mt-6">
+      <h2 className="text-center text-xl md:text-4xl font-extrabold text-white">
         Registra a tu asociacion
       </h2>
       <form
