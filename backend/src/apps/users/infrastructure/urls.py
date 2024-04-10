@@ -3,6 +3,7 @@ from .views import (
     RegisterShelterAPIView,
     AuthenticationAPIView,
     RegisterAdminAPIView,
+    RegisterPetAPIView,
 )
 
 urlpatterns = [
@@ -21,4 +22,9 @@ urlpatterns = [
         view=RegisterAdminAPIView.as_view(),
         name="register_admin",
     ),
+    path(
+        route="pet/",
+        view=RegisterPetAPIView.as_view(),
+        name="register_pet",
+    )
 ]
