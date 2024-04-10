@@ -236,3 +236,69 @@ class JWTBlacklisted(models.Model):
 
     def __str__(self) -> str:
         return f"Blacklisted token for {self.token.user}"
+
+
+class Pet(models.Model):
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
+    type_pet = models.ForeignKey(
+        to="TypePet",
+        to_field="id",
+        db_column="type_pet",
+        on_delete=models.CASCADE,
+    )
+    shelter = models.ForeignKey(
+        to="Shelter",
+        to_field="uuid",
+        db_column="shelter",
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(
+        db_column="name", max_length=50, blank=False, null=False
+    )
+    race = models.CharField(
+        db_column="race", max_length=50, blank=False, null=False
+    )
+    age = models.IntegerField(db_column="age", blank=False, null=False)
+    observations = models.CharField(
+        db_column="observations", max_length=200, default="sin observaciones"
+    )
+    description = models.CharField(
+        db_column="description", max_length=200, default="sin descripciones"
+    )
+    image = models.URLField(
+        db_column="image",
+        max_length=200,
+        unique=True,
+        default="https://imagedefault.com",
+    )
+    date_joined = models.DateTimeField(
+        db_column="date joined", auto_now_add=True
+    )
+
+    class Meta:
+        db_table = "pets"
+        verbose_name = "Pet"
+        verbose_name_plural = "Pets"
+        ordering = ["-date_joined"]
+
+    def __str__(self) -> str:
+        return f"Pet {self.name} from Shelter {self.shelter.name}"
+
+
+class TypePet(models.Model):
+    id = models.BigAutoField(db_column="id", primary_key=True)
+    name = models.CharField(
+        db_column="name", max_length=50, blank=False, null=False
+    )
+    date_joined = models.DateTimeField(
+        db_column="date joined", auto_now_add=True
+    )
+
+    class Meta:
+        db_table = "type_pet"
+        verbose_name = "TypePet"
+        verbose_name_plural = "TypePets"
+        ordering = ["-date_joined"]
+
+    def __str__(self) -> str:
+        return f"Pet of type {self.name}"
