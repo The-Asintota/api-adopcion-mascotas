@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
+import FormRequest from "../FormRequest";
 
 const SignIn = ({ isActive, onClose }) => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -19,34 +21,38 @@ const SignIn = ({ isActive, onClose }) => {
 
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/`;
 
+  const token = localStorage.getItem('token');
+
   const onSubmit = (data) => {
     axios
       .post(urlRequest, data, {
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${token}`
+      },
       })
       .then((response) => {
-        console.log(response);
-        if (response.status === 201) {
+        if (response.status === 200) {
           setUserLogged(true);
-
         } else if (response.status === 400) {
-          console.log(response.data.detail);
+          console.log(response.data);
         } else if (response.status === 401) {
-          console.log(response.data.detail);
+          console.log(response.data);
         } else if (response.status === 500) {
-          console.log(response.data.detail);
+          console.log(response.data);
         } else {
           console.log(response.data.error);
         }
       })
       .catch((error) => console.log(error));
-    console.log(data);
   };
 
-  /*   useEffect(() => {
-    userLogged ? enviar al dashboard correspondiente : mostrar errror
+    useEffect(() => {
+    if (userLogged) {
+      console.log("user logged")
+    }
   }, [userLogged])
- */
+
   return (
     <>
       {isActive && (
@@ -65,7 +71,7 @@ const SignIn = ({ isActive, onClose }) => {
               </h2>
               <form
                 method="POST"
-                onSubmit={handleSubmit(onSubmit)}
+                /* onSubmit={handleSubmit(onSubmit)} */
                 className="space-y-6"
               >
                 <div className="relative">
@@ -126,21 +132,18 @@ const SignIn = ({ isActive, onClose }) => {
                   </label>
                   <ErrorMessage error={errors.password} />
                 </div>
-{/*                 <div className="flex items-center justify-between">
-                  <label className="flex items-center text-sm text-gray-200">
-                    <input
-                      className="form-checkbox h-4 w-4 text-[#118A95] bg-gray-800 border-gray-300 rounded"
-                      type="checkbox"
-                    />
-                    <span className="ml-2">Remember me</span>
-                  </label>
-                </div> */}
                 <button
                   className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
                   type="submit"
                 >
                   Iniciar sesion
                 </button>
+{/*                 <FormRequest
+                  endpoint={"/api/v1/auth/"}
+                  formData={getValues()}
+                  onSuccess={() => setUserLogged(true)}
+                  textButton="Iniciar Sesion"
+                /> */}
               </form>
             </div>
           </div>
