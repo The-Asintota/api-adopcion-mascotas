@@ -1,0 +1,46 @@
+.animal-main {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    background-color: var(--green);
+
+}
+
+.animal {
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  color: var(--white);
+}
+
+.animal-parrafo {
+  padding: 0;
+}
+
+.animal-image {
+  width: 100%;
+  height: auto;
+}
+
+.animal-button {
+    background-color: var(--white);
+    color: var(--green);
+    padding: 10px 50px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.animal-info {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  article {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
