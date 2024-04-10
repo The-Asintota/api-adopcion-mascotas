@@ -9,7 +9,7 @@ from apps.exceptions import DatabaseConnectionError, UserNotFoundError
 class UserRepository(IUserRepository):
     """
     UserRepository is a class that provides an abstraction of the database
-    operations for the `User` and `Shelter` models.
+    operations for the `User` , `Shelter` and `Admin` models.
     """
 
     @classmethod
