@@ -1,5 +1,9 @@
 from django.urls import path
-from .views import RegisterShelterAPIView, AuthenticationAPIView
+from .views import (
+    RegisterShelterAPIView,
+    AuthenticationAPIView,
+    RegisterAdminAPIView,
+)
 
 urlpatterns = [
     path(
@@ -11,5 +15,10 @@ urlpatterns = [
         route="auth/",
         view=AuthenticationAPIView.as_view(),
         name="authentication",
+    ),
+    path(
+        route="admin/",
+        view=RegisterAdminAPIView.as_view(),
+        name="register_admin",
     ),
 ]
