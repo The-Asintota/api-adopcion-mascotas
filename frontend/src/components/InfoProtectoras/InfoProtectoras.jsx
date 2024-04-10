@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import SignIn from "../Forms/SignIn/SignIn";
-import SignUp from "../Forms/SignUp/SignUp";
+import SignUpForm from "../Forms/SignUp/SignUpForm";
 import "./InfoProtectoras.css";
 
 const InfoProtectoras = () => {
@@ -60,7 +60,7 @@ const InfoProtectoras = () => {
         amantes de los animales!
       </p>
       <div className="flex items-center justify-center">
-        <SignUp onClick={handleShowSignIn}/>
+        <SignUpForm onClick={handleShowSignIn}/>
       </div>
       <SignIn isActive={showSignIn} onClose={() => setShowSignIn(false)}/>
     </section>
