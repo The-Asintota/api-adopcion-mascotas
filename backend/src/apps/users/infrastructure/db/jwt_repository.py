@@ -4,7 +4,7 @@ from django.db import OperationalError
 from apps.users.infrastructure.utils import decode_jwt
 from apps.users.domain.typing import JWToken
 from apps.users.models import BaseUser, JWT, JWTBlacklist
-from apps.exceptions import JWTNotFoundError, DatabaseConnectionError
+from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
 
 
 class JWTRepository:
@@ -35,7 +35,11 @@ class JWTRepository:
         Retrieve a JWT from the database based on the provided filters.
 
         Parameters:
-        - filters: Keyword arguments that define the filters to apply.
+            - filters: Keyword arguments that define the filters to apply.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
+            - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         try:
@@ -48,9 +52,9 @@ class JWTRepository:
             raise DatabaseConnectionError()
 
         if not token:
-            raise JWTNotFoundError(
+            raise ResourceNotFoundError(
                 code="token_not_found",
-                detail=f'Token {filters.get("token", "")} not found.',
+                detail="JSON Web Token not found.",
             )
 
         return token
@@ -64,8 +68,11 @@ class JWTRepository:
         users, and which tokens created are pending expiration or invalidation.
 
         Parameters:
-        - token: A JWToken.
-        - user: An instance of the BaseUser model.
+            - token: A JWToken.
+            - user: An instance of the BaseUser model.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         payload = decode_jwt(token=token)
@@ -91,7 +98,10 @@ class JWTRepository:
         purposes until it is removed from the blacklist or has expired.
 
         Parameters:
-        - token: An instance of the `JWT` model.
+            - token: An instance of the `JWT` model.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         try:

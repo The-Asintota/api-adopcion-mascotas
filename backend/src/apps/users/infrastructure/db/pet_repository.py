@@ -21,6 +21,9 @@ class PetRepository:
     def _get_type_pet(cls, type_pet: str) -> TypePet:
         """
         Method responsible for retrieving the pet type from the database.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         try:
@@ -38,7 +41,10 @@ class PetRepository:
         Insert a new pet into the database.
 
         Parameters:
-        - data: A dictionary containing the pet data.
+            - data: A dictionary containing the pet data.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         type_pet = data.pop("type_pet")
@@ -63,7 +69,11 @@ class PetRepository:
         Retrieve a pet from the database based on the provided filters.
 
         Parameters:
-        - filters: Keyword arguments that define the filters to apply.
+            - filters: Keyword arguments that define the filters to apply.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
+            - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         query_params = Q()
@@ -97,11 +107,11 @@ class PetRepository:
 
         if not pet:
             raise ResourceNotFoundError(
+                code="pet_not_found",
                 detail={
                     "message": "pet with the following filters not found.",
                     "filters": filters,
                 },
-                code="pet_not_found",
             )
 
         return pet

@@ -24,6 +24,9 @@ class UserRepository:
     def _create_base_user(cls, email: str, password: str) -> BaseUser:
         """
         Inserts a new user into the database.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         try:
@@ -45,7 +48,10 @@ class UserRepository:
         Insert a new shelter into the database.
 
         Parameters:
-        - data: A dictionary containing the shelter data.
+            - data: A dictionary containing the shelter data.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         base_user = cls._create_base_user(
@@ -68,6 +74,10 @@ class UserRepository:
     def get_shelter(cls, **filters) -> Shelter:
         """
         Retrieve a shelter from the database based on the provided filters.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
+            - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         query_params = Q()
@@ -95,11 +105,11 @@ class UserRepository:
 
         if not shelter:
             raise ResourceNotFoundError(
+                code="shelter_not_found",
                 detail={
                     "message": "shelter with the following filters not found.",
                     "filters": filters,
                 },
-                code="shelter_not_found",
             )
 
         return shelter
@@ -110,7 +120,10 @@ class UserRepository:
         Insert a new admin into the database.
 
         Parameters:
-        - data: A dictionary containing the admin data.
+            - data: A dictionary containing the admin data.
+
+        Raises:
+            - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         base_user = cls._create_base_user(
