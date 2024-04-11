@@ -33,8 +33,8 @@ class ShelterAdminPanel(admin.ModelAdmin):
     """
 
     list_display = (
-        "uuid",
-        "user",
+        "shelter_uuid",
+        "base_user",
         "name",
         "address",
         "phone_number",
@@ -43,8 +43,8 @@ class ShelterAdminPanel(admin.ModelAdmin):
         "data_joined",
     )
     search_fields = (
-        "uuid",
-        "user",
+        "shelter_uuid",
+        "base_user",
         "data_joined",
     )
 

@@ -26,5 +26,5 @@ urlpatterns = [
         route="pet/",
         view=RegisterPetAPIView.as_view(),
         name="register_pet",
-    )
+    ),
 ]

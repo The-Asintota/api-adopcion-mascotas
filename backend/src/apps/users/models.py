@@ -116,9 +116,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Shelter(models.Model):
-    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
-    user = models.OneToOneField(
-        to="User", to_field="uuid", db_column="user", on_delete=models.CASCADE
+    shelter_uuid = models.UUIDField(
+        db_column="shelter_uuid", primary_key=True, default=uuid4
+    )
+    base_user = models.OneToOneField(
+        to="User",
+        to_field="uuid",
+        db_column="base_user",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     name = models.CharField(
         db_column="name", max_length=50, blank=False, null=False
@@ -150,9 +157,16 @@ class Shelter(models.Model):
 
 
 class Admin(models.Model):
-    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
-    user = models.OneToOneField(
-        to="User", to_field="uuid", db_column="user", on_delete=models.CASCADE
+    admin_uuid = models.UUIDField(
+        db_column="admin_uuid", primary_key=True, default=uuid4
+    )
+    base_user = models.OneToOneField(
+        to="User",
+        to_field="uuid",
+        db_column="base_user",
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
     )
     name = models.CharField(
         db_column="name", max_length=50, blank=False, null=False
@@ -165,7 +179,7 @@ class Admin(models.Model):
         db_table = "admins"
         verbose_name = "Admin"
         verbose_name_plural = "Admins"
-        ordering = ["-user__date_joined"]
+        ordering = ["-base_user__date_joined"]
 
 
 class JWT(models.Model):
@@ -248,7 +262,7 @@ class Pet(models.Model):
     )
     shelter = models.ForeignKey(
         to="Shelter",
-        to_field="uuid",
+        to_field="shelter_uuid",
         db_column="shelter",
         on_delete=models.CASCADE,
     )
@@ -268,7 +282,6 @@ class Pet(models.Model):
     image = models.URLField(
         db_column="image",
         max_length=200,
-        unique=True,
         default="https://imagedefault.com",
     )
     date_joined = models.DateTimeField(

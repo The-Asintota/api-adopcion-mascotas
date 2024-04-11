@@ -39,12 +39,12 @@ class UserRepository(IUserRepository):
         - data: A dictionary containing the shelter data.
         """
 
-        user = cls._create_user(email=data["email"], password=data["password"])
+        base_user = cls._create_user(email=data["email"], password=data["password"])
         del data["email"]
         del data["password"]
         try:
             cls.model_shelter.objects.create(
-                user=user,
+                base_user=base_user,
                 **data,
             )
         except OperationalError:
@@ -64,12 +64,12 @@ class UserRepository(IUserRepository):
         ]
         for field, value in filters.items():
             if field in fields_user_model:
-                query &= Q(**{f"user__{field}": value})
+                query &= Q(**{f"base_user__{field}": value})
             else:
                 query &= Q(**{field: value})
         try:
             shelter = (
-                cls.model_shelter.objects.select_related("user")
+                cls.model_shelter.objects.select_related("base_user")
                 .filter(query)
                 .first()
             )

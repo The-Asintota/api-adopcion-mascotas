@@ -1,7 +1,7 @@
-from rest_framework import serializers
 from django.core.validators import (
     MaxLengthValidator,
 )
+from rest_framework import serializers
 
 
 class ErrorMessages(serializers.Serializer):
@@ -37,6 +37,17 @@ class RegisterPetSerializer(ErrorMessages):
             ),
         ],
     )
+    type_pet = serializers.ChoiceField(
+        required=True,
+        error_messages={
+            "invalid_choice": "{input} no es una elección válida."
+        },
+        choices=["Perro", "Gato"],
+    )
+    shelter_uuid = serializers.UUIDField(
+        required=True,
+        error_messages={"invalid": "{input} is not a valid UUID."},
+    )
     race = serializers.CharField(
         required=True,
         validators=[
@@ -47,13 +58,14 @@ class RegisterPetSerializer(ErrorMessages):
         ],
     )
     age = serializers.IntegerField(
+        error_messages={
+            "max_value": "Asegúrate que este valor sea menor o igual a {max_value}.",
+            "min_value": "Asegúrate que este valor sea mayor o igual a {min_value}.",
+            "invalid": "Se requiere un número entero válido.",
+        },
         required=True,
-        validators=[
-            MaxLengthValidator(
-                limit_value=2,
-                message="La edad no puede tener más de 2 caracteres.",
-            ),
-        ],
+        max_value=99,
+        min_value=1,
     )
     observations = serializers.CharField(
         required=False,
@@ -79,22 +91,6 @@ class RegisterPetSerializer(ErrorMessages):
             MaxLengthValidator(
                 limit_value=200,
                 message="Supera el máximo de caracteres permitidos.",
-            ),
-        ],
-    )
-
-
-class TypePetSerializer(ErrorMessages):
-    """
-    Defines the data required to register a pet in the system.
-    """
-
-    name = serializers.CharField(
-        required=True,
-        validators=[
-            MaxLengthValidator(
-                limit_value=50,
-                message="El nombre no puede tener más de 50 caracteres.",
             ),
         ],
     )
