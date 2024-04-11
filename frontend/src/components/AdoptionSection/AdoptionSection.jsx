@@ -7,7 +7,7 @@ import SearchAnimal from "../SearchAnimal/SearchAnimal";
 const AdoptionSection = () => {
   const { animals, handleSearch } = useSearch()
 
-  function handlePetRequest({ id = 1 }) {
+  function handlePetRequest({ id }) {
     window.location.href = `/animal/${id}`
   }
   
@@ -19,7 +19,7 @@ const AdoptionSection = () => {
         {animals.map(({ id, urlImage, petName, age, bread, size, description, observations }) => (
           <AdoptionCard 
             key={id}
-            onClick={handlePetRequest}
+            onClick={() => handlePetRequest({ id })}
             urlImage={urlImage}
             petName={petName}
             age={age}
