@@ -11,14 +11,8 @@ class Authentication:
     """
     Use case that is responsible for authenticating the user.
 
-    This class is responsible for managing the process of authenticating the user.
-    Interacts with `JWTRepository` and `TokenClass`, this dependency is injected at
-    the point of use.
-
-    Attributes:
-    - jwt_repository: An instance of a class implementing the `IJWTRepository`
-    interface.
-    - jwt_class: A class that is used to generate access and refresh tokens.
+    This class interacts with instances of classes implementing the `ITokenClass` and
+    `IJWTRepository` interfaces, which are injected at the point of use.
     """
 
     def __init__(
@@ -30,6 +24,13 @@ class Authentication:
     def _generate_tokens(
         self, user: BaseUser
     ) -> Tuple[AccessToken, RefreshToken]:
+        """
+        Generates access and refresh tokens for a given user.
+
+        Parameters:
+            - user: An instance of the BaseUser model.
+        """
+
         refresh = self._jwt_class.get_token(user=user)
         access = refresh.access_token
 
@@ -39,8 +40,15 @@ class Authentication:
         self, credentials: Dict[str, str]
     ) -> Dict[str, JWToken]:
         """
-        Authenticate a user with the given credentials and return access and refresh
+        Authenticates a user with the given credentials and returns access and refresh
         tokens.
+
+        Parameters:
+            - credentials: A dictionary containing the user's credentials.
+
+        Raises:
+            - AuthenticationFailed: If the authentication process fails.
+            - UserInactiveError: If the user is inactive.
         """
 
         user = authenticate(**credentials)
