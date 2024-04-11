@@ -12,6 +12,106 @@ info:
     name: MIT License
     url: https://opensource.org/licenses/MIT
 paths:
+  /api/v1/admin/:
+    post:
+      operationId: v1_admin_create
+      description: |-
+        Handle POST requests for admin registration.
+
+        This method allows the registration of a new admin. It waits for a POST
+        request with a admin's data, validates the information, and then creates
+        a new record if the data is valid or returns an error response if it is not.
+      tags:
+      - Admins
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterAdminRequest'
+            examples:
+              DataValid:
+                value:
+                  email: admin1@example.com
+                  password: contraseña1234
+                  confirm_password: contraseña1234
+                  name: Admin de la plataforma
+                summary: Register a new user
+                description: |-
+                  A valid admin registration data. The following validations will be applied:
+                  - *Email:* Must be in a valid email format, no longer than 90 characters and not in use.
+                  - *Password:* Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
+                  - *Confirm Password:* Must match the password.
+                  - *Name:* Must not be longer than 50 characters.
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterAdminRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterAdminRequest'
+        required: true
+      responses:
+        '201':
+          description: '**(CREATED)** The admin was created successfully.'
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: object
+              examples:
+                EmailInvalid:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      email:
+                      - Correo electrónico inválido.
+                      - El correo electrónico no puede tener más de 90 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      password:
+                      - La contraseña debe tener al menos 8 caracteres.
+                      - La contraseña no puede tener más de 20 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      name:
+                      - El nombre no puede tener más de 50 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                  summary: Invalid request data
+                  description: These are all the basic error messages for each field,
+                    in this example you can see how the messages will be sent. In
+                    a real use case, the error message for the validation or validations
+                    that have failed will be displayed.
+                PasswordMismatch:
+                  value:
+                    code: password_mismatch
+                    detail: Las contraseñas no coinciden.
+                  summary: Passwords do not match
+                  description: The passwords do not match.
+          description: '**(BAD_REQUEST)**'
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: string
+              examples:
+                InternalServerError:
+                  value:
+                    code: internal_server_error
+                    detail: Internal server error.
+                  summary: Internal server error
+                  description: An internal server error occurred.
+          description: '**(INTERNAL_SERVER_ERROR)**'
   /api/v1/auth/:
     post:
       operationId: v1_auth_create
@@ -136,6 +236,114 @@ paths:
                     to the database. In this example you can see how the information
                     will be represented.
           description: '**(INTERNAL_SERVER_ERROR)** An unexpected error occurred.'
+  /api/v1/pet/:
+    post:
+      operationId: v1_pet_create
+      description: |-
+        Handle POST requests for pet registration.
+
+        This method allows the registration of a new pet. It waits for a POST
+        request with a pet's data, validates the information, and then creates
+        a new record if the data is valid or returns an error response if it is not.
+      tags:
+      - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterPetRequest'
+            examples:
+              DataValid:
+                value:
+                  name: Hector
+                  type_pet: Perro
+                  shelter_uuid: 58774f38-96f3-4550-a212-d35923c5bf9e
+                  race: Pastor alemán
+                  age: 2
+                  observations: Cachorro muy juguetón.
+                  description: Cachorro muy juguetón.
+                  image: https://example.com/image.png
+                summary: Register a new user
+                description: A valid pet registration data.
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterPetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterPetRequest'
+        required: true
+      responses:
+        '201':
+          description: '**CREATED** The pet was created successfully.'
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: object
+              examples:
+                InvalidRequestData:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      name:
+                      - El nombre no puede tener más de 50 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      type_pet:
+                      - Loro no es una elección válida.
+                      - El tipo de mascota no puede tener más de 20 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      shelter_uuid:
+                      - 58774f38-96f3-4550-a212-d35923c5bf9e is not a valid UUID.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      age:
+                      - Se requiere un número entero válido.
+                      - Asegúrate que este valor sea menor o igual a 99.
+                      - Asegúrate que este valor sea mayor o igual a 1.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      observations:
+                      - La observación no puede tener más de 200 caracteres.
+                      description:
+                      - La observación no puede tener más de 200 caracteres.
+                      image:
+                      - Supera el máximo de caracteres permitidos.
+                  summary: Invalid request data
+                  description: These are all the basic error messages for each field,
+                    in this example you can see how the messages will be sent. In
+                    a real use case, the error message for the validation or validations
+                    that have failed will be displayed.
+          description: '**(BAD_REQUEST)**'
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: string
+              examples:
+                DatabaseConnectionError:
+                  value:
+                    code: database_connection_error
+                    detail: Unable to establish a connection with the database. Please
+                      try again later.
+                  summary: Database connection error
+                  description: This error message is used when the API cannot connect
+                    to the database. In this example you can see how the information
+                    will be represented.
+          description: '**INTERNAL_SERVER_ERROR**'
   /api/v1/shelter/:
     post:
       operationId: v1_shelter_create
@@ -303,6 +511,73 @@ components:
       required:
       - email
       - password
+    RegisterAdminRequest:
+      type: object
+      description: Defines the data required to register a admin in the system.
+      properties:
+        email:
+          type: string
+          minLength: 1
+          pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
+          maxLength: 90
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 20
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+      required:
+      - confirm_password
+      - email
+      - name
+      - password
+    RegisterPetRequest:
+      type: object
+      description: Defines the data required to register a pet in the system.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        type_pet:
+          $ref: '#/components/schemas/TypePetEnum'
+        shelter_uuid:
+          type: string
+          format: uuid
+        race:
+          type: string
+          minLength: 1
+          maxLength: 50
+        age:
+          type: integer
+          maximum: 99
+          minimum: 1
+        observations:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+          maxLength: 200
+        image:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+      required:
+      - age
+      - name
+      - race
+      - shelter_uuid
+      - type_pet
     RegisterShelterRequest:
       type: object
       description: Defines the data required to register a shelter in the system.
@@ -350,6 +625,14 @@ components:
       - password
       - phone_number
       - responsible
+    TypePetEnum:
+      enum:
+      - Perro
+      - Gato
+      type: string
+      description: |-
+        * `Perro` - Perro
+        * `Gato` - Gato
 tags:
 - name: Users
   description: It comprises all the endpoints that manage all the functionality related

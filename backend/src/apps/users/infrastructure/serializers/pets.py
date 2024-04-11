@@ -2,6 +2,7 @@ from django.core.validators import (
     MaxLengthValidator,
 )
 from rest_framework import serializers
+from apps.users.endpoint_schemas.register_pet import SerializerSchema
 
 
 class ErrorMessages(serializers.Serializer):
@@ -23,6 +24,7 @@ class ErrorMessages(serializers.Serializer):
             self.fields[field_name].error_messages.update(msg)
 
 
+@SerializerSchema
 class RegisterPetSerializer(ErrorMessages):
     """
     Defines the data required to register a pet in the system.
