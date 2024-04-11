@@ -24,9 +24,6 @@ const AdoptionSection = () => {
             petName={petName}
             age={age}
             breed={bread}
-            size={size}
-            description={description}
-            observations={observations}
           />
         )) }
 
