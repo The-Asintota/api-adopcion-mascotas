@@ -6,43 +6,53 @@ from drf_spectacular.utils import (
 )
 
 
-APISchema = extend_schema(
-    tags=["Admins"],
+GetEndPointSchema = extend_schema(
+    tags=["Administrators"],
     responses={
         201: OpenApiResponse(
-            description="**(CREATED)** The admin was created successfully.",
+            description="**CREATED** The admin was created successfully.",
         ),
         400: OpenApiResponse(
-            description="**(BAD_REQUEST)**",
+            description="**BAD_REQUEST**",
             response={
                 "properties": {
                     "code": {"type": "string"},
-                    "detail": {"type": "object"},
+                    "detail": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                            },
+                        },
+                    },
                 }
             },
             examples=[
                 OpenApiExample(
-                    name="email_invalid",
+                    name="invalid_request_data1",
                     summary="Invalid request data",
                     description="These are all the basic error messages for each field, in this example you can see how the messages will be sent. In a real use case, the error message for the validation or validations that have failed will be displayed.",
                     value={
                         "code": "invalid_request_data",
                         "detail": {
                             "email": [
-                                "Correo electrónico inválido.",
-                                "El correo electrónico no puede tener más de 90 caracteres.",
+                                "El correo electrónico es inválido.",
+                                "El correo electrónico no puede tener más de 40 caracteres.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
                             "password": [
-                                "La contraseña debe tener al menos 8 caracteres.",
-                                "La contraseña no puede tener más de 20 caracteres.",
+                                "La contraseña no puede tener más de 20 caracteres."
+                                "La contraseña debe tener al menos8 caracteres.",
+                                "La contraseña debe contener al menos una mayuscula o una minuscula.",
+                                "Esta contraseña es demasiado común."
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "name": [
+                            "admin_name": [
                                 "El nombre no puede tener más de 50 caracteres.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
@@ -52,32 +62,49 @@ APISchema = extend_schema(
                     },
                 ),
                 OpenApiExample(
-                    name="password_mismatch",
+                    name="passwords_not_match",
                     summary="Passwords do not match",
-                    description="The passwords do not match.",
+                    description="This error message is used when the passwords do not match. In this example you can see how the information will be represented.",
                     value={
-                        "code": "password_mismatch",
-                        "detail": "Las contraseñas no coinciden.",
+                        "code": "invalid_request_data2",
+                        "detail": {
+                            "non_field_errors": [
+                                "Las contraseñas no coinciden."
+                            ]
+                        },
+                    },
+                ),
+                OpenApiExample(
+                    name="invalid_request_data3",
+                    summary="Email already in use",
+                    description="This error message is used when the email is already in use. In this example you can see how the information will be represented.",
+                    value={
+                        "code": "invalid_request_data",
+                        "detail": {
+                            "email": [
+                                "Este correo electrónico ya está en uso.",
+                            ]
+                        },
                     },
                 ),
             ],
         ),
         500: OpenApiResponse(
-            description="**(INTERNAL_SERVER_ERROR)**",
+            description="**INTERNAL_SERVER_ERROR**",
             response={
                 "properties": {
-                    "code": {"type": "string"},
                     "detail": {"type": "string"},
+                    "code": {"type": "string"},
                 }
             },
             examples=[
                 OpenApiExample(
-                    name="internal_server_error",
-                    summary="Internal server error",
-                    description="An internal server error occurred.",
+                    name="database_connection_error",
+                    summary="Database connection error",
+                    description="This error message is used when the API cannot connect to the database. In this example you can see how the information will be represented.",
                     value={
-                        "code": "internal_server_error",
-                        "detail": "Internal server error.",
+                        "code": "database_connection_error",
+                        "detail": "Unable to establish a connection with the database. Please try again later.",
                     },
                 ),
             ],
@@ -86,17 +113,17 @@ APISchema = extend_schema(
 )
 
 
-SerializerSchema = extend_schema_serializer(
+GetSerializerSchema = extend_schema_serializer(
     examples=[
         OpenApiExample(
             name="data_valid",
-            summary="Register a new user",
-            description="A valid admin registration data. The following validations will be applied:\n- *Email:* Must be in a valid email format, no longer than 90 characters and not in use.\n- *Password:* Must be at least 8 characters, not more than 20 characters, and not a common or simple password.\n- *Confirm Password:* Must match the password.\n- *Name:* Must not be longer than 50 characters.",
+            summary="Administrator user registration data.",
+            description="A valid admin registration data. The following validations will be applied:\n- **email:** Must be in a valid email format, no longer than 40 characters and not in use.\n- **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.\n- **confirm_password:** Must match the password.\n- **admin_name:** Must not be longer than 50 characters.",
             value={
                 "email": "admin1@example.com",
                 "password": "contraseña1234",
                 "confirm_password": "contraseña1234",
-                "name": "Admin de la plataforma",
+                "admin_name": "Admin de la plataforma",
             },
             request_only=True,
         ),

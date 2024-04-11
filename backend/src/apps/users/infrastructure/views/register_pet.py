@@ -6,7 +6,7 @@ from typing import Dict, Any
 from apps.users.infrastructure.serializers import RegisterPetSerializer
 from apps.users.infrastructure.db import PetRepository
 from apps.users.use_case import PetRegister
-from apps.users.endpoint_schemas.register_pet import APISchema
+from apps.users.endpoint_schemas.register_pet import GetEndPointSchema
 
 
 class RegisterPetAPIView(generics.GenericAPIView):
@@ -38,7 +38,7 @@ class RegisterPetAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
-    @APISchema
+    @GetEndPointSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for pet registration.

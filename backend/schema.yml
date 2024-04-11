@@ -22,7 +22,7 @@ paths:
         request with a admin's data, validates the information, and then creates
         a new record if the data is valid or returns an error response if it is not.
       tags:
-      - Admins
+      - Administrators
       requestBody:
         content:
           application/json:
@@ -34,14 +34,14 @@ paths:
                   email: admin1@example.com
                   password: contraseña1234
                   confirm_password: contraseña1234
-                  name: Admin de la plataforma
-                summary: Register a new user
+                  admin_name: Admin de la plataforma
+                summary: Administrator user registration data.
                 description: |-
                   A valid admin registration data. The following validations will be applied:
-                  - *Email:* Must be in a valid email format, no longer than 90 characters and not in use.
-                  - *Password:* Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
-                  - *Confirm Password:* Must match the password.
-                  - *Name:* Must not be longer than 50 characters.
+                  - **email:** Must be in a valid email format, no longer than 40 characters and not in use.
+                  - **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
+                  - **confirm_password:** Must match the password.
+                  - **admin_name:** Must not be longer than 50 characters.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegisterAdminRequest'
@@ -51,7 +51,7 @@ paths:
         required: true
       responses:
         '201':
-          description: '**(CREATED)** The admin was created successfully.'
+          description: '**CREATED** The admin was created successfully.'
         '400':
           content:
             application/json:
@@ -61,24 +61,30 @@ paths:
                     type: string
                   detail:
                     type: object
+                    properties:
+                      field:
+                        type: array
+                        items:
+                          type: string
               examples:
-                EmailInvalid:
+                InvalidRequestData1:
                   value:
                     code: invalid_request_data
                     detail:
                       email:
-                      - Correo electrónico inválido.
-                      - El correo electrónico no puede tener más de 90 caracteres.
+                      - El correo electrónico es inválido.
+                      - El correo electrónico no puede tener más de 40 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       password:
-                      - La contraseña debe tener al menos 8 caracteres.
-                      - La contraseña no puede tener más de 20 caracteres.
-                      - Este campo es requerido.
+                      - La contraseña no puede tener más de 20 caracteres.La contraseña
+                        debe tener al menos8 caracteres.
+                      - La contraseña debe contener al menos una mayuscula o una minuscula.
+                      - Esta contraseña es demasiado común.Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      name:
+                      admin_name:
                       - El nombre no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
@@ -88,30 +94,47 @@ paths:
                     in this example you can see how the messages will be sent. In
                     a real use case, the error message for the validation or validations
                     that have failed will be displayed.
-                PasswordMismatch:
+                PasswordsNotMatch:
                   value:
-                    code: password_mismatch
-                    detail: Las contraseñas no coinciden.
+                    code: invalid_request_data2
+                    detail:
+                      non_field_errors:
+                      - Las contraseñas no coinciden.
                   summary: Passwords do not match
-                  description: The passwords do not match.
-          description: '**(BAD_REQUEST)**'
+                  description: This error message is used when the passwords do not
+                    match. In this example you can see how the information will be
+                    represented.
+                InvalidRequestData3:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      email:
+                      - Este correo electrónico ya está en uso.
+                  summary: Email already in use
+                  description: This error message is used when the email is already
+                    in use. In this example you can see how the information will be
+                    represented.
+          description: '**BAD_REQUEST**'
         '500':
           content:
             application/json:
               schema:
                 properties:
-                  code:
-                    type: string
                   detail:
                     type: string
+                  code:
+                    type: string
               examples:
-                InternalServerError:
+                DatabaseConnectionError:
                   value:
-                    code: internal_server_error
-                    detail: Internal server error.
-                  summary: Internal server error
-                  description: An internal server error occurred.
-          description: '**(INTERNAL_SERVER_ERROR)**'
+                    code: database_connection_error
+                    detail: Unable to establish a connection with the database. Please
+                      try again later.
+                  summary: Database connection error
+                  description: This error message is used when the API cannot connect
+                    to the database. In this example you can see how the information
+                    will be represented.
+          description: '**INTERNAL_SERVER_ERROR**'
   /api/v1/auth/:
     post:
       operationId: v1_auth_create
@@ -123,7 +146,7 @@ paths:
         response with the authentication tokens if the data is valid or returns an
         error response if it is not.
       tags:
-      - Users
+      - JSON Web Token
       requestBody:
         content:
           application/json:
@@ -133,12 +156,12 @@ paths:
               DataValid:
                 value:
                   email: user1@example.com
-                  password: Aaa123456789
-                summary: User authentication
+                  password: contraseña1234
+                summary: User authentication data.
                 description: |-
                   Valid credentials for a user. The following validations will be applied:
-                  - **Email:** Must be in a valid email format and no longer than 90 characters.
-                  - **Password:** Must be at least 8 characters and not more than 20 characters.
+                  - **email:** Must be in a valid email format and no longer than 40 characters.
+                  - **password:** Must be at least 8 characters and not more than 20 characters.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/AuthenticationRequest'
@@ -154,13 +177,17 @@ paths:
                 properties:
                   access:
                     type: string
+                  refresh:
+                    type: string
               examples:
                 ResponseOk:
                   value:
                     access: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMDU0MzYyLCJpYXQiOjE3MTEwNDcxNjIsImp0aSI6IjY0MTE2YzgyYjhmMDQzOWJhNTJkZGZmMzgyNzQ2ZTIwIiwidXNlcl9pZCI6IjJhNmI0NTNiLWZhMmItNDMxOC05YzM1LWIwZTk2ZTg5NGI2MyJ9.gfhWpy5rYY6P3Xrg0usS6j1KhEvF1HqWMiU7AaFkp9A
+                    refresh: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTEzMzU2MiwiaWF0IjoxNzExMDQ3MTYyLCJqdGkiOiI2ZTRmNTdkMGJjNTc0NWY0OWMzODg4YjQ2YTM1OTJjNSIsInVzZXJfaWQiOiIyYTZiNDUzYi1mYTJiLTQzMTgtOWMzNS1iMGU5NmU4OTRiNjMifQ.81pQ3WftFZs5O50vGqwY2a6yPkXArQK6WKyrwus3s6A
                   summary: Valid request
-                  description: Authenticated user.
-          description: '**(OK)** Authenticated user.'
+                  description: Authenticated user, the response will contain the access
+                    and refresh tokens.
+          description: '**OK**'
         '400':
           content:
             application/json:
@@ -170,29 +197,34 @@ paths:
                     type: string
                   detail:
                     type: object
+                    properties:
+                      field:
+                        type: array
+                        items:
+                          type: string
               examples:
                 DataInvalid:
                   value:
                     code: invalid_request_data
                     detail:
                       email:
-                      - Correo electrónico inválido.
-                      - El correo electrónico no puede tener más de 90 caracteres.
-                      - This field is required.
-                      - This field may not be blank.
-                      - This field may not be null.
+                      - El correo electrónico es inválido.
+                      - El correo electrónico no puede tener más de 40 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
                       password:
-                      - La contraseña debe tener al menos 8 caracteres.
-                      - La contraseña no puede tener más de 20 caracteres.
-                      - This field is required.
-                      - This field may not be blank.
-                      - This field may not be null.
+                      - La contraseña no puede tener más de 20 caracteres.La contraseña
+                        debe tener al menos8 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
                   summary: Invalid request data
                   description: These are all the basic error messages for each field,
                     in this example you can see how the messages will be sent. In
                     a real use case, the error message for the validation or validations
                     that have failed will be displayed.
-          description: '**(BAD_REQUEST)**'
+          description: '**BAD_REQUEST**'
         '401':
           content:
             application/json:
@@ -215,7 +247,7 @@ paths:
                     detail: Cuenta del usuario inactiva.
                   summary: User inactive
                   description: The user's account is inactive.
-          description: '**(UNAUTHORIZED)**'
+          description: '**UNAUTHORIZED**'
         '500':
           content:
             application/json:
@@ -235,7 +267,7 @@ paths:
                   description: This error message is used when the API cannot connect
                     to the database. In this example you can see how the information
                     will be represented.
-          description: '**(INTERNAL_SERVER_ERROR)** An unexpected error occurred.'
+          description: '**INTERNAL_SERVER_ERROR**'
   /api/v1/pet/:
     post:
       operationId: v1_pet_create
@@ -246,7 +278,7 @@ paths:
         request with a pet's data, validates the information, and then creates
         a new record if the data is valid or returns an error response if it is not.
       tags:
-      - Users
+      - Pets
       requestBody:
         content:
           application/json:
@@ -263,8 +295,15 @@ paths:
                   observations: Cachorro muy juguetón.
                   description: Cachorro muy juguetón.
                   image: https://example.com/image.png
-                summary: Register a new user
-                description: A valid pet registration data.
+                summary: Register a new pet.
+                description: |-
+                  A valid pet registration data. The following validation rules are applied:
+                  - **name:** the name must be less than 50 characters.
+                  - **type_pet:** the type of pet must be either 'Perro' or 'Gato'.
+                  - **shelter_uuid:** the shelter UUID must be a valid UUID.
+                  - **age:** the age must be between 1 and 99.
+
+                  Observations, description, and image fields are optional.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegisterPetRequest'
@@ -284,19 +323,23 @@ paths:
                     type: string
                   detail:
                     type: object
+                    properties:
+                      field:
+                        type: array
+                        items:
+                          type: string
               examples:
                 InvalidRequestData:
                   value:
                     code: invalid_request_data
                     detail:
-                      name:
+                      pet_name:
                       - El nombre no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       type_pet:
                       - Loro no es una elección válida.
-                      - El tipo de mascota no puede tener más de 20 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
@@ -306,24 +349,24 @@ paths:
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       age:
-                      - Se requiere un número entero válido.
+                      - El valor ingresado es inválido.
                       - Asegúrate que este valor sea menor o igual a 99.
                       - Asegúrate que este valor sea mayor o igual a 1.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       observations:
-                      - La observación no puede tener más de 200 caracteres.
+                      - El valor ingresado no puede tener más de 200 caracteres.
                       description:
-                      - La observación no puede tener más de 200 caracteres.
+                      - El valor ingresado no puede tener más de 200 caracteres.
                       image:
-                      - Supera el máximo de caracteres permitidos.
+                      - El valor ingresado no puede tener más de 200 caracteres.
                   summary: Invalid request data
                   description: These are all the basic error messages for each field,
                     in this example you can see how the messages will be sent. In
                     a real use case, the error message for the validation or validations
                     that have failed will be displayed.
-          description: '**(BAD_REQUEST)**'
+          description: '**BAD_REQUEST**'
         '500':
           content:
             application/json:
@@ -354,7 +397,7 @@ paths:
         request with a shelter's data, validates the information, and then creates
         a new record if the data is valid or returns an error response if it is not.
       tags:
-      - Users
+      - Shelters
       requestBody:
         content:
           application/json:
@@ -367,21 +410,21 @@ paths:
                   password: contraseña123456789
                   confirm_password: contraseña123456789
                   phone_number: +57 3213149578
-                  name: Refugio de animales
+                  shelter_name: Refugio de animales
                   address: 'Calle 123 # 45-67'
                   responsible: Juan Pérez
                   logo_url: https://example.com/logo.png
-                summary: Register a new user
+                summary: Register a new shelter.
                 description: |-
                   A valid shelter registration data. The following validations will be applied:
-                  - **Email:** Must be in a valid email format, no longer than 90 characters and not in use.
-                  - **Password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
-                  - **Confirm Password:** Must match the password.
-                  - **Phone Number:** Must be a valid phone number, no longer than 25 characters.
-                  - **Name:** Must not be longer than 50 characters.
-                  - **Address:** Must not be longer than 100 characters.
-                  - **Responsible:** Must not be longer than 50 characters.
-                  - **Logo URL:** Must not be longer than 200 characters.
+                  - **email:** Must be in a valid email format, no longer than 40 characters and not in use.
+                  - **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
+                  - **confirm_password:** Must match the password.
+                  - **phone_number:** Must be a valid phone number, no longer than 25 characters.
+                  - **shelter_name:** Must not be longer than 50 characters.
+                  - **address:** Must not be longer than 100 characters.
+                  - **responsible:** Must not be longer than 50 characters.
+                  - **logo_url:** Must not be longer than 200 characters.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegisterShelterRequest'
@@ -391,7 +434,7 @@ paths:
         required: true
       responses:
         '201':
-          description: '**(CREATED)** The shelter was created successfully.'
+          description: '**CREATED** The shelter was created successfully.'
         '400':
           content:
             application/json:
@@ -401,30 +444,36 @@ paths:
                     type: string
                   detail:
                     type: object
+                    properties:
+                      field:
+                        type: array
+                        items:
+                          type: string
               examples:
-                EmailInvalid:
+                InvalidRequestData1:
                   value:
                     code: invalid_request_data
                     detail:
                       email:
-                      - Correo electrónico inválido.
-                      - El correo electrónico no puede tener más de 90 caracteres.
+                      - El correo electrónico es inválido.
+                      - El correo electrónico no puede tener más de 40 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       password:
-                      - La contraseña debe tener al menos 8 caracteres.
-                      - La contraseña no puede tener más de 20 caracteres.
-                      - Este campo es requerido.
+                      - La contraseña no puede tener más de 20 caracteres.La contraseña
+                        debe tener al menos8 caracteres.
+                      - La contraseña debe contener al menos una mayuscula o una minuscula.
+                      - Esta contraseña es demasiado común.Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       phone_number:
-                      - Número inválido.
-                      - La nùmero no puede tener más de 25 caracteres.
+                      - El número de teléfono es inválido.
+                      - El número de teléfono no puede tener más de 25 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      name:
+                      shelter_name:
                       - El nombre no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
@@ -435,12 +484,12 @@ paths:
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       responsible:
-                      - El nombre del responsable no puede tener más de 50 caracteres.
+                      - El valor ingresado no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
                       logo_url:
-                      - Supera el máximo de caracteres permitidos.
+                      - El valor ingresado no puede tener más de 200 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
@@ -451,7 +500,7 @@ paths:
                     that have failed will be displayed.
                 PasswordsNotMatch:
                   value:
-                    code: invalid_request_data
+                    code: invalid_request_data2
                     detail:
                       non_field_errors:
                       - Las contraseñas no coinciden.
@@ -459,7 +508,7 @@ paths:
                   description: This error message is used when the passwords do not
                     match. In this example you can see how the information will be
                     represented.
-                EmailAlreadyUse:
+                InvalidRequestData3:
                   value:
                     code: invalid_request_data
                     detail:
@@ -489,7 +538,7 @@ paths:
                   description: This error message is used when the API cannot connect
                     to the database. In this example you can see how the information
                     will be represented.
-          description: '**(INTERNAL_SERVER_ERROR)**'
+          description: '**INTERNAL_SERVER_ERROR**'
 components:
   schemas:
     AuthenticationRequest:
@@ -502,7 +551,7 @@ components:
           type: string
           minLength: 1
           pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
-          maxLength: 90
+          maxLength: 40
         password:
           type: string
           writeOnly: true
@@ -519,7 +568,7 @@ components:
           type: string
           minLength: 1
           pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
-          maxLength: 90
+          maxLength: 40
         password:
           type: string
           writeOnly: true
@@ -529,20 +578,20 @@ components:
           type: string
           writeOnly: true
           minLength: 1
-        name:
+        admin_name:
           type: string
           minLength: 1
           maxLength: 50
       required:
+      - admin_name
       - confirm_password
       - email
-      - name
       - password
     RegisterPetRequest:
       type: object
       description: Defines the data required to register a pet in the system.
       properties:
-        name:
+        pet_name:
           type: string
           minLength: 1
           maxLength: 50
@@ -574,7 +623,7 @@ components:
           maxLength: 200
       required:
       - age
-      - name
+      - pet_name
       - race
       - shelter_uuid
       - type_pet
@@ -586,7 +635,7 @@ components:
           type: string
           minLength: 1
           pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
-          maxLength: 90
+          maxLength: 40
         password:
           type: string
           writeOnly: true
@@ -600,7 +649,7 @@ components:
           type: string
           minLength: 1
           maxLength: 25
-        name:
+        shelter_name:
           type: string
           minLength: 1
           maxLength: 50
@@ -621,10 +670,10 @@ components:
       - address
       - confirm_password
       - email
-      - name
       - password
       - phone_number
       - responsible
+      - shelter_name
     TypePetEnum:
       enum:
       - Perro
@@ -637,3 +686,15 @@ tags:
 - name: Users
   description: It comprises all the endpoints that manage all the functionality related
     to a user in the API.
+- name: JSON Web Token
+  description: It comprises all the endpoints that manage all the functionality related
+    to the authentication of a user in the API.
+- name: Administrators
+  description: It comprises all the endpoints that manage all the functionality related
+    to an administrator in the API.
+- name: Shelters
+  description: It comprises all the endpoints that manage all the functionality related
+    to a shelter in the API.
+- name: Pets
+  description: It comprises all the endpoints that manage all the functionality related
+    to a pet in the API.

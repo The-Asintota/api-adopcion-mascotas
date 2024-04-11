@@ -4,6 +4,6 @@ COMMON_ERROR_MESSAGES = {
     "invalid": "{field_name} es inválido.",
     "password_mismatch": "Las contraseñas no coinciden.",
     "password_common": "Esta contraseña es demasiado común.",
-    "password_no_upper_lower": "La contraseña debe contener al menos una mayuscula y una minuscula.",
+    "password_no_upper_lower": "La contraseña debe contener al menos una mayuscula o una minuscula.",
     "email_in_use": "Este correo electrónico ya está en uso.",
 }

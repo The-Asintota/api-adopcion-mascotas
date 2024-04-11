@@ -10,10 +10,10 @@ from apps.users.infrastructure.serializers.constants import (
 )
 from apps.users.infrastructure.db import UserRepository
 from apps.exceptions import ResourceNotFoundError
-from apps.users.endpoint_schemas.register_shelter import SerializerSchema
+from apps.users.endpoint_schemas.register_shelter import GetSerializerSchema
 
 
-@SerializerSchema
+@GetSerializerSchema
 class RegisterShelterSerializer(ErrorMessages):
     """
     Defines the data required to register a shelter in the system.

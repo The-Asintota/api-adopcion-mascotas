@@ -6,33 +6,43 @@ from drf_spectacular.utils import (
 )
 
 
-APISchema = extend_schema(
-    tags=["Users"],
+GetEndPointSchema = extend_schema(
+    tags=["JSON Web Token"],
     responses={
         200: OpenApiResponse(
-            description="**(OK)** Authenticated user.",
+            description="**OK**",
             response={
                 "properties": {
                     "access": {"type": "string"},
+                    "refresh": {"type": "string"},
                 }
             },
             examples=[
                 OpenApiExample(
                     name="response_ok",
                     summary="Valid request",
-                    description="Authenticated user.",
+                    description="Authenticated user, the response will contain the access and refresh tokens.",
                     value={
                         "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMDU0MzYyLCJpYXQiOjE3MTEwNDcxNjIsImp0aSI6IjY0MTE2YzgyYjhmMDQzOWJhNTJkZGZmMzgyNzQ2ZTIwIiwidXNlcl9pZCI6IjJhNmI0NTNiLWZhMmItNDMxOC05YzM1LWIwZTk2ZTg5NGI2MyJ9.gfhWpy5rYY6P3Xrg0usS6j1KhEvF1HqWMiU7AaFkp9A",
+                        "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTEzMzU2MiwiaWF0IjoxNzExMDQ3MTYyLCJqdGkiOiI2ZTRmNTdkMGJjNTc0NWY0OWMzODg4YjQ2YTM1OTJjNSIsInVzZXJfaWQiOiIyYTZiNDUzYi1mYTJiLTQzMTgtOWMzNS1iMGU5NmU4OTRiNjMifQ.81pQ3WftFZs5O50vGqwY2a6yPkXArQK6WKyrwus3s6A",
                     },
                 ),
             ],
         ),
         400: OpenApiResponse(
-            description="**(BAD_REQUEST)**",
+            description="**BAD_REQUEST**",
             response={
                 "properties": {
                     "code": {"type": "string"},
-                    "detail": {"type": "object"},
+                    "detail": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                            },
+                        },
+                    },
                 }
             },
             examples=[
@@ -44,18 +54,18 @@ APISchema = extend_schema(
                         "code": "invalid_request_data",
                         "detail": {
                             "email": [
-                                "Correo electrónico inválido.",
-                                "El correo electrónico no puede tener más de 90 caracteres.",
-                                "This field is required.",
-                                "This field may not be blank.",
-                                "This field may not be null.",
+                                "El correo electrónico es inválido.",
+                                "El correo electrónico no puede tener más de 40 caracteres.",
+                                "Este campo es requerido.",
+                                "Este campo no puede estar en blanco.",
+                                "Este campo no puede ser nulo.",
                             ],
                             "password": [
-                                "La contraseña debe tener al menos 8 caracteres.",
-                                "La contraseña no puede tener más de 20 caracteres.",
-                                "This field is required.",
-                                "This field may not be blank.",
-                                "This field may not be null.",
+                                "La contraseña no puede tener más de 20 caracteres."
+                                "La contraseña debe tener al menos8 caracteres.",
+                                "Este campo es requerido.",
+                                "Este campo no puede estar en blanco.",
+                                "Este campo no puede ser nulo.",
                             ],
                         },
                     },
@@ -63,7 +73,7 @@ APISchema = extend_schema(
             ],
         ),
         401: OpenApiResponse(
-            description="**(UNAUTHORIZED)**",
+            description="**UNAUTHORIZED**",
             response={
                 "properties": {
                     "code": {"type": "string"},
@@ -92,7 +102,7 @@ APISchema = extend_schema(
             ],
         ),
         500: OpenApiResponse(
-            description="**(INTERNAL_SERVER_ERROR)** An unexpected error occurred.",
+            description="**INTERNAL_SERVER_ERROR**",
             response={
                 "properties": {
                     "detail": {"type": "string"},
@@ -115,15 +125,15 @@ APISchema = extend_schema(
 )
 
 
-SerializerSchema = extend_schema_serializer(
+GetSerializerSchema = extend_schema_serializer(
     examples=[
         OpenApiExample(
             name="data_valid",
-            summary="User authentication",
-            description="Valid credentials for a user. The following validations will be applied:\n- **Email:** Must be in a valid email format and no longer than 90 characters.\n- **Password:** Must be at least 8 characters and not more than 20 characters.",
+            summary="User authentication data.",
+            description="Valid credentials for a user. The following validations will be applied:\n- **email:** Must be in a valid email format and no longer than 40 characters.\n- **password:** Must be at least 8 characters and not more than 20 characters.",
             value={
                 "email": "user1@example.com",
-                "password": "Aaa123456789",
+                "password": "contraseña1234",
             },
             request_only=True,
         ),

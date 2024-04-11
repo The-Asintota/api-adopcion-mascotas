@@ -1,13 +1,14 @@
 from rest_framework import serializers
 from django.core.validators import RegexValidator
+from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
-from apps.users.endpoint_schemas.authentication import SerializerSchema
+from apps.users.endpoint_schemas.authentication import GetSerializerSchema
 
 
-@SerializerSchema
-class AuthenticationSerializer(serializers.Serializer):
+@GetSerializerSchema
+class AuthenticationSerializer(ErrorMessages):
     """
     Handles the data for user authentication. Checks that the provided email and
     password meet the necessary requirements.

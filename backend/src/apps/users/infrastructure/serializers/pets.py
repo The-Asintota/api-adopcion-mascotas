@@ -3,10 +3,10 @@ from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
-from apps.users.endpoint_schemas.register_pet import SerializerSchema
+from apps.users.endpoint_schemas.register_pet import GetSerializerSchema
 
 
-@SerializerSchema
+@GetSerializerSchema
 class RegisterPetSerializer(ErrorMessages):
     """
     Defines the data required to register a pet in the system.

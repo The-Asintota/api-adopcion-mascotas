@@ -173,8 +173,20 @@ SPECTACULAR_SETTINGS = {
     "VERSION": "1.0.0",
     "TAGS": [
         {
-            "name": "Users",
-            "description": "It comprises all the endpoints that manage all the functionality related to a user in the API.",
+            "name": "JSON Web Token",
+            "description": "It comprises all the endpoints that manage all the functionality related to the authentication of a user in the API.",
+        },
+        {
+            "name": "Administrators",
+            "description": "It comprises all the endpoints that manage all the functionality related to an administrator in the API.",
+        },
+        {
+            "name": "Shelters",
+            "description": "It comprises all the endpoints that manage all the functionality related to a shelter in the API.",
+        },
+        {
+            "name": "Pets",
+            "description": "It comprises all the endpoints that manage all the functionality related to a pet in the API.",
         },
     ],
     "SERVE_INCLUDE_SCHEMA": False,

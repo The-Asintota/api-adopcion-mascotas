@@ -6,18 +6,26 @@ from drf_spectacular.utils import (
 )
 
 
-APISchema = extend_schema(
-    tags=["Users"],
+GetEndPointSchema = extend_schema(
+    tags=["Pets"],
     responses={
         201: OpenApiResponse(
             description="**CREATED** The pet was created successfully.",
         ),
         400: OpenApiResponse(
-            description="**(BAD_REQUEST)**",
+            description="**BAD_REQUEST**",
             response={
                 "properties": {
                     "code": {"type": "string"},
-                    "detail": {"type": "object"},
+                    "detail": {
+                        "type": "object",
+                        "properties": {
+                            "field": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                            },
+                        },
+                    },
                 }
             },
             examples=[
@@ -28,15 +36,14 @@ APISchema = extend_schema(
                     value={
                         "code": "invalid_request_data",
                         "detail": {
-                            "name": [
+                            "pet_name": [
                                 "El nombre no puede tener más de 50 caracteres.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
                             "type_pet": [
-                                'Loro no es una elección válida.',
-                                "El tipo de mascota no puede tener más de 20 caracteres.",
+                                "Loro no es una elección válida.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
@@ -48,7 +55,7 @@ APISchema = extend_schema(
                                 "Este campo no puede ser nulo.",
                             ],
                             "age": [
-                                "Se requiere un número entero válido.",
+                                "El valor ingresado es inválido.",
                                 "Asegúrate que este valor sea menor o igual a 99.",
                                 "Asegúrate que este valor sea mayor o igual a 1.",
                                 "Este campo es requerido.",
@@ -56,13 +63,13 @@ APISchema = extend_schema(
                                 "Este campo no puede ser nulo.",
                             ],
                             "observations": [
-                                "La observación no puede tener más de 200 caracteres.",
+                                "El valor ingresado no puede tener más de 200 caracteres.",
                             ],
                             "description": [
-                                "La observación no puede tener más de 200 caracteres.",
+                                "El valor ingresado no puede tener más de 200 caracteres.",
                             ],
                             "image": [
-                                "Supera el máximo de caracteres permitidos.",
+                                "El valor ingresado no puede tener más de 200 caracteres.",
                             ],
                         },
                     },
@@ -97,12 +104,12 @@ APISchema = extend_schema(
 )
 
 
-SerializerSchema = extend_schema_serializer(
+GetSerializerSchema = extend_schema_serializer(
     examples=[
         OpenApiExample(
             name="data_valid",
-            summary="Register a new user",
-            description="A valid pet registration data.",
+            summary="Register a new pet.",
+            description="A valid pet registration data. The following validation rules are applied:\n- **name:** the name must be less than 50 characters.\n- **type_pet:** the type of pet must be either 'Perro' or 'Gato'.\n- **shelter_uuid:** the shelter UUID must be a valid UUID.\n- **age:** the age must be between 1 and 99.\n\nObservations, description, and image fields are optional.",
             value={
                 "name": "Hector",
                 "type_pet": "Perro",

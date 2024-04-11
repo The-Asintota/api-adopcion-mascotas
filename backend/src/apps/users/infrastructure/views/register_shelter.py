@@ -6,7 +6,7 @@ from typing import Dict, Any
 from apps.users.infrastructure.serializers import RegisterShelterSerializer
 from apps.users.infrastructure.db import UserRepository
 from apps.users.use_case import UserRegister
-from apps.users.endpoint_schemas.register_shelter import APISchema
+from apps.users.endpoint_schemas.register_shelter import GetEndPointSchema
 
 
 class RegisterShelterAPIView(generics.GenericAPIView):
@@ -38,7 +38,7 @@ class RegisterShelterAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
-    @APISchema
+    @GetEndPointSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for shelter registration.

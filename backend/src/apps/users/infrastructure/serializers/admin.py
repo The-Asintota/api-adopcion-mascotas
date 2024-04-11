@@ -9,10 +9,10 @@ from apps.users.infrastructure.serializers.constants import (
 )
 from apps.users.infrastructure.db import UserRepository
 from apps.exceptions import ResourceNotFoundError
-from apps.users.endpoint_schemas.register_admin import SerializerSchema
+from apps.users.endpoint_schemas.register_admin import GetSerializerSchema
 
 
-@SerializerSchema
+@GetSerializerSchema
 class RegisterAdminSerializer(ErrorMessages):
     """
     Defines the data required to register a admin in the system.
