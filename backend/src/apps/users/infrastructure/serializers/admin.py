@@ -1,34 +1,15 @@
 from rest_framework import serializers
-from django.core.validators import (
-    RegexValidator,
-    MaxLengthValidator,
-    MinLengthValidator,
-)
+from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from typing import Dict
+from apps.users.infrastructure.serializers.utils import ErrorMessages
+from apps.users.infrastructure.serializers.constants import (
+    COMMON_ERROR_MESSAGES,
+)
 from apps.users.infrastructure.db import UserRepository
 from apps.exceptions import ResourceNotFoundError
 from apps.users.endpoint_schemas.register_admin import SerializerSchema
-
-
-class ErrorMessages(serializers.Serializer):
-    """
-    A serializer class that provides custom error messages for fields.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Customized error messages
-        msg = {
-            "required": "Este campo es requerido.",
-            "blank": "Este campo no puede estar en blanco.",
-            "null": "Este campo no puede ser nulo.",
-        }
-        fields = list(self.fields.keys())
-        for field_name in fields:
-            self.fields[field_name].error_messages.update(msg)
 
 
 @SerializerSchema
@@ -38,45 +19,49 @@ class RegisterAdminSerializer(ErrorMessages):
     """
 
     email = serializers.CharField(
-        required=True,
+        error_messages={
+            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+                field_name="El correo electrónico", max_length="{max_length}"
+            ),
+        },
         validators=[
             RegexValidator(
                 regex=r"^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$",
-                message="Correo electrónico inválido.",
                 code="invalid_data",
-            ),
-            MaxLengthValidator(
-                limit_value=90,
-                message="El correo electrónico no puede tener más de 90 caracteres.",
+                message=COMMON_ERROR_MESSAGES["invalid"].format(
+                    field_name="El correo electrónico"
+                ),
             ),
         ],
+        required=True,
+        max_length=40,
     )
     password = serializers.CharField(
+        error_messages={
+            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+                field_name="La contraseña", max_length="{max_length}"
+            ),
+            "min_length": COMMON_ERROR_MESSAGES["min_length"].format(
+                field_name="La contraseña", min_length="{min_length}"
+            ),
+        },
         required=True,
         write_only=True,
         style={"input_type": "password"},
-        validators=[
-            MinLengthValidator(
-                limit_value=8,
-                message="La contraseña debe tener al menos 8 caracteres.",
-            ),
-            MaxLengthValidator(
-                limit_value=20,
-                message="La contraseña no puede tener más de 20 caracteres.",
-            ),
-        ],
+        max_length=20,
+        min_length=8,
     )
     confirm_password = serializers.CharField(
         required=True, write_only=True, style={"input_type": "password"}
     )
     admin_name = serializers.CharField(
-        required=True,
-        validators=[
-            MaxLengthValidator(
-                limit_value=50,
-                message="El nombre no puede tener más de 50 caracteres.",
+        error_messages={
+            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+                field_name="El nombre", max_length="{max_length}"
             ),
-        ],
+        },
+        required=True,
+        max_length=50,
     )
 
     def validate_password(self, value: str) -> str:
@@ -85,25 +70,25 @@ class RegisterAdminSerializer(ErrorMessages):
         except ValidationError:
             if value.isdecimal():
                 raise serializers.ValidationError(
-                    detail="La contraseña debe contener al menos una mayuscula y una minuscula.",
-                    code="Invalid_data",
+                    code="invalid_data",
+                    detail=COMMON_ERROR_MESSAGES["password_no_upper_lower"],
                 )
             raise serializers.ValidationError(
-                detail="Esta contraseña es demasiado común.",
-                code="Invalid_data",
+                code="invalid_data",
+                detail=COMMON_ERROR_MESSAGES["password_common"],
             )
 
         return value
 
     def validate_email(self, value: str) -> str:
         try:
-            _ = UserRepository.get_shelter(email=value)
+            _ = UserRepository.get_admin(email=value)
         except ResourceNotFoundError:
             return value
 
         raise serializers.ValidationError(
-            detail="Este correo electrónico ya está en uso.",
-            code="Invalid_data",
+            code="invalid_data",
+            detail=COMMON_ERROR_MESSAGES["email_in_use"],
         )
 
     def validate(self, data: Dict[str, str]) -> Dict[str, str]:
@@ -112,7 +97,8 @@ class RegisterAdminSerializer(ErrorMessages):
 
         if not password == confirm_password:
             raise serializers.ValidationError(
-                detail="Las contraseñas no coinciden.", code="Invalid_data"
+                code="invalid_data",
+                detail=COMMON_ERROR_MESSAGES["password_mismatch"],
             )
 
         return data

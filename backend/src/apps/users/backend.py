@@ -17,9 +17,11 @@ class EmailBackend(ModelBackend):
         self, request: Request, email: str, password: str
     ) -> Optional[BaseUser]:
         try:
-            user = UserRepository.base_user_model.objects.filter(
-                email=email
-            ).first()
+            user: BaseUser = (
+                UserRepository._get_model(name="base_user")
+                .objects.filter(email=email)
+                .first()
+            )
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.

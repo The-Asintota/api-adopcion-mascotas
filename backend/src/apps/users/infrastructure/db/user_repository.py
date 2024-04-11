@@ -1,4 +1,4 @@
-from django.db.models import Q
+from django.db.models import Q, Model
 from django.db import OperationalError
 from typing import Dict
 from apps.users.models import (
@@ -16,9 +16,19 @@ class UserRepository:
     operations for the `Shelter` and `AdminUser` models.
     """
 
-    base_user_model = BaseUser
-    shelter_model = Shelter
-    admin_model = AdminUser
+    models = {
+        "base_user": BaseUser,
+        "shelter": Shelter,
+        "admin": AdminUser,
+    }
+
+    @classmethod
+    def _get_model(cls, name: str) -> Model:
+        """
+        Method to get the model class based on the provided model name.
+        """
+
+        return cls.models[name]
 
     @classmethod
     def _create_base_user(cls, email: str, password: str) -> BaseUser:
@@ -30,7 +40,9 @@ class UserRepository:
         """
 
         try:
-            user_manager: CustomUserManager = cls.base_user_model.objects
+            user_manager: CustomUserManager = cls._get_model(
+                name="base_user"
+            ).objects
             base_user = user_manager.create_base_user(
                 email=email,
                 password=password,
@@ -43,12 +55,12 @@ class UserRepository:
         return base_user
 
     @classmethod
-    def create_shelter(cls, data: Dict[str, str]) -> None:
+    def create_user(cls, data: Dict[str, str], role: str) -> None:
         """
-        Insert a new shelter into the database.
+        Insert a new user into the database.
 
         Parameters:
-            - data: A dictionary containing the shelter data.
+            - data: A dictionary containing the user data.
 
         Raises:
             - DatabaseConnectionError: If there is an operational error with the database.
@@ -61,7 +73,7 @@ class UserRepository:
         del data["password"]
 
         try:
-            cls.shelter_model.objects.create(
+            cls._get_model(name=role).objects.create(
                 base_user=base_user,
                 **data,
             )
@@ -82,19 +94,20 @@ class UserRepository:
 
         query_params = Q()
         fields_base_user_model = [
-            field.name for field in cls.base_user_model._meta.get_fields()
+            field.name
+            for field in cls._get_model(name="base_user")._meta.get_fields()
         ]
 
         for field, value in filters.items():
             if field in fields_base_user_model:
                 query_params &= Q(**{f"base_user__{field}": value})
                 continue
-            else:
-                query_params &= Q(**{field: value})
+            query_params &= Q(**{field: value})
 
         try:
             shelter = (
-                cls.shelter_model.objects.select_related("base_user")
+                cls._get_model(name="shelter")
+                .objects.select_related("base_user")
                 .filter(query_params)
                 .first()
             )
@@ -115,29 +128,46 @@ class UserRepository:
         return shelter
 
     @classmethod
-    def create_admin(cls, data: Dict[str, str]) -> None:
+    def get_admin(cls, **filters) -> AdminUser:
         """
-        Insert a new admin into the database.
-
-        Parameters:
-            - data: A dictionary containing the admin data.
+        Retrieve a admin user from the database based on the provided filters.
 
         Raises:
             - DatabaseConnectionError: If there is an operational error with the database.
+            - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
-        base_user = cls._create_base_user(
-            email=data["email"], password=data["password"]
-        )
-        del data["email"]
-        del data["password"]
+        query_params = Q()
+        fields_base_user_model = [
+            field.name
+            for field in cls._get_model(name="base_user")._meta.get_fields()
+        ]
+
+        for field, value in filters.items():
+            if field in fields_base_user_model:
+                query_params &= Q(**{f"base_user__{field}": value})
+                continue
+            query_params &= Q(**{field: value})
 
         try:
-            cls.admin_model.objects.create(
-                base_user=base_user,
-                **data,
+            admin = (
+                cls._get_model(name="admin")
+                .objects.select_related("base_user")
+                .filter(query_params)
+                .first()
             )
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
+
+        if not admin:
+            raise ResourceNotFoundError(
+                code="admin_not_found",
+                detail={
+                    "message": "admin with the following filters not found.",
+                    "filters": filters,
+                },
+            )
+
+        return admin

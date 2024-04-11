@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.tokens import Token
 from typing import Dict, Any, Protocol
 from apps.users.domain.typing import JWToken
-from apps.users.models import BaseUser, Shelter, JWT, Pet, TypePet
+from apps.users.models import BaseUser, Shelter, JWT, Pet, AdminUser
 
 
 class IUserRepository(Protocol):
@@ -14,24 +14,12 @@ class IUserRepository(Protocol):
     """
 
     @classmethod
-    def _create_base_user(cls, email: str, password: str) -> BaseUser:
+    def create_user(cls, data: Dict[str, str], role: str) -> None:
         """
-        Inserts a new user into the database.
+        Insert a new user into the database.
 
         Parameters:
-        - email: The email of the user.
-        - password: The password of the user.
-        """
-
-        ...
-
-    @classmethod
-    def create_shelter(cls, data: Dict[str, Any]) -> None:
-        """
-        Insert a new shelter into the database.
-
-        Parameters:
-        - data: A dictionary containing the shelter data.
+        - data: A dictionary containing the user data.
         """
 
         ...
@@ -45,12 +33,9 @@ class IUserRepository(Protocol):
         ...
 
     @classmethod
-    def create_admin(cls, data: Dict[str, Any]) -> None:
+    def get_admin(cls, **filters) -> AdminUser:
         """
-        Insert a new admin into the database.
-
-        Parameters:
-        - data: A dictionary containing the admin data.
+        Retrieve a admin user from the database based on the provided filters.
         """
 
         ...
@@ -128,14 +113,6 @@ class IPetRepository(Protocol):
     Interface that defines the methods that a class must implement to be used as a
     pet repository.
     """
-
-    @classmethod
-    def _get_type_pet(cls, type_pet: str) -> TypePet:
-        """
-        Method responsible for retrieving the pet type from the database.
-        """
-
-        ...
 
     @classmethod
     def create(cls, data: Dict[str, Any]) -> None:
