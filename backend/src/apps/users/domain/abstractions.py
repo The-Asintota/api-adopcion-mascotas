@@ -1,31 +1,31 @@
 from rest_framework_simplejwt.tokens import Token
-from abc import ABC, abstractmethod
 from typing import Dict, Any, Protocol
 from apps.users.domain.typing import JWToken
-from apps.users.models import User, Shelter, Admin, JWT, JWTBlacklisted
+from apps.users.models import BaseUser, Shelter, JWT, Pet, TypePet
 
 
-class IUserRepository(ABC):
+class IUserRepository(Protocol):
     """
-    IUserRepository is an abstract base class that represents a user repository.
-    Subclasses should implement the `insert` and `get_user` methods.
-    """
+    IUserRepository is a protocol that defines the interface for a user repository.
 
-    model_user = User
-    model_shelter = Shelter
-    model_admin = Admin
+    This interface represents a contract for the `Shelter` and `AdminUser`
+    model repositories, ensuring that they provide the methods necessary to manage
+    shelters, and admins in the database.
+    """
 
     @classmethod
-    @abstractmethod
-    def _create_user(cls, email: str, password: str) -> User:
+    def _create_base_user(cls, email: str, password: str) -> BaseUser:
         """
         Inserts a new user into the database.
+
+        Parameters:
+        - email: The email of the user.
+        - password: The password of the user.
         """
 
-        pass
+        ...
 
     @classmethod
-    @abstractmethod
     def create_shelter(cls, data: Dict[str, Any]) -> None:
         """
         Insert a new shelter into the database.
@@ -34,19 +34,17 @@ class IUserRepository(ABC):
         - data: A dictionary containing the shelter data.
         """
 
-        pass
+        ...
 
     @classmethod
-    @abstractmethod
     def get_shelter(cls, **filters) -> Shelter:
         """
         Retrieve a shelter from the database based on the provided filters.
         """
 
-        pass
+        ...
 
     @classmethod
-    @abstractmethod
     def create_admin(cls, data: Dict[str, Any]) -> None:
         """
         Insert a new admin into the database.
@@ -55,21 +53,19 @@ class IUserRepository(ABC):
         - data: A dictionary containing the admin data.
         """
 
-        pass
+        ...
 
 
-class IJWTRepository(ABC):
+class IJWTRepository(Protocol):
     """
-    IJWTRepository is an abstract base class that represents a JWT repository.
-    Subclasses should implement the `get_token`, `get_tokens_user`,
-    `add_to_checklist` and `add_to_blacklist` methods.
-    """
+    IJWTRepository is a protocol that defines the interface for a JWT repository.
 
-    model_token = JWT
-    model_blacklist = JWTBlacklisted
+    This interface represents a contract for the `JWT` and `JWTBlacklisted` model
+    repository, ensuring that they provide the methods necessary to manage JSON Web
+    Tokens in the database.
+    """
 
     @classmethod
-    @abstractmethod
     def get_token(cls, **filters) -> JWT:
         """
         Retrieve a token from the database based on the provided filters.
@@ -78,32 +74,35 @@ class IJWTRepository(ABC):
         - filters: Keyword arguments that define the filters to apply.
         """
 
-        pass
+        ...
 
     @classmethod
-    @abstractmethod
-    def add_to_checklist(cls, token: JWToken, user: User) -> None:
+    def add_to_checklist(cls, token: JWToken, user: BaseUser) -> None:
         """
-        Add a token to the checklist.
+        Associate a JSON Web Token with a user by adding it to the checklist.
+
+        This way you can keep track of which tokens are associated with which
+        users, and which tokens created are pending expiration or invalidation.
 
         Parameters:
         - token: A JWToken.
-        - user: An instance of the User model.
+        - user: An instance of the BaseUser model.
         """
 
-        pass
+        ...
 
     @classmethod
-    @abstractmethod
     def add_to_blacklist(cls, token: JWT) -> None:
         """
-        Add a token to the blacklist.
+        Invalidates a JSON Web Token by adding it to the blacklist.
+
+        Once a token is blacklisted, it can no longer be used for authentication purposes until it is removed from the blacklist or has expired.
 
         Parameters:
-        - token: An instance of the JWT model.
+        - token: An instance of the `JWT` model.
         """
 
-        pass
+        ...
 
 
 class ITokenClass(Protocol):
@@ -112,13 +111,13 @@ class ITokenClass(Protocol):
     JWT class.
     """
 
-    def get_token(self, user: User) -> Token:
+    def get_token(self, user: BaseUser) -> Token:
         """
         This method should return a JWT token for the given user.
 
         Parameters:
-        - user: An instance of the User model. The user for which to generate the
-        token.
+        - user: An instance of the BaseUser model. The user for which to generate
+        the token.
         """
 
         ...
@@ -130,12 +129,32 @@ class IPetRepository(Protocol):
     pet repository.
     """
 
+    @classmethod
+    def _get_type_pet(cls, type_pet: str) -> TypePet:
+        """
+        Method responsible for retrieving the pet type from the database.
+        """
+
+        ...
+
+    @classmethod
     def create(cls, data: Dict[str, Any]) -> None:
         """
         Insert a new pet into the database.
 
         Parameters:
         - data: A dictionary containing the pet data.
+        """
+
+        ...
+
+    @classmethod
+    def get_pet(cls, **filters) -> Pet:
+        """
+        Retrieve a pet from the database based on the provided filters.
+
+        Parameters:
+        - filters: Keyword arguments that define the filters to apply.
         """
 
         ...

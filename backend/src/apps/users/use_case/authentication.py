@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from typing import Dict, Tuple
 from apps.users.domain.abstractions import IJWTRepository, ITokenClass
 from apps.users.domain.typing import AccessToken, RefreshToken, JWToken
-from apps.users.models import User
+from apps.users.models import BaseUser
 from apps.exceptions import UserInactiveError
 
 
@@ -27,7 +27,9 @@ class Authentication:
         self._jwt_class = jwt_class
         self._jwt_repository = jwt_repository
 
-    def _generate_tokens(self, user: User) -> Tuple[AccessToken, RefreshToken]:
+    def _generate_tokens(
+        self, user: BaseUser
+    ) -> Tuple[AccessToken, RefreshToken]:
         refresh = self._jwt_class.get_token(user=user)
         access = refresh.access_token
 
@@ -42,6 +44,7 @@ class Authentication:
         """
 
         user = authenticate(**credentials)
+
         if not user:
             raise AuthenticationFailed(
                 code="authentication_failed",
@@ -52,7 +55,9 @@ class Authentication:
                 detail="Cuenta del usuario inactiva.",
                 code="authentication_failed",
             )
+
         refresh, access = self._generate_tokens(user=user)
+
         for token in [access, refresh]:
             self._jwt_repository.add_to_checklist(
                 token=token,

@@ -30,7 +30,7 @@ class RegisterPetSerializer(ErrorMessages):
     Defines the data required to register a pet in the system.
     """
 
-    name = serializers.CharField(
+    pet_name = serializers.CharField(
         required=True,
         validators=[
             MaxLengthValidator(

@@ -52,21 +52,23 @@ class DatabaseConnectionError(DetailDictMixin, APIException):
         super().__init__(detail=self.detail, code=self.code)
 
 
-class UserNotFoundError(DetailDictMixin, APIException):
+class ResourceNotFoundError(DetailDictMixin, APIException):
     """
-    Exception raised when a user is not found.
+    Exception raised when a requested resource is not found.
     """
 
     status_code = status.HTTP_404_NOT_FOUND
-    default_detail = "User not found."
-    default_code = "user_not_found"
+    default_detail = "requested resource not found."
+    default_code = "resource_not_found"
 
-    def __init__(self, detail: str | Dict[str, Any] = None) -> None:
+    def __init__(
+        self, detail: str | Dict[str, Any] = None, code: str = None
+    ) -> None:
         if isinstance(detail, dict):
             self.detail = {"detail": detail or self.default_detail}
         else:
             self.detail = detail or self.default_detail
-        self.code = self.default_code
+        self.code = code or self.default_code
         super().__init__(detail=self.detail, code=self.code)
 
 

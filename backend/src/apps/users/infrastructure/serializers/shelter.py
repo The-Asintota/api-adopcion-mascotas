@@ -9,7 +9,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from django.core.exceptions import ValidationError
 from typing import Dict
 from apps.users.infrastructure.db import UserRepository
-from apps.exceptions import UserNotFoundError
+from apps.exceptions import ResourceNotFoundError
 from apps.users.endpoint_schemas.register_shelter import SerializerSchema
 
 
@@ -80,7 +80,7 @@ class RegisterShelterSerializer(ErrorMessages):
             ),
         ],
     )
-    name = serializers.CharField(
+    shelter_name = serializers.CharField(
         required=True,
         validators=[
             MaxLengthValidator(
@@ -136,6 +136,7 @@ class RegisterShelterSerializer(ErrorMessages):
     def validate(self, data: Dict[str, str]) -> Dict[str, str]:
         password = data["password"]
         confirm_password = data["confirm_password"]
+
         if not password == confirm_password:
             raise serializers.ValidationError(
                 detail="Las contraseñas no coinciden.", code="Invalid_data"
@@ -146,7 +147,7 @@ class RegisterShelterSerializer(ErrorMessages):
     def validate_email(self, value: str) -> str:
         try:
             _ = UserRepository.get_shelter(email=value)
-        except UserNotFoundError:
+        except ResourceNotFoundError:
             return value
 
         raise serializers.ValidationError(

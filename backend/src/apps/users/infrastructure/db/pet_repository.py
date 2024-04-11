@@ -2,8 +2,8 @@ from django.db import OperationalError
 from django.db.models import Q
 from typing import Dict, Any
 from apps.users.infrastructure.db import UserRepository
-from apps.users.models import Pet, TypePet
-from apps.exceptions import DatabaseConnectionError, UserNotFoundError
+from apps.users.models import Pet, TypePet, Shelter
+from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
 
 
 class PetRepository:
@@ -12,8 +12,9 @@ class PetRepository:
     operations for the `Pet` model.
     """
 
-    model_pet = Pet
-    model_type_pet = TypePet
+    pet_model = Pet
+    type_pet_model = TypePet
+    shelter_model = Shelter
     shelter_repository = UserRepository
 
     @classmethod
@@ -23,7 +24,7 @@ class PetRepository:
         """
 
         try:
-            type_pet = cls.model_type_pet.objects.get(name=type_pet)
+            type_pet = cls.type_pet_model.objects.get(type_name=type_pet)
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
@@ -42,10 +43,13 @@ class PetRepository:
 
         type_pet = data.pop("type_pet")
         shelter_uuid = data.pop("shelter_uuid")
+
         try:
-            cls.model_pet.objects.create(
+            cls.pet_model.objects.create(
                 type_pet=cls._get_type_pet(type_pet=type_pet),
-                shelter=cls.shelter_repository.get_shelter(shelter_uuid=shelter_uuid),
+                shelter=cls.shelter_repository.get_shelter(
+                    shelter_uuid=shelter_uuid
+                ),
                 **data,
             )
         except OperationalError:
@@ -57,27 +61,46 @@ class PetRepository:
     def get_pet(cls, **filters) -> Pet:
         """
         Retrieve a pet from the database based on the provided filters.
+
+        Parameters:
+        - filters: Keyword arguments that define the filters to apply.
         """
 
-        query = Q()
+        query_params = Q()
+        fields_shelter_model = [
+            field.name for field in cls.shelter_model._meta.get_fields()
+        ]
+        fields_type_pet_model = [
+            field.name for field in cls.type_pet_model._meta.get_fields()
+        ]
+
         for field, value in filters.items():
-            if field == "type_pet":
-                query &= Q(**{f"type_pet__{field}": value})
+            if field in fields_shelter_model:
+                query_params &= Q(**{f"shelter__{field}": value})
+                continue
+            elif field in fields_type_pet_model:
+                query_params &= Q(**{f"type_pet__{field}": value})
+                continue
             else:
-                query &= Q(**{field: value})
+                query_params &= Q(**{field: value})
+
         try:
             pet = (
-                cls.model_pet.objects.select_related("type_pet")
-                    .filter(query)
-                    .first()
+                cls.pet_model.objects.select_related("type_pet", "shelter")
+                .filter(query_params)
+                .first()
             )
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
+
         if not pet:
-            raise UserNotFoundError(
-                detail=f"Pet with the following filters: {filters} not found.",
+            raise ResourceNotFoundError(
+                detail={
+                    "message": "pet with the following filters not found.",
+                    "filters": filters,
+                },
                 code="pet_not_found",
             )
 

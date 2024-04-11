@@ -1,23 +1,29 @@
 from rest_framework_simplejwt.utils import datetime_from_epoch
 from django.db.models import Q
 from django.db import OperationalError
-
 from apps.users.infrastructure.utils import decode_jwt
-from apps.users.domain.abstractions import IJWTRepository
 from apps.users.domain.typing import JWToken
-from apps.users.models import User, JWT
+from apps.users.models import BaseUser, JWT, JWTBlacklist
 from apps.exceptions import JWTNotFoundError, DatabaseConnectionError
 
 
-class JWTRepository(IJWTRepository):
+class JWTRepository:
     """
     JwtRepository is a class that provides an abstraction of the database operations
     for the `JWT` and `JWTBlacklisted` models.
     """
 
+    jwt_model = JWT
+    blacklist_model = JWTBlacklist
+
     @classmethod
     def _create_query(cls, **filters) -> Q:
+        """
+        Method that creates a query based on the provided filters.
+        """
+
         query = Q()
+
         for field, value in filters.items():
             query &= Q(**{field: value})
 
@@ -33,13 +39,14 @@ class JWTRepository(IJWTRepository):
         """
 
         try:
-            token = cls.model_token.objects.filter(
+            token = cls.jwt_model.objects.filter(
                 cls._create_query(**filters)
             ).first()
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
+
         if not token:
             raise JWTNotFoundError(
                 code="token_not_found",
@@ -49,18 +56,22 @@ class JWTRepository(IJWTRepository):
         return token
 
     @classmethod
-    def add_to_checklist(cls, token: JWToken, user: User) -> None:
+    def add_to_checklist(cls, token: JWToken, user: BaseUser) -> None:
         """
-        Add a token to the checklist.
+        Associate a JSON Web Token with a user by adding it to the checklist.
+
+        This way you can keep track of which tokens are associated with which
+        users, and which tokens created are pending expiration or invalidation.
 
         Parameters:
         - token: A JWToken.
-        - user: An instance of the User model.
+        - user: An instance of the BaseUser model.
         """
 
         payload = decode_jwt(token=token)
+
         try:
-            cls.model_token.objects.create(
+            cls.jwt_model.objects.create(
                 jti=payload["jti"],
                 token=token,
                 user=user,
@@ -74,14 +85,17 @@ class JWTRepository(IJWTRepository):
     @classmethod
     def add_to_blacklist(cls, token: JWT) -> None:
         """
-        Add a token to the blacklist.
+        Invalidates a JSON Web Token by adding it to the blacklist.
+
+        Once a token is blacklisted, it can no longer be used for authentication
+        purposes until it is removed from the blacklist or has expired.
 
         Parameters:
-        - token: An instance of the JWT model.
+        - token: An instance of the `JWT` model.
         """
 
         try:
-            cls.model_blacklist.objects.create(token=token)
+            cls.blacklist_model.objects.create(token=token)
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.

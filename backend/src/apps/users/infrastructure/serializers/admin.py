@@ -8,7 +8,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from typing import Dict
 from apps.users.infrastructure.db import UserRepository
-from apps.exceptions import UserNotFoundError
+from apps.exceptions import ResourceNotFoundError
 from apps.users.endpoint_schemas.register_admin import SerializerSchema
 
 
@@ -69,7 +69,7 @@ class RegisterAdminSerializer(ErrorMessages):
     confirm_password = serializers.CharField(
         required=True, write_only=True, style={"input_type": "password"}
     )
-    name = serializers.CharField(
+    admin_name = serializers.CharField(
         required=True,
         validators=[
             MaxLengthValidator(
@@ -98,7 +98,7 @@ class RegisterAdminSerializer(ErrorMessages):
     def validate_email(self, value: str) -> str:
         try:
             _ = UserRepository.get_shelter(email=value)
-        except UserNotFoundError:
+        except ResourceNotFoundError:
             return value
 
         raise serializers.ValidationError(
@@ -109,6 +109,7 @@ class RegisterAdminSerializer(ErrorMessages):
     def validate(self, data: Dict[str, str]) -> Dict[str, str]:
         password = data["password"]
         confirm_password = data["confirm_password"]
+
         if not password == confirm_password:
             raise serializers.ValidationError(
                 detail="Las contraseñas no coinciden.", code="Invalid_data"

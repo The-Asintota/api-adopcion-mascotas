@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import User, Shelter, JWT, JWTBlacklisted
+from .models import BaseUser, Shelter, JWT, JWTBlacklist
 
 
-class UserAdminPanel(admin.ModelAdmin):
+class BaseUserAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the User model.
+    Admin panel configuration for the BaseUser model.
     """
 
     list_display = (
@@ -35,18 +35,13 @@ class ShelterAdminPanel(admin.ModelAdmin):
     list_display = (
         "shelter_uuid",
         "base_user",
-        "name",
+        "shelter_name",
         "address",
         "phone_number",
         "responsible",
         "logo_url",
-        "data_joined",
     )
-    search_fields = (
-        "shelter_uuid",
-        "base_user",
-        "data_joined",
-    )
+    search_fields = ("shelter_uuid", "base_user")
 
 
 class JWTAdminPanel(admin.ModelAdmin):
@@ -58,16 +53,16 @@ class JWTAdminPanel(admin.ModelAdmin):
     search_fields = ("user", "jti")
 
 
-class JWTBlacklistedAdminPanel(admin.ModelAdmin):
+class JWTBlacklistAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the JWTBlacklisted model.
+    Admin panel configuration for the JWTBlacklist model.
     """
 
-    list_display = ("id", "token", "date_joined")
-    search_fields = ("token",)
+    list_display = ("id", "token_id", "date_joined")
+    search_fields = ("token_id",)
 
 
-admin.site.register(User, UserAdminPanel)
+admin.site.register(BaseUser, BaseUserAdminPanel)
 admin.site.register(Shelter, ShelterAdminPanel)
 admin.site.register(JWT, JWTAdminPanel)
-admin.site.register(JWTBlacklisted, JWTBlacklistedAdminPanel)
+admin.site.register(JWTBlacklist, JWTBlacklistAdminPanel)

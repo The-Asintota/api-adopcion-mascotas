@@ -1,25 +1,34 @@
 from django.db.models import Q
 from django.db import OperationalError
 from typing import Dict
-from apps.users.domain.abstractions import IUserRepository
-from apps.users.models import User, Shelter
-from apps.exceptions import DatabaseConnectionError, UserNotFoundError
+from apps.users.models import (
+    BaseUser,
+    Shelter,
+    AdminUser,
+    CustomUserManager,
+)
+from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
 
 
-class UserRepository(IUserRepository):
+class UserRepository:
     """
     UserRepository is a class that provides an abstraction of the database
-    operations for the `User` , `Shelter` and `Admin` models.
+    operations for the `Shelter` and `AdminUser` models.
     """
 
+    base_user_model = BaseUser
+    shelter_model = Shelter
+    admin_model = AdminUser
+
     @classmethod
-    def _create_user(cls, email: str, password: str) -> User:
+    def _create_base_user(cls, email: str, password: str) -> BaseUser:
         """
         Inserts a new user into the database.
         """
 
         try:
-            user = cls.model_user.objects.create_user(
+            user_manager: CustomUserManager = cls.base_user_model.objects
+            base_user = user_manager.create_base_user(
                 email=email,
                 password=password,
             )
@@ -28,7 +37,7 @@ class UserRepository(IUserRepository):
             # suddenly unavailable.
             raise DatabaseConnectionError()
 
-        return user
+        return base_user
 
     @classmethod
     def create_shelter(cls, data: Dict[str, str]) -> None:
@@ -39,11 +48,14 @@ class UserRepository(IUserRepository):
         - data: A dictionary containing the shelter data.
         """
 
-        base_user = cls._create_user(email=data["email"], password=data["password"])
+        base_user = cls._create_base_user(
+            email=data["email"], password=data["password"]
+        )
         del data["email"]
         del data["password"]
+
         try:
-            cls.model_shelter.objects.create(
+            cls.shelter_model.objects.create(
                 base_user=base_user,
                 **data,
             )
@@ -58,28 +70,36 @@ class UserRepository(IUserRepository):
         Retrieve a shelter from the database based on the provided filters.
         """
 
-        query = Q()
-        fields_user_model = [
-            field.name for field in cls.model_user._meta.get_fields()
+        query_params = Q()
+        fields_base_user_model = [
+            field.name for field in cls.base_user_model._meta.get_fields()
         ]
+
         for field, value in filters.items():
-            if field in fields_user_model:
-                query &= Q(**{f"base_user__{field}": value})
+            if field in fields_base_user_model:
+                query_params &= Q(**{f"base_user__{field}": value})
+                continue
             else:
-                query &= Q(**{field: value})
+                query_params &= Q(**{field: value})
+
         try:
             shelter = (
-                cls.model_shelter.objects.select_related("base_user")
-                .filter(query)
+                cls.shelter_model.objects.select_related("base_user")
+                .filter(query_params)
                 .first()
             )
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
+
         if not shelter:
-            raise UserNotFoundError(
-                detail=f'shelter {filters.get("uuid", None) or filters.get("email", None) or ""} not found.',
+            raise ResourceNotFoundError(
+                detail={
+                    "message": "shelter with the following filters not found.",
+                    "filters": filters,
+                },
+                code="shelter_not_found",
             )
 
         return shelter
@@ -93,12 +113,15 @@ class UserRepository(IUserRepository):
         - data: A dictionary containing the admin data.
         """
 
-        user = cls._create_user(email=data["email"], password=data["password"])
+        base_user = cls._create_base_user(
+            email=data["email"], password=data["password"]
+        )
         del data["email"]
         del data["password"]
+
         try:
-            cls.model_admin.objects.create(
-                user=user,
+            cls.admin_model.objects.create(
+                base_user=base_user,
                 **data,
             )
         except OperationalError:
