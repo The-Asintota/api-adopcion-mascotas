@@ -151,7 +151,7 @@ class Shelter(models.Model):
         on_delete=models.CASCADE,
     )
     shelter_name = models.CharField(
-        db_column="name", max_length=50, blank=False, null=False
+        db_column="shelter_name", max_length=50, blank=False, null=False
     )
     address = models.CharField(
         db_column="address", max_length=100, blank=False, null=False
@@ -167,7 +167,7 @@ class Shelter(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return self.shelter_name
 
     class Meta:
         db_table = "shelters"

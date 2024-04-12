@@ -1,10 +1,18 @@
 from django.contrib import admin
-from .models import BaseUser, Shelter, JWT, JWTBlacklist
+from .models import (
+    BaseUser,
+    Shelter,
+    JWT,
+    JWTBlacklist,
+    AdminUser,
+    Pet,
+    TypePet,
+)
 
 
 class BaseUserAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the BaseUser model.
+    Admin panel configuration for the `BaseUser` model.
     """
 
     list_display = (
@@ -29,7 +37,7 @@ class BaseUserAdminPanel(admin.ModelAdmin):
 
 class ShelterAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the Shelter model.
+    Admin panel configuration for the `Shelter` model.
     """
 
     list_display = (
@@ -44,9 +52,22 @@ class ShelterAdminPanel(admin.ModelAdmin):
     search_fields = ("shelter_uuid", "base_user")
 
 
+class AdminUserAdminPanel(admin.ModelAdmin):
+    """
+    Admin panel configuration for the `AdminUser` model.
+    """
+
+    list_display = (
+        "admin_uuid",
+        "base_user",
+        "admin_name",
+    )
+    search_fields = ("admin_uuid", "base_user")
+
+
 class JWTAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the JWT model.
+    Admin panel configuration for the `JWT` model.
     """
 
     list_display = ("id", "user", "jti", "token", "date_joined", "expires_at")
@@ -55,14 +76,50 @@ class JWTAdminPanel(admin.ModelAdmin):
 
 class JWTBlacklistAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the JWTBlacklist model.
+    Admin panel configuration for the `JWTBlacklist` model.
     """
 
     list_display = ("id", "token_id", "date_joined")
     search_fields = ("token_id",)
 
 
+class PetAdminPanel(admin.ModelAdmin):
+    """
+    Admin panel configuration for the `Pet` model.
+    """
+
+    list_display = (
+        "pet_uuid",
+        "type_pet",
+        "shelter",
+        "pet_name",
+        "race",
+        "age",
+        "observations",
+        "description",
+        "image",
+        "date_joined",
+    )
+    search_fields = ("pet_uuid", "type_pet", "shelter", "date_joined")
+
+
+class TypePetAdminPanel(admin.ModelAdmin):
+    """
+    Admin panel configuration for the `TypePet` model.
+    """
+
+    list_display = (
+        "id",
+        "type_name",
+        "date_joined",
+    )
+    search_fields = ("id",)
+
+
 admin.site.register(BaseUser, BaseUserAdminPanel)
 admin.site.register(Shelter, ShelterAdminPanel)
+admin.site.register(AdminUser, AdminUserAdminPanel)
 admin.site.register(JWT, JWTAdminPanel)
 admin.site.register(JWTBlacklist, JWTBlacklistAdminPanel)
+admin.site.register(Pet, PetAdminPanel)
+admin.site.register(TypePet, TypePetAdminPanel)
