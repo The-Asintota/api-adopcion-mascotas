@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
-import FormRequest from "../FormRequest";
+/* import FormRequest from "../FormRequest"; */
 
 const SignIn = ({ isActive, onClose }) => {
   const {
     register,
     handleSubmit,
-    getValues,
+    /*  getValues, */
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -21,19 +22,22 @@ const SignIn = ({ isActive, onClose }) => {
 
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/`;
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
+
+  const navigate = useNavigate()
 
   const onSubmit = (data) => {
     axios
       .post(urlRequest, data, {
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": `Bearer ${token}`
-      },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((response) => {
         if (response.status === 200) {
           setUserLogged(true);
+          navigate("/shelter")
         } else if (response.status === 400) {
           console.log(response.data);
         } else if (response.status === 401) {
@@ -47,11 +51,11 @@ const SignIn = ({ isActive, onClose }) => {
       .catch((error) => console.log(error));
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (userLogged) {
-      console.log("user logged")
+      console.log("user logged");
     }
-  }, [userLogged])
+  }, [userLogged]);
 
   return (
     <>
@@ -71,7 +75,7 @@ const SignIn = ({ isActive, onClose }) => {
               </h2>
               <form
                 method="POST"
-                /* onSubmit={handleSubmit(onSubmit)} */
+                onSubmit={handleSubmit(onSubmit)}
                 className="space-y-6"
               >
                 <div className="relative">
@@ -138,7 +142,7 @@ const SignIn = ({ isActive, onClose }) => {
                 >
                   Iniciar sesion
                 </button>
-{/*                 <FormRequest
+                {/* <FormRequest
                   endpoint={"/api/v1/auth/"}
                   formData={getValues()}
                   onSuccess={() => setUserLogged(true)}
