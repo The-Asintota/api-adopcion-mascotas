@@ -12,7 +12,7 @@ const AdoptionSection = () => {
   }
   
   return (
-    <section className="adoption-section">
+    <section className="adoption-section w-sceen">
       <h2>Adopción</h2>
       <SearchAnimal onChange={handleSearch} />
       <ul className="animal-list">
