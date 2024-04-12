@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../ErrorMessage";
 
-const PetRequest = ({ isActive, onClose }) => {
+const PetRequest = ({ isActive, onClose, petName }) => {
   const {
     register,
     getValues,
@@ -26,12 +26,12 @@ const PetRequest = ({ isActive, onClose }) => {
                 x
               </div>
               <h2 className="text-center text-4xl font-extrabold text-white">
-                ¿Cómo adoptar a NOMBRE MASCOTA PROP?
+                ¿Cómo adoptar a {petName}?
               </h2>
               <p>¡Gracias por darle una nueva oportunidad a un animal!</p>
               <p>
-                Ahora solo necesitas comunicarte con la persona que registró a
-                NOMBRE MASCOTA PROP.
+                Ahora solo necesitas comunicarte con la persona que registró a 
+                {petName}.
               </p>
               <form
                 method="POST"
