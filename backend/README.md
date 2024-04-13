@@ -95,7 +95,14 @@ cd c17-71-m-python/backend
     python3 manage.py migrate --settings=settings.environments.development
     ```
 
-- **Paso 5 (Iniciar el servidor):** Para iniciar el servidor de manera local ejecuta el siguiente comando.
+- **Paso 5 (poblar las tablas auxiliares de la tabla pets):** La tabla `pets` utiliza tablas auxiliares que se utilizan para el registro de mascotas, para poblar estas tablas debes ejecutar los siguientes comandos.
+
+    ```bash
+    python3 manage.py addpettypes --settings=settings.environments.development
+    python3 manage.py addpetsextypes --settings=settings.environments.development
+    ```
+
+- **Paso 6 (Iniciar el servidor):** Para iniciar el servidor de manera local ejecuta el siguiente comando.
 
     ```bash
     python3 manage.py runserver --settings=settings.environments.development
@@ -118,6 +125,9 @@ cd c17-71-m-python/backend
 De esta manera podrás usar todas las funcionalidades que este proyecto tiene para ofrecer. Es importante que hayas seguido todos los pasos explicados en el orden establecido.
 
 ## 3. Instalación de hooks
+
+> [!NOTE]
+> Si vas a contribuir al proyecto debes ejecutar estos comandos.
 
 Los ganchos de Git son scripts que Git ejecuta antes o después de eventos como: `commits`, `push` y `receive`. Son una característica integrada de Git y se utilizan para automatizar tareas en el flujo de trabajo de desarrollo de software. Por ejemplo, puede utilizar un _hook_ de **pre-commit** para ejecutar el conjunto de pruebas configuradas antes de cada _commit_, evitando confirmaciones con pruebas fallidas.
 
