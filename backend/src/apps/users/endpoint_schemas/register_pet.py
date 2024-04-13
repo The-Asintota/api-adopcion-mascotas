@@ -4,6 +4,7 @@ from drf_spectacular.utils import (
     OpenApiResponse,
     OpenApiExample,
 )
+from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
 
 
 GetEndPointSchema = extend_schema(
@@ -42,14 +43,27 @@ GetEndPointSchema = extend_schema(
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "type_pet": [
+                            "pet_type": [
                                 "Loro no es una elección válida.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "shelter_uuid": [
+                            "pet_sex": [
+                                "M no es una elección válida.",
+                                "Este campo es requerido.",
+                                "Este campo no puede estar en blanco.",
+                                "Este campo no puede ser nulo.",
+                            ],
+                            "shelter": [
                                 "58774f38-96f3-4550-a212-d35923c5bf9e is not a valid UUID.",
+                                "Este campo es requerido.",
+                                "Este campo no puede estar en blanco.",
+                                "Este campo no puede ser nulo.",
+                            ],
+                            "race": [
+                                "El valor ingresado es inválido.",
+                                "El valor ingresad no puede tener más de 50 caracteres.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
@@ -109,12 +123,13 @@ GetSerializerSchema = extend_schema_serializer(
         OpenApiExample(
             name="data_valid",
             summary="Register a new pet.",
-            description="A valid pet registration data. The following validation rules are applied:\n- **name:** the name must be less than 50 characters.\n- **type_pet:** the type of pet must be either 'Perro' or 'Gato'.\n- **shelter_uuid:** the shelter UUID must be a valid UUID.\n- **age:** the age must be between 1 and 99.\n\nObservations, description, and image fields are optional.",
+            description=f"A valid pet registration data. The following validation rules are applied:\n- **name:** the name must be less than 50 characters.\n- **pet_type:** the type of pet must be either {' or '.join(PET_TYPES)}.\n- **pet_sex:** the sex of the pet must be {' or '.join(PET_SEX_TYPES)}.\n- **shelter:** the shelter UUID must be a valid UUID.\n- **age:** the age must be between 1 and 99.\n\nObservations, description, and image fields are optional.",
             value={
                 "name": "Hector",
-                "type_pet": "Perro",
-                "shelter_uuid": "58774f38-96f3-4550-a212-d35923c5bf9e",
+                "pet_type": PET_TYPES[0],
+                "shelter": "58774f38-96f3-4550-a212-d35923c5bf9e",
                 "race": "Pastor alemán",
+                "pet_sex": PET_SEX_TYPES[0],
                 "age": 2,
                 "observations": "Cachorro muy juguetón.",
                 "description": "Cachorro muy juguetón.",

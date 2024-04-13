@@ -3,6 +3,7 @@ from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
+from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
 from apps.users.endpoint_schemas.register_pet import GetSerializerSchema
 
 
@@ -21,14 +22,25 @@ class RegisterPetSerializer(ErrorMessages):
         required=True,
         max_length=50,
     )
-    type_pet = serializers.ChoiceField(
+    pet_type = serializers.ChoiceField(
         required=True,
         error_messages={
-            "invalid_choice": "{input} no es una elección válida."
+            "invalid_choice": COMMON_ERROR_MESSAGES["invalid_choice"].format(
+                input="{input}"
+            ),
         },
-        choices=["Perro", "Gato"],
+        choices=PET_TYPES,
     )
-    shelter_uuid = serializers.UUIDField(
+    pet_sex = serializers.ChoiceField(
+        required=True,
+        error_messages={
+            "invalid_choice": COMMON_ERROR_MESSAGES["invalid_choice"].format(
+                input="{input}"
+            ),
+        },
+        choices=PET_SEX_TYPES,
+    )
+    shelter = serializers.UUIDField(
         required=True,
         error_messages={"invalid": "{input} is not a valid UUID."},
     )

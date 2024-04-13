@@ -6,7 +6,8 @@ from .models import (
     JWTBlacklist,
     AdminUser,
     Pet,
-    TypePet,
+    PetType,
+    PetSex,
 )
 
 
@@ -79,8 +80,8 @@ class JWTBlacklistAdminPanel(admin.ModelAdmin):
     Admin panel configuration for the `JWTBlacklist` model.
     """
 
-    list_display = ("id", "token_id", "date_joined")
-    search_fields = ("token_id",)
+    list_display = ("id", "token", "date_joined")
+    search_fields = ("token",)
 
 
 class PetAdminPanel(admin.ModelAdmin):
@@ -90,7 +91,8 @@ class PetAdminPanel(admin.ModelAdmin):
 
     list_display = (
         "pet_uuid",
-        "type_pet",
+        "pet_type",
+        "pet_sex",
         "shelter",
         "pet_name",
         "race",
@@ -100,17 +102,36 @@ class PetAdminPanel(admin.ModelAdmin):
         "image",
         "date_joined",
     )
-    search_fields = ("pet_uuid", "type_pet", "shelter", "date_joined")
+    search_fields = (
+        "pet_uuid",
+        "pet_type",
+        "pet_sex",
+        "shelter",
+        "date_joined",
+    )
 
 
-class TypePetAdminPanel(admin.ModelAdmin):
+class PetTypeAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the `TypePet` model.
+    Admin panel configuration for the `PetType` model.
     """
 
     list_display = (
         "id",
-        "type_name",
+        "type",
+        "date_joined",
+    )
+    search_fields = ("id",)
+
+
+class PetSexAdminPanel(admin.ModelAdmin):
+    """
+    Admin panel configuration for the `PetSex` model.
+    """
+
+    list_display = (
+        "id",
+        "sex",
         "date_joined",
     )
     search_fields = ("id",)
@@ -122,4 +143,5 @@ admin.site.register(AdminUser, AdminUserAdminPanel)
 admin.site.register(JWT, JWTAdminPanel)
 admin.site.register(JWTBlacklist, JWTBlacklistAdminPanel)
 admin.site.register(Pet, PetAdminPanel)
-admin.site.register(TypePet, TypePetAdminPanel)
+admin.site.register(PetType, PetTypeAdminPanel)
+admin.site.register(PetSex, PetSexAdminPanel)

@@ -103,6 +103,7 @@ class RegisterShelterSerializer(ErrorMessages):
     )
 
     def validate_password(self, value: str) -> str:
+
         try:
             validate_password(value)
         except ValidationError:
@@ -119,6 +120,7 @@ class RegisterShelterSerializer(ErrorMessages):
         return value
 
     def validate_email(self, value: str) -> str:
+
         try:
             _ = UserRepository.get_shelter(email=value)
         except ResourceNotFoundError:
@@ -129,7 +131,20 @@ class RegisterShelterSerializer(ErrorMessages):
             detail=COMMON_ERROR_MESSAGES["email_in_use"],
         )
 
+    def validate_shelter_name(self, value: str) -> str:
+
+        try:
+            _ = UserRepository.get_shelter(shelter_name=value)
+        except ResourceNotFoundError:
+            return value
+
+        raise serializers.ValidationError(
+            code="invalid_data",
+            detail=COMMON_ERROR_MESSAGES["name_in_use"],
+        )
+
     def validate(self, data: Dict[str, str]) -> Dict[str, str]:
+
         password = data["password"]
         confirm_password = data["confirm_password"]
 

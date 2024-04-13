@@ -149,9 +149,14 @@ class Shelter(models.Model):
         to="BaseUser",
         to_field="uuid",
         on_delete=models.CASCADE,
+        null=True,
     )
     shelter_name = models.CharField(
-        db_column="shelter_name", max_length=50, blank=False, null=False
+        db_column="shelter_name",
+        max_length=50,
+        unique=True,
+        blank=False,
+        null=False,
     )
     address = models.CharField(
         db_column="address", max_length=100, blank=False, null=False
@@ -189,9 +194,14 @@ class AdminUser(models.Model):
         to="BaseUser",
         to_field="uuid",
         on_delete=models.CASCADE,
+        null=True,
     )
     admin_name = models.CharField(
-        db_column="admin_name", max_length=50, blank=False, null=False
+        db_column="admin_name",
+        max_length=50,
+        unique=True,
+        blank=False,
+        null=False,
     )
 
     def __str__(self):
@@ -254,11 +264,12 @@ class JWTBlacklist(models.Model):
     """
 
     id = models.BigAutoField(db_column="id", primary_key=True)
-    token_id = models.OneToOneField(
-        db_column="token_id",
+    token = models.OneToOneField(
+        db_column="token",
         to="JWT",
         to_field="id",
         on_delete=models.CASCADE,
+        null=True,
     )
     date_joined = models.DateTimeField(
         db_column="date_joined", auto_now_add=True
@@ -271,7 +282,7 @@ class JWTBlacklist(models.Model):
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
-        return f"Blacklisted token for {self.token_id.user}"
+        return f"Blacklisted token for {self.token.user}"
 
 
 class Pet(models.Model):
@@ -282,17 +293,26 @@ class Pet(models.Model):
     pet_uuid = models.UUIDField(
         db_column="pet_uuid", primary_key=True, default=uuid4
     )
-    type_pet = models.ForeignKey(
-        db_column="type_pet",
-        to="TypePet",
+    pet_type = models.ForeignKey(
+        db_column="pet_type",
+        to="PetType",
         to_field="id",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    pet_sex = models.ForeignKey(
+        db_column="pet_sex",
+        to="PetSex",
+        to_field="id",
+        on_delete=models.SET_NULL,
+        null=True,
     )
     shelter = models.ForeignKey(
         db_column="shelter",
         to="Shelter",
         to_field="shelter_uuid",
         on_delete=models.CASCADE,
+        null=True,
     )
     pet_name = models.CharField(
         db_column="pet_name", max_length=50, blank=False, null=False
@@ -326,24 +346,47 @@ class Pet(models.Model):
         return f"Pet {self.pet_name} from Shelter {self.shelter.shelter_name}"
 
 
-class TypePet(models.Model):
+class PetType(models.Model):
     """
-    This model represents the type of pet that is available in the system.
+    This model represents the type pet that is available in the system.
     """
 
     id = models.BigAutoField(db_column="id", primary_key=True)
-    type_name = models.CharField(
-        db_column="type_name", max_length=50, blank=False, null=False
+    type = models.CharField(
+        db_column="type", max_length=50, blank=False, null=False
     )
     date_joined = models.DateTimeField(
         db_column="date joined", auto_now_add=True
     )
 
     class Meta:
-        db_table = "type_pet"
-        verbose_name = "TypePet"
-        verbose_name_plural = "TypePets"
+        db_table = "pet_types"
+        verbose_name = "pet_type"
+        verbose_name_plural = "pet_types"
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
-        return f"Pet of type {self.type_name}"
+        return f"Pet type {self.id}"
+
+
+class PetSex(models.Model):
+    """
+    This model represents the type sex for pets that is available in the system.
+    """
+
+    id = models.BigAutoField(db_column="id", primary_key=True)
+    sex = models.CharField(
+        db_column="sex", max_length=50, blank=False, null=False
+    )
+    date_joined = models.DateTimeField(
+        db_column="date joined", auto_now_add=True
+    )
+
+    class Meta:
+        db_table = "pet_sexs"
+        verbose_name = "pet_sex"
+        verbose_name_plural = "pet_sexs"
+        ordering = ["-date_joined"]
+
+    def __str__(self) -> str:
+        return f"Sex type: {self.id}"

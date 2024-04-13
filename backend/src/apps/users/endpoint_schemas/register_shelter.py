@@ -61,6 +61,7 @@ GetEndPointSchema = extend_schema(
                             ],
                             "shelter_name": [
                                 "El nombre no puede tener más de 50 caracteres.",
+                                "Este nombre ya está en uso.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
@@ -147,11 +148,11 @@ GetSerializerSchema = extend_schema_serializer(
         OpenApiExample(
             name="data_valid",
             summary="Register a new shelter.",
-            description="A valid shelter registration data. The following validations will be applied:\n- **email:** Must be in a valid email format, no longer than 40 characters and not in use.\n- **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.\n- **confirm_password:** Must match the password.\n- **phone_number:** Must be a valid phone number, no longer than 25 characters.\n- **shelter_name:** Must not be longer than 50 characters.\n- **address:** Must not be longer than 100 characters.\n- **responsible:** Must not be longer than 50 characters.\n- **logo_url:** Must not be longer than 200 characters.",
+            description="A valid shelter registration data. The following validations will be applied:\n- **email:** Must be in a valid email format, no longer than 40 characters and not in use.\n- **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.\n- **confirm_password:** Must match the password.\n- **phone_number:** Must be a valid phone number, no longer than 25 characters.\n- **shelter_name:** Must not be longer than 50 characters and not in use.\n- **address:** Must not be longer than 100 characters.\n- **responsible:** Must not be longer than 50 characters.\n- **logo_url:** Must not be longer than 200 characters.",
             value={
                 "email": "shelter1@example.com",
-                "password": "contraseña123456789",
-                "confirm_password": "contraseña123456789",
+                "password": "contraseña1234",
+                "confirm_password": "contraseña1234",
                 "phone_number": "+57 3213149578",
                 "shelter_name": "Refugio de animales",
                 "address": "Calle 123 # 45-67",

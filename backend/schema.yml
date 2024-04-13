@@ -41,7 +41,7 @@ paths:
                   - **email:** Must be in a valid email format, no longer than 40 characters and not in use.
                   - **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
                   - **confirm_password:** Must match the password.
-                  - **admin_name:** Must not be longer than 50 characters.
+                  - **admin_name:** Must not be longer than 50 characters and not in use.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegisterAdminRequest'
@@ -288,9 +288,10 @@ paths:
               DataValid:
                 value:
                   name: Hector
-                  type_pet: Perro
-                  shelter_uuid: 58774f38-96f3-4550-a212-d35923c5bf9e
+                  pet_type: Perro
+                  shelter: 58774f38-96f3-4550-a212-d35923c5bf9e
                   race: Pastor alemán
+                  pet_sex: Macho
                   age: 2
                   observations: Cachorro muy juguetón.
                   description: Cachorro muy juguetón.
@@ -299,8 +300,9 @@ paths:
                 description: |-
                   A valid pet registration data. The following validation rules are applied:
                   - **name:** the name must be less than 50 characters.
-                  - **type_pet:** the type of pet must be either 'Perro' or 'Gato'.
-                  - **shelter_uuid:** the shelter UUID must be a valid UUID.
+                  - **pet_type:** the type of pet must be either Perro or Gato.
+                  - **pet_sex:** the sex of the pet must be Macho or Hembra.
+                  - **shelter:** the shelter UUID must be a valid UUID.
                   - **age:** the age must be between 1 and 99.
 
                   Observations, description, and image fields are optional.
@@ -338,13 +340,24 @@ paths:
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      type_pet:
+                      pet_type:
                       - Loro no es una elección válida.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      shelter_uuid:
+                      pet_sex:
+                      - M no es una elección válida.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      shelter:
                       - 58774f38-96f3-4550-a212-d35923c5bf9e is not a valid UUID.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      race:
+                      - El valor ingresado es inválido.
+                      - El valor ingresad no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
@@ -407,8 +420,8 @@ paths:
               DataValid:
                 value:
                   email: shelter1@example.com
-                  password: contraseña123456789
-                  confirm_password: contraseña123456789
+                  password: contraseña1234
+                  confirm_password: contraseña1234
                   phone_number: +57 3213149578
                   shelter_name: Refugio de animales
                   address: 'Calle 123 # 45-67'
@@ -421,7 +434,7 @@ paths:
                   - **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
                   - **confirm_password:** Must match the password.
                   - **phone_number:** Must be a valid phone number, no longer than 25 characters.
-                  - **shelter_name:** Must not be longer than 50 characters.
+                  - **shelter_name:** Must not be longer than 50 characters and not in use.
                   - **address:** Must not be longer than 100 characters.
                   - **responsible:** Must not be longer than 50 characters.
                   - **logo_url:** Must not be longer than 200 characters.
@@ -475,6 +488,7 @@ paths:
                       - Este campo no puede ser nulo.
                       shelter_name:
                       - El nombre no puede tener más de 50 caracteres.
+                      - Este nombre ya está en uso.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
@@ -560,6 +574,22 @@ components:
       required:
       - email
       - password
+    PetSexEnum:
+      enum:
+      - Macho
+      - Hembra
+      type: string
+      description: |-
+        * `Macho` - Macho
+        * `Hembra` - Hembra
+    PetTypeEnum:
+      enum:
+      - Perro
+      - Gato
+      type: string
+      description: |-
+        * `Perro` - Perro
+        * `Gato` - Gato
     RegisterAdminRequest:
       type: object
       description: Defines the data required to register a admin in the system.
@@ -595,9 +625,11 @@ components:
           type: string
           minLength: 1
           maxLength: 50
-        type_pet:
-          $ref: '#/components/schemas/TypePetEnum'
-        shelter_uuid:
+        pet_type:
+          $ref: '#/components/schemas/PetTypeEnum'
+        pet_sex:
+          $ref: '#/components/schemas/PetSexEnum'
+        shelter:
           type: string
           format: uuid
         race:
@@ -624,9 +656,10 @@ components:
       required:
       - age
       - pet_name
+      - pet_sex
+      - pet_type
       - race
-      - shelter_uuid
-      - type_pet
+      - shelter
     RegisterShelterRequest:
       type: object
       description: Defines the data required to register a shelter in the system.
@@ -674,18 +707,7 @@ components:
       - phone_number
       - responsible
       - shelter_name
-    TypePetEnum:
-      enum:
-      - Perro
-      - Gato
-      type: string
-      description: |-
-        * `Perro` - Perro
-        * `Gato` - Gato
 tags:
-- name: Users
-  description: It comprises all the endpoints that manage all the functionality related
-    to a user in the API.
 - name: JSON Web Token
   description: It comprises all the endpoints that manage all the functionality related
     to the authentication of a user in the API.

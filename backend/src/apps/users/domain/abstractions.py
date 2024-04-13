@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.tokens import Token
+from django.db.models import QuerySet
 from typing import Dict, Any, Protocol
-from apps.users.domain.typing import JWToken
+from apps.users.domain.typing import JWToken, StrUUID
 from apps.users.models import BaseUser, Shelter, JWT, Pet, AdminUser
 
 
@@ -119,19 +120,41 @@ class IPetRepository(Protocol):
         """
         Insert a new pet into the database.
 
-        Parameters:
+        #### Parameters:
         - data: A dictionary containing the pet data.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         ...
 
     @classmethod
-    def get_pet(cls, **filters) -> Pet:
+    def get_pet_by_filters(cls, **filters) -> QuerySet:
         """
         Retrieve a pet from the database based on the provided filters.
 
-        Parameters:
+        #### Parameters:
         - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no JWT matches the provided filters.
+        """
+
+        ...
+
+    @classmethod
+    def get_pet_by_uuid(cls, uuid: StrUUID) -> Pet:
+        """
+        Retrieve a pet from the database based on its UUID.
+
+        #### Parameters:
+        - uuid: The UUID of the pet to retrieve.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no pet matches the provided UUID.
         """
 
         ...
