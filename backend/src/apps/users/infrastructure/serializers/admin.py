@@ -91,6 +91,18 @@ class RegisterAdminSerializer(ErrorMessages):
             detail=COMMON_ERROR_MESSAGES["email_in_use"],
         )
 
+    def validate_admin_name(self, value: str) -> str:
+
+        try:
+            _ = UserRepository.get_admin(admin_name=value)
+        except ResourceNotFoundError:
+            return value
+
+        raise serializers.ValidationError(
+            code="invalid_data",
+            detail=COMMON_ERROR_MESSAGES["name_in_use"],
+        )
+
     def validate(self, data: Dict[str, str]) -> Dict[str, str]:
         password = data["password"]
         confirm_password = data["confirm_password"]
