@@ -18,5 +18,7 @@ RUN pip install --upgrade pip && \
   pip install -r requirements.txt
 
 CMD [ "sh", "-c", "python manage.py migrate --settings=settings.environments.production && \
+  python manage.py addpettypes --settings=settings.environments.production && \
+  python manage.py addpetsextypes --settings=settings.environments.production && \
   python manage.py collectstatic --noinput --clear --settings=settings.environments.production && \
   gunicorn settings.wsgi:application --env DJANGO_SETTINGS_MODULE=settings.environments.production" ]
