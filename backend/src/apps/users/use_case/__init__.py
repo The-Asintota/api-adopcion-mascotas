@@ -13,3 +13,4 @@ Classes:
 
 from .register import UserRegister, PetRegister
 from .authentication import Authentication
+from .list_pet_shelter import FindPetsByShelter
