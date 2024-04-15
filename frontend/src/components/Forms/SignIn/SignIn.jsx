@@ -3,13 +3,11 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
-/* import FormRequest from "../FormRequest"; */
 
 const SignIn = ({ isActive, onClose }) => {
   const {
     register,
     handleSubmit,
-    /*  getValues, */
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -36,6 +34,7 @@ const SignIn = ({ isActive, onClose }) => {
       })
       .then((response) => {
         if (response.status === 200) {
+          localStorage.setItem('token', response.data.access)
           setUserLogged(true);
           navigate("/shelter")
         } else if (response.status === 400) {
@@ -142,12 +141,6 @@ const SignIn = ({ isActive, onClose }) => {
                 >
                   Iniciar sesion
                 </button>
-                {/* <FormRequest
-                  endpoint={"/api/v1/auth/"}
-                  formData={getValues()}
-                  onSuccess={() => setUserLogged(true)}
-                  textButton="Iniciar Sesion"
-                /> */}
               </form>
             </div>
           </div>

@@ -13,7 +13,7 @@ const SignUpForm = ({ link, onClick }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
+      shelter_name: "",
       responsible: "",
       phone_number: "",
       email: "",
@@ -104,20 +104,20 @@ const SignUpForm = ({ link, onClick }) => {
           <input
             placeholder="Nombre de tu asociacion"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="name"
-            name="name"
+            id="shelter_name"
+            name="shelter_name"
             autoComplete="organization"
-            {...register("name", {
+            {...register("shelter_name", {
               required: "Este campo es obligatorio",
             })}
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="name"
+            htmlFor="shelter_name"
           >
             Nombre de la asociacion
           </label>
-          <ErrorMessage error={errors.name} />
+          <ErrorMessage error={errors.shelter_name} />
         </div>
         <div className="relative">
           <input
@@ -268,7 +268,7 @@ const SignUpForm = ({ link, onClick }) => {
         <FormRequest
           endpoint="/api/v1/shelter/"
           formData={{
-            name: getValues("name"),
+            shelter_name: getValues("shelter_name"),
             responsible: getValues("responsible"),
             phone_number:  getValues("phone_number"),
             email: getValues("email"),
