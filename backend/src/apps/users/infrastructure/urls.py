@@ -4,6 +4,7 @@ from .views import (
     AuthenticationAPIView,
     RegisterAdminAPIView,
     RegisterPetAPIView,
+    PetListByShelterApiView,
 )
 
 urlpatterns = [
@@ -26,5 +27,10 @@ urlpatterns = [
         route="pet/",
         view=RegisterPetAPIView.as_view(),
         name="register_pet",
+    ),
+    path(
+        route="pet/<str:shelter_uuid>/",
+        view=PetListByShelterApiView.as_view(),
+        name="list_pets_shelter",
     ),
 ]

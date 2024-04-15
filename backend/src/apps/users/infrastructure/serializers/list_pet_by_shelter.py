@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-class ListPetByShelterSerializers(serializers.Serializer):
+class ListPetByShelterSerializer(serializers.Serializer):
 
     pet_name = serializers.CharField(read_only=True)
     pet_type = serializers.ChoiceField(read_only=True)
