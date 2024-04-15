@@ -1,26 +1,30 @@
-import React, { useContext, useEffect } from "react";
+// Shelter.js
+
+import React from "react";
 import Header from "../components/Header/Header";
-import AdoptionSection from "../components/AdoptionSection/AdoptionSection";
-import ProtectorasSection from "../components/ProtectorasSection/ProtectorasSection";
+import ShelterProfile from "../components/ShelterProfile";
 import Footer from "../components/Footer/Footer";
-import { AdminContext } from "../context/admin";
 import { USERS } from "../../utils/constants";
 import useUser from "../hooks/useUser";
 
 const Shelter = () => {
-  const { user, setUser } = useUser({ userType: null})
-  const token = localStorage.getItem('token');
+  const { user } = useUser({ userType: USERS.SHELTER });
+/*   const token = localStorage.getItem("token"); */
 
-  if (token) {
-    setUser({userType: USERS.SHELTER})
-  }
+/*   const renderShelterProfile = () => {
+    if (token) {
+      return <ShelterProfile />;
+    } else {
+      return <p>No hay token</p>;
+    }
+  }; */
 
   return (
     <>
-      {}
       <Header />
+      {/* <main>{renderShelterProfile()}</main> */}
       <main>
-        {user === USERS.SHELTER ? <AdoptionSection /> : <ProtectorasSection />}
+        <ShelterProfile/>
       </main>
       <Footer />
     </>
