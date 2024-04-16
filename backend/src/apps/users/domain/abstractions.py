@@ -1,8 +1,8 @@
 from rest_framework_simplejwt.tokens import Token
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Model
 from typing import Dict, Any, Protocol
 from apps.users.domain.typing import JWToken, StrUUID
-from apps.users.models import BaseUser, Shelter, JWT, Pet, AdminUser
+from apps.users.models import BaseUser, JWT, Pet, Shelter, AdminUser
 
 
 class IUserRepository(Protocol):
@@ -17,10 +17,35 @@ class IUserRepository(Protocol):
     @classmethod
     def create_user(cls, data: Dict[str, str], role: str) -> None:
         """
-        Insert a new user into the database.
+        Insert a new user into the database and add it to the directory.
 
-        Parameters:
+        #### Parameters:
         - data: A dictionary containing the user data.
+        - role: The role of the user to be created.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        """
+
+        ...
+
+    @classmethod
+    def get_user(cls, uuid: StrUUID = None, **other_fields) -> Model:
+        """
+        Retrieve a user from the database according to the provided filters, the
+        search is performed on the `UserDIrectory` table.
+
+        #### Parameters:
+        - uuid: The UUID of the user to retrieve.
+        - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no shelters matches the provided filters.
+        - ValueError: If the `uuid` and `email` fields are not provided.
+
+        #### Returns:
+        - An instance of the `Shelter` or `AdminUser` model.
         """
 
         ...
@@ -29,6 +54,13 @@ class IUserRepository(Protocol):
     def get_shelter(cls, **filters) -> Shelter:
         """
         Retrieve a shelter from the database based on the provided filters.
+
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         ...
@@ -37,6 +69,13 @@ class IUserRepository(Protocol):
     def get_admin(cls, **filters) -> AdminUser:
         """
         Retrieve a admin user from the database based on the provided filters.
+
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         ...

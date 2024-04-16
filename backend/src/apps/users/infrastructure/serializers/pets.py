@@ -44,7 +44,7 @@ class RegisterPetSerializer(ErrorMessages):
         required=True,
         error_messages={"invalid": "{input} is not a valid UUID."},
     )
-    race = serializers.CharField(
+    pet_race = serializers.CharField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"
@@ -53,7 +53,7 @@ class RegisterPetSerializer(ErrorMessages):
         required=True,
         max_length=50,
     )
-    age = serializers.IntegerField(
+    pet_age = serializers.IntegerField(
         error_messages={
             "max_value": "Asegúrate que este valor sea menor o igual a {max_value}.",
             "min_value": "Asegúrate que este valor sea mayor o igual a {min_value}.",
@@ -65,7 +65,7 @@ class RegisterPetSerializer(ErrorMessages):
         max_value=99,
         min_value=1,
     )
-    observations = serializers.CharField(
+    pet_observations = serializers.CharField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"
@@ -74,7 +74,7 @@ class RegisterPetSerializer(ErrorMessages):
         required=False,
         max_length=200,
     )
-    description = serializers.CharField(
+    pet_description = serializers.CharField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"
@@ -83,7 +83,7 @@ class RegisterPetSerializer(ErrorMessages):
         required=False,
         max_length=200,
     )
-    image = serializers.URLField(
+    pet_image = serializers.URLField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"

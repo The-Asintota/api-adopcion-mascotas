@@ -42,15 +42,14 @@ class ShelterAdminPanel(admin.ModelAdmin):
     """
 
     list_display = (
-        "shelter_uuid",
         "base_user",
         "shelter_name",
-        "address",
-        "phone_number",
-        "responsible",
-        "logo_url",
+        "shelter_address",
+        "shelter_phone_number",
+        "shelter_responsible",
+        "shelter_logo",
     )
-    search_fields = ("shelter_uuid", "base_user")
+    search_fields = ("base_user",)
 
 
 class AdminUserAdminPanel(admin.ModelAdmin):
@@ -59,11 +58,10 @@ class AdminUserAdminPanel(admin.ModelAdmin):
     """
 
     list_display = (
-        "admin_uuid",
         "base_user",
         "admin_name",
     )
-    search_fields = ("admin_uuid", "base_user")
+    search_fields = ("base_user",)
 
 
 class JWTAdminPanel(admin.ModelAdmin):
@@ -71,8 +69,16 @@ class JWTAdminPanel(admin.ModelAdmin):
     Admin panel configuration for the `JWT` model.
     """
 
-    list_display = ("id", "user", "jti", "token", "date_joined", "expires_at")
-    search_fields = ("user", "jti")
+    list_display = (
+        "jwt_uuid",
+        "user_uuid",
+        "content_type",
+        "jti",
+        "token",
+        "date_joined",
+        "expires_at",
+    )
+    search_fields = ("user_uuid", "jti")
 
 
 class JWTBlacklistAdminPanel(admin.ModelAdmin):
@@ -80,8 +86,8 @@ class JWTBlacklistAdminPanel(admin.ModelAdmin):
     Admin panel configuration for the `JWTBlacklist` model.
     """
 
-    list_display = ("id", "token", "date_joined")
-    search_fields = ("token",)
+    list_display = ("token_id", "date_joined")
+    search_fields = ("token_id",)
 
 
 class PetAdminPanel(admin.ModelAdmin):
@@ -95,11 +101,11 @@ class PetAdminPanel(admin.ModelAdmin):
         "pet_sex",
         "shelter",
         "pet_name",
-        "race",
-        "age",
-        "observations",
-        "description",
-        "image",
+        "pet_race",
+        "pet_age",
+        "pet_observations",
+        "pet_description",
+        "pet_image",
         "date_joined",
     )
     search_fields = (

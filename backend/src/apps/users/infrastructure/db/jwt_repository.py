@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.utils import datetime_from_epoch
 from django.db.models import Q
 from django.db import OperationalError
+from apps.users.infrastructure.db import UserRepository
 from apps.users.infrastructure.utils import decode_jwt
 from apps.users.domain.typing import JWToken
 from apps.users.models import BaseUser, JWT, JWTBlacklist
@@ -15,6 +16,7 @@ class JWTRepository:
 
     jwt_model = JWT
     blacklist_model = JWTBlacklist
+    user_repository = UserRepository
 
     @classmethod
     def _create_query(cls, **filters) -> Q:
@@ -34,12 +36,12 @@ class JWTRepository:
         """
         Retrieve a JWT from the database based on the provided filters.
 
-        Parameters:
-            - filters: Keyword arguments that define the filters to apply.
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
-            - ResourceNotFoundError: If no JWT matches the provided filters.
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         try:
@@ -67,12 +69,12 @@ class JWTRepository:
         This way you can keep track of which tokens are associated with which
         users, and which tokens created are pending expiration or invalidation.
 
-        Parameters:
-            - token: A JWToken.
-            - user: An instance of the BaseUser model.
+        #### Parameters:
+        - token: A JWToken.
+        - user: An instance of the BaseUser model.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         payload = decode_jwt(token=token)
@@ -81,7 +83,7 @@ class JWTRepository:
             cls.jwt_model.objects.create(
                 jti=payload["jti"],
                 token=token,
-                user=user,
+                content_object=user,
                 expires_at=datetime_from_epoch(ts=payload["exp"]),
             )
         except OperationalError:
@@ -97,15 +99,15 @@ class JWTRepository:
         Once a token is blacklisted, it can no longer be used for authentication
         purposes until it is removed from the blacklist or has expired.
 
-        Parameters:
-            - token: An instance of the `JWT` model.
+        #### Parameters:
+        - token: An instance of the `JWT` model.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         try:
-            cls.blacklist_model.objects.create(token=token)
+            cls.blacklist_model.objects.create(token_id=token)
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.

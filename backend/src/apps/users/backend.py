@@ -17,11 +17,7 @@ class EmailBackend(ModelBackend):
         self, request: Request, email: str, password: str
     ) -> Optional[BaseUser]:
         try:
-            user: BaseUser = (
-                UserRepository._get_model(name="base_user")
-                .objects.filter(email=email)
-                .first()
-            )
+            user = UserRepository.get_user(email=email)
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
@@ -30,4 +26,8 @@ class EmailBackend(ModelBackend):
         if not user:
             return None
 
-        return user if user.check_password(raw_password=password) else None
+        return (
+            user
+            if user.base_user.check_password(raw_password=password)
+            else None
+        )

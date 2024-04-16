@@ -55,7 +55,7 @@ class RegisterShelterSerializer(ErrorMessages):
     confirm_password = serializers.CharField(
         required=True, write_only=True, style={"input_type": "password"}
     )
-    phone_number = PhoneNumberField(
+    shelter_phone_number = PhoneNumberField(
         required=True,
         error_messages={
             "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
@@ -76,14 +76,14 @@ class RegisterShelterSerializer(ErrorMessages):
         required=True,
         max_length=50,
     )
-    address = serializers.CharField(
+    shelter_address = serializers.CharField(
         error_messages={
             "max_length": "La dirección no puede tener más de {max_length} caracteres.",
         },
         required=True,
         max_length=100,
     )
-    responsible = serializers.CharField(
+    shelter_responsible = serializers.CharField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"
@@ -92,7 +92,7 @@ class RegisterShelterSerializer(ErrorMessages):
         required=True,
         max_length=50,
     )
-    logo_url = serializers.URLField(
+    shelter_logo = serializers.URLField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"

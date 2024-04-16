@@ -69,7 +69,7 @@ class PetRepository:
                 pet_type=cls.pet_type_model.objects.get(type=pet_type),
                 pet_sex=cls.pet_sex_model.objects.get(sex=pet_sex),
                 shelter=cls.shelter_repository.get_shelter(
-                    shelter_uuid=shelter_uuid
+                    base_user=shelter_uuid
                 ),
                 **data,
             )

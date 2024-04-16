@@ -1,11 +1,13 @@
-from django.db.models import Q, Model
+from django.db.models import Model, Q
 from django.db import OperationalError
 from typing import Dict
+from apps.users.domain.typing import StrUUID
 from apps.users.models import (
     BaseUser,
     Shelter,
     AdminUser,
     CustomUserManager,
+    UserDirectory,
 )
 from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
 
@@ -16,11 +18,15 @@ class UserRepository:
     operations for the `Shelter` and `AdminUser` models.
     """
 
-    models = {
-        "base_user": BaseUser,
+    role_models = {
         "shelter": Shelter,
         "admin": AdminUser,
     }
+    related_fields = {
+        field.name: "base_user" for field in BaseUser._meta.get_fields()
+    }
+    user_directory_model = UserDirectory
+    base_user_model = BaseUser
 
     @classmethod
     def _get_model(cls, name: str) -> Model:
@@ -28,87 +34,136 @@ class UserRepository:
         Method to get the model class based on the provided model name.
         """
 
-        return cls.models[name]
+        return cls.role_models[name]
 
     @classmethod
-    def _create_base_user(cls, email: str, password: str) -> BaseUser:
+    def _create_query_params(cls, **filters) -> Q:
         """
-        Inserts a new user into the database.
+        Create a Q object based on the provided filters.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
         """
 
-        try:
-            user_manager: CustomUserManager = cls._get_model(
-                name="base_user"
-            ).objects
-            base_user = user_manager.create_base_user(
-                email=email,
-                password=password,
-            )
-        except OperationalError:
-            # In the future, a retry system will be implemented when the database is
-            # suddenly unavailable.
-            raise DatabaseConnectionError()
+        query_params = Q()
 
-        return base_user
+        for field, value in filters.items():
+            foreign_key = cls.related_fields.get(field, None)
+            if foreign_key:
+                query_params &= Q(**{f"{foreign_key}__{field}": value})
+                continue
+            query_params &= Q(**{field: value})
+
+        return query_params
 
     @classmethod
     def create_user(cls, data: Dict[str, str], role: str) -> None:
         """
-        Insert a new user into the database.
+        Insert a new user into the database and add it to the directory.
 
-        Parameters:
-            - data: A dictionary containing the user data.
+        #### Parameters:
+        - data: A dictionary containing the user data.
+        - role: The role of the user to be created.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
-        base_user = cls._create_base_user(
-            email=data["email"], password=data["password"]
-        )
-        del data["email"]
-        del data["password"]
+        email = data.pop("email")
+        password = data.pop("password")
+        user_manager: CustomUserManager = cls.base_user_model.objects
 
         try:
-            cls._get_model(name=role).objects.create(
-                base_user=base_user,
+            user = cls._get_model(name=role).objects.create(
+                base_user=user_manager.create_base_user(
+                    email=email,
+                    password=password,
+                ),
                 **data,
             )
+            cls.user_directory_model.objects.create(content_object=user)
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
+
+    @classmethod
+    def get_user(cls, uuid: StrUUID = None, **other_fields) -> Model:
+        """
+        Retrieves a user from the database according to the provided filters, the
+        search is performed on the `UserDirectory` table. This method should be used
+        if you do `not know the role` of the user you want to search for.
+
+        #### Parameters:
+        - uuid: The UUID of the user to retrieve.
+        - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no shelters matches the provided filters.
+        - ValueError: If the `uuid` and `email` fields are not provided.
+
+        #### Returns:
+        - An instance of the `Shelter` or `AdminUser` model.
+        """
+
+        if (uuid is None and "email" not in other_fields) or (
+            uuid is not None and "email" in other_fields
+        ):
+            raise ValueError("Either uuid or email must be provided.")
+
+        try:
+            if not uuid:
+                base_user = cls.base_user_model.objects.filter(
+                    **other_fields
+                ).first()
+                uuid = base_user.uuid if base_user else None
+            generic_relationship = (
+                cls.user_directory_model.objects.select_related("content_type")
+                .filter(user_uuid=uuid)
+                .first()
+            )
+
+            if generic_relationship:
+                user = (
+                    generic_relationship.content_type.model_class()
+                    .objects.select_related("base_user")
+                    .filter(base_user=uuid)
+                    .first()
+                )
+            else:
+                user = None
+        except OperationalError:
+            # In the future, a retry system will be implemented when the database is
+            # suddenly unavailable.
+            raise DatabaseConnectionError()
+
+        if not user:
+            raise ResourceNotFoundError(
+                code="user_not_found",
+                detail=f"user with the {uuid or other_fields} was not found.",
+            )
+
+        return user
 
     @classmethod
     def get_shelter(cls, **filters) -> Shelter:
         """
         Retrieve a shelter from the database based on the provided filters.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
-            - ResourceNotFoundError: If no JWT matches the provided filters.
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
-
-        query_params = Q()
-        fields_base_user_model = [
-            field.name
-            for field in cls._get_model(name="base_user")._meta.get_fields()
-        ]
-
-        for field, value in filters.items():
-            if field in fields_base_user_model:
-                query_params &= Q(**{f"base_user__{field}": value})
-                continue
-            query_params &= Q(**{field: value})
 
         try:
             shelter = (
                 cls._get_model(name="shelter")
                 .objects.select_related("base_user")
-                .filter(query_params)
+                .filter(cls._create_query_params(**filters))
                 .first()
             )
         except OperationalError:
@@ -132,28 +187,19 @@ class UserRepository:
         """
         Retrieve a admin user from the database based on the provided filters.
 
-        Raises:
-            - DatabaseConnectionError: If there is an operational error with the database.
-            - ResourceNotFoundError: If no JWT matches the provided filters.
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
-
-        query_params = Q()
-        fields_base_user_model = [
-            field.name
-            for field in cls._get_model(name="base_user")._meta.get_fields()
-        ]
-
-        for field, value in filters.items():
-            if field in fields_base_user_model:
-                query_params &= Q(**{f"base_user__{field}": value})
-                continue
-            query_params &= Q(**{field: value})
 
         try:
             admin = (
                 cls._get_model(name="admin")
                 .objects.select_related("base_user")
-                .filter(query_params)
+                .filter(cls._create_query_params(**filters))
                 .first()
             )
         except OperationalError:

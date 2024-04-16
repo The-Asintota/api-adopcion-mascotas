@@ -4,6 +4,8 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from phonenumber_field.modelfields import PhoneNumberField
 from uuid import uuid4, UUID
 
@@ -122,9 +124,9 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     class Meta:
-        db_table = "base_users"
-        verbose_name = "base user"
-        verbose_name_plural = "base users"
+        db_table = "base_user"
+        verbose_name = "Base user"
+        verbose_name_plural = "Base users"
         ordering = ["is_active", "-date_joined"]
         indexes = [
             models.Index(
@@ -133,7 +135,7 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
         ]
 
     def __str__(self):
-        return self.email
+        return self.uuid.__str__()
 
 
 class Shelter(models.Model):
@@ -141,15 +143,12 @@ class Shelter(models.Model):
     Shelter is a model that represents a type of user in the system.
     """
 
-    shelter_uuid = models.UUIDField(
-        db_column="shelter_uuid", primary_key=True, default=uuid4
-    )
     base_user = models.OneToOneField(
         db_column="base_user",
         to="BaseUser",
         to_field="uuid",
         on_delete=models.CASCADE,
-        null=True,
+        primary_key=True,
     )
     shelter_name = models.CharField(
         db_column="shelter_name",
@@ -158,24 +157,27 @@ class Shelter(models.Model):
         blank=False,
         null=False,
     )
-    address = models.CharField(
-        db_column="address", max_length=100, blank=False, null=False
+    shelter_address = models.CharField(
+        db_column="shelter_address", max_length=100, blank=False, null=False
     )
-    phone_number = PhoneNumberField(
-        db_column="phone_number", max_length=25, blank=False, null=False
+    shelter_phone_number = PhoneNumberField(
+        db_column="shelter_phone_number",
+        max_length=25,
+        blank=False,
+        null=False,
     )
-    responsible = models.CharField(
-        db_column="responsible", max_length=50, blank=False, null=False
+    shelter_responsible = models.CharField(
+        db_column="shelter_responsible", max_length=50, blank=False, null=False
     )
-    logo_url = models.URLField(
-        db_column="logo_url", max_length=200, blank=False, null=False
+    shelter_logo = models.URLField(
+        db_column="shelter_logo", max_length=200, blank=False, null=False
     )
 
     def __str__(self):
         return self.shelter_name
 
     class Meta:
-        db_table = "shelters"
+        db_table = "shelter"
         verbose_name = "Shelter"
         verbose_name_plural = "Shelters"
         ordering = ["-base_user__date_joined"]
@@ -186,15 +188,12 @@ class AdminUser(models.Model):
     AdminUser is a model that represents a type of user in the system.
     """
 
-    admin_uuid = models.UUIDField(
-        db_column="admin_uuid", primary_key=True, default=uuid4
-    )
     base_user = models.OneToOneField(
         db_column="base_user",
         to="BaseUser",
         to_field="uuid",
         on_delete=models.CASCADE,
-        null=True,
+        primary_key=True,
     )
     admin_name = models.CharField(
         db_column="admin_name",
@@ -208,10 +207,37 @@ class AdminUser(models.Model):
         return self.admin_name
 
     class Meta:
-        db_table = "administrators"
-        verbose_name = "administrator"
-        verbose_name_plural = "administrators"
+        db_table = "admin"
+        verbose_name = "Admin"
+        verbose_name_plural = "Admins"
         ordering = ["-base_user__date_joined"]
+
+
+class UserDirectory(models.Model):
+    """
+    UserDirectory is a model that represents a list of all users in the system.
+    """
+
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
+    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
+    user_uuid = models.UUIDField(
+        db_column="user_uuid",
+        null=False,
+        blank=False,
+        db_index=True,
+        unique=True,
+    )
+    content_object = GenericForeignKey(
+        ct_field="content_type", fk_field="user_uuid"
+    )
+
+    class Meta:
+        db_table = "user_directory"
+        verbose_name = "User directory"
+        verbose_name_plural = "User directories"
+
+    def __str__(self):
+        return f"Object id {self.user_uuid} ({self.content_type})"
 
 
 class JWT(models.Model):
@@ -220,13 +246,18 @@ class JWT(models.Model):
     users and which created tokens are pending expiration or invalidation.
     """
 
-    id = models.BigAutoField(db_column="id", primary_key=True)
-    user = models.ForeignKey(
-        db_column="user",
-        to="BaseUser",
-        to_field="uuid",
-        on_delete=models.SET_NULL,
-        null=True,
+    jwt_uuid = models.UUIDField(
+        db_column="jwt_uuid", primary_key=True, default=uuid4
+    )
+    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
+    user_uuid = models.UUIDField(
+        db_column="user_uuid",
+        null=False,
+        blank=False,
+        db_index=True,
+    )
+    content_object = GenericForeignKey(
+        ct_field="content_type", fk_field="user_uuid"
     )
     jti = models.CharField(
         db_column="jti",
@@ -246,13 +277,13 @@ class JWT(models.Model):
 
     class Meta:
         db_table = "jwt"
-        verbose_name = "jwt"
-        verbose_name_plural = "jwts"
+        verbose_name = "JWT"
+        verbose_name_plural = "JWT's"
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
         return "Token for {} ({})".format(
-            self.user,
+            self.user_uuid,
             self.jti,
         )
 
@@ -263,13 +294,12 @@ class JWTBlacklist(models.Model):
     that they cannot be used for authentication purposes.
     """
 
-    id = models.BigAutoField(db_column="id", primary_key=True)
-    token = models.OneToOneField(
-        db_column="token",
+    token_id = models.OneToOneField(
+        db_column="token_id",
         to="JWT",
-        to_field="id",
+        to_field="jwt_uuid",
         on_delete=models.CASCADE,
-        null=True,
+        primary_key=True,
     )
     date_joined = models.DateTimeField(
         db_column="date_joined", auto_now_add=True
@@ -277,12 +307,12 @@ class JWTBlacklist(models.Model):
 
     class Meta:
         db_table = "jwt_blacklist"
-        verbose_name = "jwt_blacklist"
-        verbose_name_plural = "jwt_blacklist"
+        verbose_name = "JWT blacklist"
+        verbose_name_plural = "JWT blacklist"
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
-        return f"Blacklisted token for {self.token.user}"
+        return f"Blacklisted token for {self.token_id}"
 
 
 class Pet(models.Model):
@@ -310,25 +340,28 @@ class Pet(models.Model):
     shelter = models.ForeignKey(
         db_column="shelter",
         to="Shelter",
-        to_field="shelter_uuid",
+        to_field="base_user",
         on_delete=models.CASCADE,
-        null=True,
     )
     pet_name = models.CharField(
         db_column="pet_name", max_length=50, blank=False, null=False
     )
-    race = models.CharField(
-        db_column="race", max_length=50, blank=False, null=False
+    pet_race = models.CharField(
+        db_column="pet_race", max_length=50, blank=False, null=False
     )
-    age = models.IntegerField(db_column="age", blank=False, null=False)
-    observations = models.CharField(
-        db_column="observations", max_length=200, default="sin observaciones"
+    pet_age = models.IntegerField(db_column="pet_age", blank=False, null=False)
+    pet_observations = models.CharField(
+        db_column="pet_observations",
+        max_length=200,
+        default="sin observaciones",
     )
-    description = models.CharField(
-        db_column="description", max_length=200, default="sin descripciones"
+    pet_description = models.CharField(
+        db_column="pet_description",
+        max_length=200,
+        default="sin descripciones",
     )
-    image = models.URLField(
-        db_column="image",
+    pet_image = models.URLField(
+        db_column="pet_image",
         max_length=200,
         default="https://imagedefault.com",
     )
@@ -337,7 +370,7 @@ class Pet(models.Model):
     )
 
     class Meta:
-        db_table = "pets"
+        db_table = "pet"
         verbose_name = "Pet"
         verbose_name_plural = "Pets"
         ordering = ["-date_joined"]
@@ -360,9 +393,9 @@ class PetType(models.Model):
     )
 
     class Meta:
-        db_table = "pet_types"
-        verbose_name = "pet_type"
-        verbose_name_plural = "pet_types"
+        db_table = "pet_type"
+        verbose_name = "Pet type"
+        verbose_name_plural = "Pet types"
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
@@ -383,9 +416,9 @@ class PetSex(models.Model):
     )
 
     class Meta:
-        db_table = "pet_sexs"
-        verbose_name = "pet_sex"
-        verbose_name_plural = "pet_sexs"
+        db_table = "pet_sex"
+        verbose_name = "Pet sex"
+        verbose_name_plural = "Pet sexs"
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:

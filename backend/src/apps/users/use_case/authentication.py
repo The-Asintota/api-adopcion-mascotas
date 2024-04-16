@@ -1,9 +1,9 @@
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
+from django.db.models import Model
 from typing import Dict, Tuple
 from apps.users.domain.abstractions import IJWTRepository, ITokenClass
 from apps.users.domain.typing import AccessToken, RefreshToken, JWToken
-from apps.users.models import BaseUser
 from apps.exceptions import UserInactiveError
 
 
@@ -22,13 +22,13 @@ class Authentication:
         self._jwt_repository = jwt_repository
 
     def _generate_tokens(
-        self, user: BaseUser
+        self, user: Model
     ) -> Tuple[AccessToken, RefreshToken]:
         """
         Generates access and refresh tokens for a given user.
 
-        Parameters:
-            - user: An instance of the BaseUser model.
+        #### Parameters:
+        - user: An instance of the `Shelter` or `AdminUser` model.
         """
 
         refresh = self._jwt_class.get_token(user=user)
@@ -43,12 +43,12 @@ class Authentication:
         Authenticates a user with the given credentials and returns access and refresh
         tokens.
 
-        Parameters:
-            - credentials: A dictionary containing the user's credentials.
+        #### Parameters:
+        - credentials: A dictionary containing the user's credentials.
 
-        Raises:
-            - AuthenticationFailed: If the authentication process fails.
-            - UserInactiveError: If the user is inactive.
+        #### Raises:
+        - AuthenticationFailed: If the authentication process fails.
+        - UserInactiveError: If the user is inactive.
         """
 
         user = authenticate(**credentials)
@@ -58,7 +58,7 @@ class Authentication:
                 code="authentication_failed",
                 detail="Correo o contraseña inválida.",
             )
-        elif not user.is_active:
+        elif not user.base_user.is_active:
             raise UserInactiveError(
                 detail="Cuenta del usuario inactiva.",
                 code="authentication_failed",
@@ -72,4 +72,8 @@ class Authentication:
                 user=user,
             )
 
-        return {"access": access, "refresh": refresh}
+        return {
+            "access": access,
+            "refresh": refresh,
+            "role": user.__class__.__name__.lower(),
+        }
