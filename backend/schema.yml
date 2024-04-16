@@ -182,7 +182,15 @@ paths:
                   role:
                     type: string
               examples:
-                ResponseOk:
+                ResponseOkShelter:
+                  value:
+                    access: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMDU0MzYyLCJpYXQiOjE3MTEwNDcxNjIsImp0aSI6IjY0MTE2YzgyYjhmMDQzOWJhNTJkZGZmMzgyNzQ2ZTIwIiwidXNlcl9pZCI6IjJhNmI0NTNiLWZhMmItNDMxOC05YzM1LWIwZTk2ZTg5NGI2MyJ9.gfhWpy5rYY6P3Xrg0usS6j1KhEvF1HqWMiU7AaFkp9A
+                    refresh: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTEzMzU2MiwiaWF0IjoxNzExMDQ3MTYyLCJqdGkiOiI2ZTRmNTdkMGJjNTc0NWY0OWMzODg4YjQ2YTM1OTJjNSIsInVzZXJfaWQiOiIyYTZiNDUzYi1mYTJiLTQzMTgtOWMzNS1iMGU5NmU4OTRiNjMifQ.81pQ3WftFZs5O50vGqwY2a6yPkXArQK6WKyrwus3s6A
+                    role: shelter
+                  summary: Valid request for shelter
+                  description: Authenticated shelter, the response will contain the
+                    access, refresh tokens and role user.
+                ResponseOkAdminUser:
                   value:
                     access: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMDU0MzYyLCJpYXQiOjE3MTEwNDcxNjIsImp0aSI6IjY0MTE2YzgyYjhmMDQzOWJhNTJkZGZmMzgyNzQ2ZTIwIiwidXNlcl9pZCI6IjJhNmI0NTNiLWZhMmItNDMxOC05YzM1LWIwZTk2ZTg5NGI2MyJ9.gfhWpy5rYY6P3Xrg0usS6j1KhEvF1HqWMiU7AaFkp9A
                     refresh: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTEzMzU2MiwiaWF0IjoxNzExMDQ3MTYyLCJqdGkiOiI2ZTRmNTdkMGJjNTc0NWY0OWMzODg4YjQ2YTM1OTJjNSIsInVzZXJfaWQiOiIyYTZiNDUzYi1mYTJiLTQzMTgtOWMzNS1iMGU5NmU4OTRiNjMifQ.81pQ3WftFZs5O50vGqwY2a6yPkXArQK6WKyrwus3s6A
@@ -382,6 +390,186 @@ paths:
                     a real use case, the error message for the validation or validations
                     that have failed will be displayed.
           description: '**BAD_REQUEST**'
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: string
+              examples:
+                DatabaseConnectionError:
+                  value:
+                    code: database_connection_error
+                    detail: Unable to establish a connection with the database. Please
+                      try again later.
+                  summary: Database connection error
+                  description: This error message is used when the API cannot connect
+                    to the database. In this example you can see how the information
+                    will be represented.
+          description: '**INTERNAL_SERVER_ERROR**'
+  /api/v1/pet/{shelter_uuid}/:
+    get:
+      operationId: v1_pet_retrieve
+      description: |-
+        Handle GET requests for retrieving pets from a specific shelter.
+
+        This method allows the retrieval of pets from a specific shelter. It waits
+        for a GET request with a shelter's UUID, retrieves the pets from the database,
+        and returns a paginated response with the pets' information.
+      parameters:
+      - in: path
+        name: shelter_uuid
+        schema:
+          type: string
+        required: true
+      tags:
+      - Pets
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                  previous:
+                    type: string
+                  field:
+                    type: array
+                    items:
+                      type: object
+              examples:
+                RequestSuccess:
+                  value:
+                    count: 57
+                    next: http://127.0.0.1:8000/api/v1/pet/97c6efb5d6cc429098e0047bde3de168/?page=2
+                    previous: null
+                    results:
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter: Refugio1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                  summary: Request successful
+                  description: This is an example of a successful request. In this
+                    example, you can see how the information will be represented.
+          description: '**OK**'
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: object
+                    properties:
+                      field:
+                        type: string
+              examples:
+                PetNotFound:
+                  value:
+                    code: pet_not_found
+                    detail:
+                      message: pet with the following filters not found.
+                      filters:
+                        shelter: 97c6efb5d6cc429098e0047bde3de169
+                  summary: Shelter not found
+                  description: These are all the basic error messages for each field,
+                    in this example you can see how the messages will be sent. In
+                    a real use case, the error message for the validation or validations
+                    that have failed will be displayed.
+          description: '**NOT_FOUND**'
         '500':
           content:
             application/json:

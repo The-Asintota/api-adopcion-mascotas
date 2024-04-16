@@ -4,6 +4,7 @@ from rest_framework import generics, status
 from apps.users.infrastructure.serializers import PetSerializer
 from apps.users.infrastructure.db import PetRepository
 from apps.users.use_case import FindPetsByShelter
+from apps.users.endpoint_schemas.list_pet_shelter import GetEndPointSchema
 
 
 class PetListByShelterApiView(generics.GenericAPIView):
@@ -17,6 +18,7 @@ class PetListByShelterApiView(generics.GenericAPIView):
     serializer_class = PetSerializer
     application_class = FindPetsByShelter
 
+    @GetEndPointSchema
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle GET requests for retrieving pets from a specific shelter.
