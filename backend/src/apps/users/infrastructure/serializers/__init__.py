@@ -22,4 +22,4 @@ from .authentication import (
     CustomTokenObtainPairSerializer,
 )
 from .admin import RegisterAdminSerializer
-from .list_pet_by_shelter import ListPetByShelterSerializer
+from .list_pet_by_shelter import PetSerializer
