@@ -179,14 +179,17 @@ paths:
                     type: string
                   refresh:
                     type: string
+                  role:
+                    type: string
               examples:
                 ResponseOk:
                   value:
                     access: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzExMDU0MzYyLCJpYXQiOjE3MTEwNDcxNjIsImp0aSI6IjY0MTE2YzgyYjhmMDQzOWJhNTJkZGZmMzgyNzQ2ZTIwIiwidXNlcl9pZCI6IjJhNmI0NTNiLWZhMmItNDMxOC05YzM1LWIwZTk2ZTg5NGI2MyJ9.gfhWpy5rYY6P3Xrg0usS6j1KhEvF1HqWMiU7AaFkp9A
                     refresh: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxMTEzMzU2MiwiaWF0IjoxNzExMDQ3MTYyLCJqdGkiOiI2ZTRmNTdkMGJjNTc0NWY0OWMzODg4YjQ2YTM1OTJjNSIsInVzZXJfaWQiOiIyYTZiNDUzYi1mYTJiLTQzMTgtOWMzNS1iMGU5NmU4OTRiNjMifQ.81pQ3WftFZs5O50vGqwY2a6yPkXArQK6WKyrwus3s6A
-                  summary: Valid request
-                  description: Authenticated user, the response will contain the access
-                    and refresh tokens.
+                    role: adminuser
+                  summary: Valid request for admin user
+                  description: Authenticated admin user, the response will contain
+                    the access, refresh tokens and role user.
           description: '**OK**'
         '400':
           content:
@@ -287,25 +290,24 @@ paths:
             examples:
               DataValid:
                 value:
-                  name: Hector
+                  pet_name: Hector
                   pet_type: Perro
                   shelter: 58774f38-96f3-4550-a212-d35923c5bf9e
-                  race: Pastor alemán
+                  pet_race: Pastor alemán
                   pet_sex: Macho
-                  age: 2
-                  observations: Cachorro muy juguetón.
-                  description: Cachorro muy juguetón.
-                  image: https://example.com/image.png
+                  pet_age: 2
+                  pet_observations: Cachorro muy juguetón.
+                  pet_description: Cachorro muy juguetón.
+                  pet_image: https://example.com/image.png
                 summary: Register a new pet.
                 description: |-
                   A valid pet registration data. The following validation rules are applied:
-                  - **name:** the name must be less than 50 characters.
+                  - **pet_name:** the name must be less than 50 characters.
                   - **pet_type:** the type of pet must be either Perro or Gato.
                   - **pet_sex:** the sex of the pet must be Macho or Hembra.
                   - **shelter:** the shelter UUID must be a valid UUID.
-                  - **age:** the age must be between 1 and 99.
-
-                  Observations, description, and image fields are optional.
+                  - **pet_age:** the age must be between 1 and 99.
+                  \pet_observations, pet_description, and pet_image fields are optional.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegisterPetRequest'
@@ -355,24 +357,24 @@ paths:
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      race:
+                      pet_race:
                       - El valor ingresado es inválido.
                       - El valor ingresad no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      age:
+                      pet_age:
                       - El valor ingresado es inválido.
                       - Asegúrate que este valor sea menor o igual a 99.
                       - Asegúrate que este valor sea mayor o igual a 1.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      observations:
+                      pet_observations:
                       - El valor ingresado no puede tener más de 200 caracteres.
-                      description:
+                      pet_description:
                       - El valor ingresado no puede tener más de 200 caracteres.
-                      image:
+                      pet_image:
                       - El valor ingresado no puede tener más de 200 caracteres.
                   summary: Invalid request data
                   description: These are all the basic error messages for each field,
@@ -422,22 +424,22 @@ paths:
                   email: shelter1@example.com
                   password: contraseña1234
                   confirm_password: contraseña1234
-                  phone_number: +57 3213149578
+                  shelter_phone_number: +57 3213149578
                   shelter_name: Refugio de animales
-                  address: 'Calle 123 # 45-67'
-                  responsible: Juan Pérez
-                  logo_url: https://example.com/logo.png
+                  shelter_address: 'Calle 123 # 45-67'
+                  shelter_responsible: Juan Pérez
+                  shelter_logo: https://example.com/logo.png
                 summary: Register a new shelter.
                 description: |-
                   A valid shelter registration data. The following validations will be applied:
                   - **email:** Must be in a valid email format, no longer than 40 characters and not in use.
                   - **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.
                   - **confirm_password:** Must match the password.
-                  - **phone_number:** Must be a valid phone number, no longer than 25 characters.
+                  - **shelter_phone_number:** Must be a valid phone number, no longer than 25 characters.
                   - **shelter_name:** Must not be longer than 50 characters and not in use.
-                  - **address:** Must not be longer than 100 characters.
-                  - **responsible:** Must not be longer than 50 characters.
-                  - **logo_url:** Must not be longer than 200 characters.
+                  - **shelter_address:** Must not be longer than 100 characters.
+                  - **shelter_responsible:** Must not be longer than 50 characters.
+                  - **shelter_logo:** Must not be longer than 200 characters.
           application/x-www-form-urlencoded:
             schema:
               $ref: '#/components/schemas/RegisterShelterRequest'
@@ -480,7 +482,7 @@ paths:
                       - Esta contraseña es demasiado común.Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      phone_number:
+                      shelter_phone_number:
                       - El número de teléfono es inválido.
                       - El número de teléfono no puede tener más de 25 caracteres.
                       - Este campo es requerido.
@@ -492,17 +494,17 @@ paths:
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      address:
+                      shelter_address:
                       - El dirección no puede tener más de 100 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      responsible:
+                      shelter_responsible:
                       - El valor ingresado no puede tener más de 50 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
                       - Este campo no puede ser nulo.
-                      logo_url:
+                      shelter_logo:
                       - El valor ingresado no puede tener más de 200 caracteres.
                       - Este campo es requerido.
                       - Este campo no puede estar en blanco.
@@ -632,33 +634,33 @@ components:
         shelter:
           type: string
           format: uuid
-        race:
+        pet_race:
           type: string
           minLength: 1
           maxLength: 50
-        age:
+        pet_age:
           type: integer
           maximum: 99
           minimum: 1
-        observations:
+        pet_observations:
           type: string
           minLength: 1
           maxLength: 200
-        description:
+        pet_description:
           type: string
           minLength: 1
           maxLength: 200
-        image:
+        pet_image:
           type: string
           format: uri
           minLength: 1
           maxLength: 200
       required:
-      - age
+      - pet_age
       - pet_name
+      - pet_race
       - pet_sex
       - pet_type
-      - race
       - shelter
     RegisterShelterRequest:
       type: object
@@ -678,7 +680,7 @@ components:
           type: string
           writeOnly: true
           minLength: 1
-        phone_number:
+        shelter_phone_number:
           type: string
           minLength: 1
           maxLength: 25
@@ -686,27 +688,27 @@ components:
           type: string
           minLength: 1
           maxLength: 50
-        address:
+        shelter_address:
           type: string
           minLength: 1
           maxLength: 100
-        responsible:
+        shelter_responsible:
           type: string
           minLength: 1
           maxLength: 50
-        logo_url:
+        shelter_logo:
           type: string
           format: uri
           minLength: 1
           maxLength: 200
       required:
-      - address
       - confirm_password
       - email
       - password
-      - phone_number
-      - responsible
+      - shelter_address
       - shelter_name
+      - shelter_phone_number
+      - shelter_responsible
 tags:
 - name: JSON Web Token
   description: It comprises all the endpoints that manage all the functionality related

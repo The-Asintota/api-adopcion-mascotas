@@ -61,14 +61,14 @@ GetEndPointSchema = extend_schema(
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "race": [
+                            "pet_race": [
                                 "El valor ingresado es inválido.",
                                 "El valor ingresad no puede tener más de 50 caracteres.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "age": [
+                            "pet_age": [
                                 "El valor ingresado es inválido.",
                                 "Asegúrate que este valor sea menor o igual a 99.",
                                 "Asegúrate que este valor sea mayor o igual a 1.",
@@ -76,13 +76,13 @@ GetEndPointSchema = extend_schema(
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "observations": [
+                            "pet_observations": [
                                 "El valor ingresado no puede tener más de 200 caracteres.",
                             ],
-                            "description": [
+                            "pet_description": [
                                 "El valor ingresado no puede tener más de 200 caracteres.",
                             ],
-                            "image": [
+                            "pet_image": [
                                 "El valor ingresado no puede tener más de 200 caracteres.",
                             ],
                         },
@@ -123,17 +123,17 @@ GetSerializerSchema = extend_schema_serializer(
         OpenApiExample(
             name="data_valid",
             summary="Register a new pet.",
-            description=f"A valid pet registration data. The following validation rules are applied:\n- **name:** the name must be less than 50 characters.\n- **pet_type:** the type of pet must be either {' or '.join(PET_TYPES)}.\n- **pet_sex:** the sex of the pet must be {' or '.join(PET_SEX_TYPES)}.\n- **shelter:** the shelter UUID must be a valid UUID.\n- **age:** the age must be between 1 and 99.\n\nObservations, description, and image fields are optional.",
+            description=f"A valid pet registration data. The following validation rules are applied:\n- **pet_name:** the name must be less than 50 characters.\n- **pet_type:** the type of pet must be either {' or '.join(PET_TYPES)}.\n- **pet_sex:** the sex of the pet must be {' or '.join(PET_SEX_TYPES)}.\n- **shelter:** the shelter UUID must be a valid UUID.\n- **pet_age:** the age must be between 1 and 99.\n\pet_observations, pet_description, and pet_image fields are optional.",
             value={
-                "name": "Hector",
+                "pet_name": "Hector",
                 "pet_type": PET_TYPES[0],
                 "shelter": "58774f38-96f3-4550-a212-d35923c5bf9e",
-                "race": "Pastor alemán",
+                "pet_race": "Pastor alemán",
                 "pet_sex": PET_SEX_TYPES[0],
-                "age": 2,
-                "observations": "Cachorro muy juguetón.",
-                "description": "Cachorro muy juguetón.",
-                "image": "https://example.com/image.png",
+                "pet_age": 2,
+                "pet_observations": "Cachorro muy juguetón.",
+                "pet_description": "Cachorro muy juguetón.",
+                "pet_image": "https://example.com/image.png",
             },
             request_only=True,
         ),
