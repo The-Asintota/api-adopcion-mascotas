@@ -1,11 +1,13 @@
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.serializers import Serializer
 from rest_framework import status
 from typing import Dict
-from apps.users.infrastructure.serializers import AuthenticationSerializer
+from apps.users.infrastructure.serializers import (
+    AuthenticationSerializer,
+    CustomTokenObtainPairSerializer,
+)
 from apps.users.infrastructure.db import JWTRepository
 from apps.users.use_case import Authentication
 from apps.users.endpoint_schemas.authentication import GetEndPointSchema
@@ -27,7 +29,7 @@ class AuthenticationAPIView(TokenObtainPairView):
     def _handle_valid_request(self, data: Dict[str, str]) -> Response:
 
         tokens = self.application_class(
-            jwt_class=TokenObtainPairSerializer,
+            jwt_class=CustomTokenObtainPairSerializer,
             jwt_repository=JWTRepository,
         ).authenticate_user(credentials=data)
 

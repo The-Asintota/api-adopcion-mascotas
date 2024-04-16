@@ -1,3 +1,8 @@
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    AuthUser,
+    Token,
+)
 from rest_framework import serializers
 from django.core.validators import RegexValidator
 from apps.users.infrastructure.serializers.utils import ErrorMessages
@@ -47,3 +52,18 @@ class AuthenticationSerializer(ErrorMessages):
         max_length=20,
         min_length=8,
     )
+
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Defines the custom serializer used to generate the access and refresh tokens wit
+    custom payload.
+    """
+
+    @classmethod
+    def get_token(cls, user: AuthUser) -> Token:
+
+        token = cls.token_class.for_user(user)
+        token["role"] = user.__class__.__name__.lower()
+
+        return token

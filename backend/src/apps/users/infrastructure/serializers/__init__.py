@@ -9,11 +9,16 @@ It imports the following serializers:
     the pet registration endpoint.
     - AuthenticationSerializer: Serializer used to validate and parse the data sent to
     the authentication endpoint.
+    - CustomTokenObtainPairSerializer: Custom serializer used to generate the access
+    and refresh tokens.
     - RegisterAdminSerializer: Serializer used to validate and parse the data sent to
     the admin registration endpoint.
 """
 
 from .shelter import RegisterShelterSerializer
 from .pets import RegisterPetSerializer
-from .authentication import AuthenticationSerializer
+from .authentication import (
+    AuthenticationSerializer,
+    CustomTokenObtainPairSerializer,
+)
 from .admin import RegisterAdminSerializer
