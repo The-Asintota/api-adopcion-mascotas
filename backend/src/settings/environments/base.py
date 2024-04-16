@@ -35,6 +35,7 @@ THIRD_APPS = [
     "corsheaders",
     "phonenumber_field",
     "drf_spectacular",
+    "django_extensions",
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
