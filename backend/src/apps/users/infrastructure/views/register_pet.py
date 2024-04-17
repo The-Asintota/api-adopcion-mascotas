@@ -3,13 +3,16 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import generics, status
 from typing import Dict, Any
-from apps.users.infrastructure.serializers import RegisterPetSerializer
+from apps.users.infrastructure.serializers import (
+    RegisterPetSerializer,
+    ListPetsSerializer,
+)
 from apps.users.infrastructure.db import PetRepository
-from apps.users.use_case import PetRegister
+from apps.users.use_case import PetRegister, PetList
 from apps.users.endpoint_schemas.register_pet import GetEndPointSchema
 
 
-class RegisterPetAPIView(generics.GenericAPIView):
+class PetAPIView(generics.GenericAPIView):
     """
     API View for registering a new pet. This view handles the "POST" request to
     create a new pet in the system.
@@ -17,11 +20,21 @@ class RegisterPetAPIView(generics.GenericAPIView):
 
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = RegisterPetSerializer
-    application_class = PetRegister
+    serializer_class = ListPetsSerializer
 
-    def _handle_valid_request(self, data: Dict[str, Any]) -> Response:
-        self.application_class(pet_repository=PetRepository).pet_registration(
+    def get_serializer_class(self):
+        """
+        Determina qué clase de serializador utilizar según el método de la solicitud.
+        """
+        if self.request.method == "POST":
+            return RegisterPetSerializer
+        else:
+            return self.serializer_class
+
+    def _handle_valid_request(
+        self, data: Dict[str, Any], application_class: PetRegister
+    ) -> Response:
+        application_class(pet_repository=PetRepository).pet_registration(
             data=data
         )
 
@@ -48,8 +61,38 @@ class RegisterPetAPIView(generics.GenericAPIView):
         a new record if the data is valid or returns an error response if it is not.
         """
 
+        application_class = PetRegister
+
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            return self._handle_valid_request(data=serializer.validated_data)
+            return self._handle_valid_request(
+                data=serializer.validated_data,
+                application_class=application_class,
+            )
 
         return self._handle_invalid_request(serializer=serializer)
+
+    def get(self, request: Request) -> Response:
+        """
+        Handle GET requests to retrieve all pets from the database.
+        Returns a paginated response with the pet information.
+        """
+
+        application_class = PetList
+
+        pet_list = application_class(pet_repository=PetRepository).pets_list()
+        page = self.paginate_queryset(pet_list)
+        paginated_response = self.get_paginated_response(page)
+        pagination_data = paginated_response.data
+        serializer = self.serializer_class(instance=pet_list, many=True)
+
+        return Response(
+            data={
+                "count": pagination_data.get("count"),
+                "next": pagination_data.get("next"),
+                "previous": pagination_data.get("previous"),
+                "results": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+            content_type="application/json",
+        )

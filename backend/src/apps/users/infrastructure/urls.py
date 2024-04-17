@@ -3,7 +3,7 @@ from .views import (
     RegisterShelterAPIView,
     AuthenticationAPIView,
     RegisterAdminAPIView,
-    RegisterPetAPIView,
+    PetAPIView,
     PetListByShelterApiView,
 )
 
@@ -25,7 +25,7 @@ urlpatterns = [
     ),
     path(
         route="pet/",
-        view=RegisterPetAPIView.as_view(),
+        view=PetAPIView.as_view(),
         name="register_pet",
     ),
     path(

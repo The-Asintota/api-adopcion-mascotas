@@ -11,5 +11,5 @@ It imports the following views:
 from .register_shelter import RegisterShelterAPIView
 from .authentication import AuthenticationAPIView
 from .register_admin import RegisterAdminAPIView
-from .register_pet import RegisterPetAPIView
+from .register_pet import PetAPIView
 from .list_pets_shelter import PetListByShelterApiView

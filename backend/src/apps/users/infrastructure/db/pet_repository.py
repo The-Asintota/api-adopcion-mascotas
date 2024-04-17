@@ -102,6 +102,14 @@ class PetRepository:
             # suddenly unavailable.
             raise DatabaseConnectionError()
 
+        if len(pets) == 0:
+            raise ResourceNotFoundError(
+                code="no_pets",
+                detail={
+                    "message": "there are no pets registered in the database.",
+                },
+            )
+
         return pets
 
     @classmethod

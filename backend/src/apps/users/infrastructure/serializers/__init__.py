@@ -23,3 +23,4 @@ from .authentication import (
 )
 from .admin import RegisterAdminSerializer
 from .list_pet_by_shelter import PetSerializer
+from .list_pets import ListPetsSerializer
