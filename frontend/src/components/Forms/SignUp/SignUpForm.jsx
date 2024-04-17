@@ -14,13 +14,13 @@ const SignUpForm = ({ link, onClick }) => {
   } = useForm({
     defaultValues: {
       shelter_name: "",
-      responsible: "",
-      phone_number: "",
+      shelter_responsible: "",
+      shelter_phone_number: "",
       email: "",
-      address: "",
+      shelter_address: "",
       password: "",
       confirm_password: "",
-      logo_url: null,
+      shelter_logo: null,
     },
   });
 
@@ -123,10 +123,10 @@ const SignUpForm = ({ link, onClick }) => {
           <input
             placeholder="Pedro Perez"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="responsible"
-            name="responsible"
+            id="shelter_responsible"
+            name="shelter_responsible"
             autoComplete="name"
-            {...register("responsible", {
+            {...register("shelter_responsible", {
               required: "Este campo es obligatorio",
               pattern: {
                 value: /^([A-Za-z]+\s?)+$/,
@@ -136,7 +136,7 @@ const SignUpForm = ({ link, onClick }) => {
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="responsible"
+            htmlFor="shelter_responsible"
           >
             Nombre de la persona responsable
           </label>
@@ -147,10 +147,10 @@ const SignUpForm = ({ link, onClick }) => {
             <input
               placeholder="Numero de telefono"
               className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-              id="phone_number"
-              name="phone_number"
+              id="shelter_phone_number"
+              name="shelter_phone_number"
               autoComplete="tel-country-code"
-              {...register("phone_number", {
+              {...register("shelter_phone_number", {
                 required: "Este campo es obligatorio",
                 pattern: {
                   value: /^[\d\s+-]+$/,
@@ -160,11 +160,11 @@ const SignUpForm = ({ link, onClick }) => {
             />
             <label
               className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-              htmlFor="phone_number"
+              htmlFor="shelter_phone_number"
             >
               Numero de telefono
             </label>
-            <ErrorMessage error={errors.phone_number} />
+            <ErrorMessage error={errors.shelter_phone_number} />
           </div>
           <div className="relative w-1/2 pl-2 ml-2">
             <input
@@ -194,9 +194,9 @@ const SignUpForm = ({ link, onClick }) => {
           <input
             placeholder="Direccion de la asociacion"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="address"
-            name="address"
-            {...register("address", {
+            id="shelter_address"
+            name="shelter_address"
+            {...register("shelter_address", {
               required: "Este campo es obligatorio",
               pattern: {
                 value: /^[A-Za-z0-9\s.,#\-áéíóúÁÉÍÓÚ]+$/,
@@ -206,11 +206,11 @@ const SignUpForm = ({ link, onClick }) => {
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="address"
+            htmlFor="shelter_address"
           >
             Dirección de la asociación
           </label>
-          <ErrorMessage error={errors.address} />
+          <ErrorMessage error={errors.shelter_address} />
         </div>
         <div className="flex flex-row w-full">
           <div className="relative w-1/2 flex">
@@ -269,13 +269,13 @@ const SignUpForm = ({ link, onClick }) => {
           endpoint="/api/v1/shelter/"
           formData={{
             shelter_name: getValues("shelter_name"),
-            responsible: getValues("responsible"),
-            phone_number:  getValues("phone_number"),
+            shelter_responsible: getValues("shelter_responsible"),
+            shelter_phone_number:  getValues("shelter_phone_number"),
             email: getValues("email"),
-            address:  getValues("address"),
+            shelter_address:  getValues("shelter_address"),
             password:  getValues("password"),
             confirm_password: getValues("confirm_password"),
-            logo_url: logo,
+            shelter_logo: logo,
           }}
           onSuccess={() => setUserCreated(true)}
           textButton="Registro"
