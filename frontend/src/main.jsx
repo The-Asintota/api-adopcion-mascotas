@@ -27,7 +27,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminProvider> <Admin/> </AdminProvider>
+    element: <AdminProvider><Admin/></AdminProvider>
   },
   {
     path: "/shelter",
