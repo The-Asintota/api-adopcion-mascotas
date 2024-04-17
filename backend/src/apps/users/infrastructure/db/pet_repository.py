@@ -79,6 +79,32 @@ class PetRepository:
             raise DatabaseConnectionError()
 
     @classmethod
+    def get_all_pets(cls) -> QuerySet:
+        """
+        Retrieve all pets from the database based on the provided filters.
+        #### Parameters:
+        - filters: Keyword arguments that define the filters to apply.
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        """
+
+        try:
+            pets = (
+                cls.pet_model.objects.select_related(
+                    "pet_type", "pet_sex", "shelter"
+                )
+                .all()
+                .order_by("-date_joined")
+            )
+
+        except OperationalError:
+            # In the future, a retry system will be implemented when the database is
+            # suddenly unavailable.
+            raise DatabaseConnectionError()
+
+        return pets
+
+    @classmethod
     def get_pet_by_filters(cls, **filters) -> QuerySet:
         """
         Retrieve a pet from the database based on the provided filters.

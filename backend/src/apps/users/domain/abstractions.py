@@ -169,6 +169,17 @@ class IPetRepository(Protocol):
         ...
 
     @classmethod
+    def get_all_pets(cls) -> QuerySet:
+        """
+        Retrieve all pets from the database sorted by most recent records.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
+        """
+
+        ...
+
+    @classmethod
     def get_pet_by_filters(cls, **filters) -> QuerySet:
         """
         Retrieve a pet from the database based on the provided filters.
