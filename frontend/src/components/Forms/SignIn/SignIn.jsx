@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
+import { AdminContext } from "../../../context/admin";
 
 const SignIn = ({ isActive, onClose }) => {
   const {
@@ -16,7 +17,7 @@ const SignIn = ({ isActive, onClose }) => {
     },
   });
 
-  const [userLogged, setUserLogged] = useState(false);
+  const { authenticateUser } = useContext(AdminContext)
 
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/`;
 
@@ -34,9 +35,10 @@ const SignIn = ({ isActive, onClose }) => {
       })
       .then((response) => {
         if (response.status === 200) {
+          const {role} = response.data
+          authenticateUser(role)
           localStorage.setItem('token', response.data.access)
-          setUserLogged(true);
-          navigate("/shelter")
+          navigate(`/${role}`)
         } else if (response.status === 400) {
           console.log(response.data);
         } else if (response.status === 401) {
@@ -49,12 +51,6 @@ const SignIn = ({ isActive, onClose }) => {
       })
       .catch((error) => console.log(error));
   };
-
-  useEffect(() => {
-    if (userLogged) {
-      console.log("user logged");
-    }
-  }, [userLogged]);
 
   return (
     <>
