@@ -2,7 +2,6 @@ from django.db import OperationalError
 from django.db.models import Q, QuerySet
 from typing import Dict, Any
 from apps.users.infrastructure.db import UserRepository
-from apps.users.domain.typing import StrUUID
 from apps.users.models import Pet, PetType, PetSex, Shelter
 from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
 
@@ -79,41 +78,7 @@ class PetRepository:
             raise DatabaseConnectionError()
 
     @classmethod
-    def get_all_pets(cls) -> QuerySet:
-        """
-        Retrieve all pets from the database based on the provided filters.
-        #### Parameters:
-        - filters: Keyword arguments that define the filters to apply.
-        #### Raises:
-        - DatabaseConnectionError: If there is an operational error with the database.
-        """
-
-        try:
-            pets = (
-                cls.pet_model.objects.select_related(
-                    "pet_type", "pet_sex", "shelter"
-                )
-                .all()
-                .order_by("-date_joined")
-            )
-
-        except OperationalError:
-            # In the future, a retry system will be implemented when the database is
-            # suddenly unavailable.
-            raise DatabaseConnectionError()
-
-        if len(pets) == 0:
-            raise ResourceNotFoundError(
-                code="no_pets",
-                detail={
-                    "message": "there are no pets registered in the database.",
-                },
-            )
-
-        return pets
-
-    @classmethod
-    def get_pet_by_filters(cls, **filters) -> QuerySet:
+    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet] | Pet:
         """
         Retrieve a pet from the database based on the provided filters.
 
@@ -122,21 +87,27 @@ class PetRepository:
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no JWT matches the provided filters.
+        - ResourceNotFoundError: If no pets are found in the database.
         """
 
         query_params = cls._create_query_params(**filters)
 
         try:
-            pet = cls.pet_model.objects.select_related(
+            objs = cls.pet_model.objects.select_related(
                 "pet_type", "pet_sex", "shelter"
-            ).filter(query_params)
+            )
+            pet_list = (
+                objs.filter(query_params).defer("date_joined")
+                if not all
+                else objs.all().defer("date_joined")
+            )
+
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
 
-        if len(pet) == 0:
+        if not pet_list.exists():
             raise ResourceNotFoundError(
                 code="pet_not_found",
                 detail={
@@ -145,41 +116,4 @@ class PetRepository:
                 },
             )
 
-        return pet
-
-    @classmethod
-    def get_pet_by_uuid(cls, uuid: StrUUID) -> Pet:
-        """
-        Retrieve a pet from the database based on its UUID.
-
-        #### Parameters:
-        - uuid: The UUID of the pet to retrieve.
-
-        #### Raises:
-        - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no pet matches the provided UUID.
-        """
-
-        try:
-            pet = (
-                cls.pet_model.objects.select_related(
-                    "pet_type", "pet_sex", "shelter"
-                )
-                .filter(pet_uuid=uuid)
-                .first()
-            )
-        except OperationalError:
-            # In the future, a retry system will be implemented when the database is
-            # suddenly unavailable.
-            raise DatabaseConnectionError()
-
-        if not pet:
-            raise ResourceNotFoundError(
-                code="pet_not_found",
-                detail={
-                    "message": "pet with the following UUID not found.",
-                    "uuid": uuid,
-                },
-            )
-
-        return pet
+        return pet_list.first() if (len(pet_list) == 1) else pet_list

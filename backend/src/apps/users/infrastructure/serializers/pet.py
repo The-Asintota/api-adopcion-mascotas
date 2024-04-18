@@ -1,16 +1,54 @@
 from rest_framework import serializers
+from rest_framework import serializers
 from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
+from typing import Dict, Any
 from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
 from apps.users.endpoint_schemas.register_pet import GetSerializerSchema
+from apps.users.models import Pet
+
+
+class PetReadOnlySerializer(serializers.Serializer):
+    """
+    Defines the serialization of a pet object for read-only purposes.
+    """
+
+    pet_uuid = serializers.UUIDField(read_only=True)
+    pet_type = serializers.CharField(read_only=True)
+    pet_sex = serializers.CharField(read_only=True)
+    shelter = serializers.CharField(read_only=True)
+    pet_name = serializers.CharField(read_only=True)
+    pet_race = serializers.CharField(read_only=True)
+    pet_age = serializers.IntegerField(read_only=True)
+    pet_observations = serializers.CharField(read_only=True)
+    pet_description = serializers.CharField(read_only=True)
+    pet_image = serializers.URLField(read_only=True)
+
+    def to_representation(self, instance: Pet) -> Dict[str, Any]:
+
+        return {
+            "pet_uuid": instance.pet_uuid.__str__(),
+            "pet_type": instance.pet_type.type,
+            "pet_sex": instance.pet_sex.sex,
+            "shelter": {
+                "uuid": instance.shelter.base_user.__str__(),
+                "name": instance.shelter.shelter_name,
+            },
+            "pet_name": instance.pet_name,
+            "pet_race": instance.pet_race,
+            "pet_age": instance.pet_age,
+            "pet_observations": instance.pet_observations,
+            "pet_description": instance.pet_description,
+            "image": instance.pet_image,
+        }
 
 
 @GetSerializerSchema
-class RegisterPetSerializer(ErrorMessages):
+class PetSerializer(ErrorMessages):
     """
-    Defines the data required to register a pet in the system.
+    Defines the data required to register or update a pet in the system.
     """
 
     pet_name = serializers.CharField(

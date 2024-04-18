@@ -169,18 +169,7 @@ class IPetRepository(Protocol):
         ...
 
     @classmethod
-    def get_all_pets(cls) -> QuerySet:
-        """
-        Retrieve all pets from the database sorted by most recent records.
-
-        #### Raises:
-        - DatabaseConnectionError: If there is an operational error with the database.
-        """
-
-        ...
-
-    @classmethod
-    def get_pet_by_filters(cls, **filters) -> QuerySet:
+    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet] | Pet:
         """
         Retrieve a pet from the database based on the provided filters.
 
@@ -189,22 +178,7 @@ class IPetRepository(Protocol):
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no JWT matches the provided filters.
-        """
-
-        ...
-
-    @classmethod
-    def get_pet_by_uuid(cls, uuid: StrUUID) -> Pet:
-        """
-        Retrieve a pet from the database based on its UUID.
-
-        #### Parameters:
-        - uuid: The UUID of the pet to retrieve.
-
-        #### Raises:
-        - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no pet matches the provided UUID.
+        - ResourceNotFoundError: If no pets are found in the database.
         """
 
         ...
