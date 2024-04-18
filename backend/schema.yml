@@ -280,8 +280,195 @@ paths:
                     will be represented.
           description: '**INTERNAL_SERVER_ERROR**'
   /api/v1/pet/:
+    get:
+      operationId: get_all_pets
+      description: |-
+        Handles GET requests to retrieve all pets from the database.
+
+        This method allows retrieving all pets from the database. It paginates the
+        response with a total of 10 items and returns a list of pets along with the
+        pagination data.
+      tags:
+      - Pets
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  count:
+                    type: integer
+                  next:
+                    type: string
+                  previous:
+                    type: string
+                  field:
+                    type: array
+                    items:
+                      type: object
+              examples:
+                RequestSuccess:
+                  value:
+                    count: 57
+                    next: http://127.0.0.1:8000/api/v1/pet/97c6efb5d6cc429098e0047bde3de168/?page=2
+                    previous: null
+                    results:
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: d0dfa156-b40e-409f-ae55-7c8a9136f912
+                        name: Refugio 1
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 326a1391-c666-420d-b041-174f73b554ad
+                        name: Refugio 2
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 7bfd8e16-3bfb-4a4b-95bb-e059eebfb994
+                        name: Refugio 3
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: e7b3d1bc-728b-48cc-9542-3c38ae7867f2
+                        name: Refugio 4
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 38453817-2296-45c4-892b-41f6746ed3c9
+                        name: Refugio 5
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 60f54284-f613-4efc-ae4e-b12897cf9b3f
+                        name: Refugio 6
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 944950a1-9842-40fb-9bd0-bc62987911bf
+                        name: Refugio 7
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 067728d7-4225-47d1-af92-d5f200f0fd11
+                        name: Refugio 8
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: 7563e781-ff50-43a7-a6f6-fadeec7fead0
+                        name: Refugio 9
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                    - pet_name: mascota1
+                      pet_type: Perro
+                      pet_sex: Macho
+                      shelter:
+                        uud: df4d610e-32b8-48a4-8332-4aab0d3f1862
+                        name: Refugio 10
+                      pet_race: pastor aleman
+                      pet_age: 2
+                      pet_observations: sin observaciones
+                      pet_description: sin descripciones
+                      pet_image: https://imagedefault.com
+                  summary: Request successful
+                  description: This is an example of a successful request. In this
+                    example, you can see how the information will be represented.
+          description: '**OK**'
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: string
+              examples:
+                PetNotFound:
+                  value:
+                    code: pet_not_found
+                    detail: No pets were found with the provided filters.
+                  summary: Shelter not found
+                  description: These are all the basic error messages for each field,
+                    in this example you can see how the messages will be sent. In
+                    a real use case, the error message for the validation or validations
+                    that have failed will be displayed.
+          description: '**NOT_FOUND**'
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: string
+              examples:
+                DatabaseConnectionError:
+                  value:
+                    code: database_connection_error
+                    detail: Unable to establish a connection with the database. Please
+                      try again later.
+                  summary: Database connection error
+                  description: This error message is used when the API cannot connect
+                    to the database. In this example you can see how the information
+                    will be represented.
+          description: '**INTERNAL_SERVER_ERROR**'
     post:
-      operationId: v1_pet_create
+      operationId: create_update_pet
       description: |-
         Handle POST requests for pet registration.
 
@@ -294,7 +481,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterPetRequest'
+              $ref: '#/components/schemas/PetRequest'
             examples:
               DataValid:
                 value:
@@ -318,10 +505,10 @@ paths:
                   \pet_observations, pet_description, and pet_image fields are optional.
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/RegisterPetRequest'
+              $ref: '#/components/schemas/PetRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RegisterPetRequest'
+              $ref: '#/components/schemas/PetRequest'
         required: true
       responses:
         '201':
@@ -412,13 +599,13 @@ paths:
           description: '**INTERNAL_SERVER_ERROR**'
   /api/v1/pet/{shelter_uuid}/:
     get:
-      operationId: v1_pet_retrieve
+      operationId: get_pet_by_shelter
       description: |-
-        Handle GET requests for retrieving pets from a specific shelter.
+        Handles GET requests to retrieve all pets from a specific shelter.
 
-        This method allows the retrieval of pets from a specific shelter. It waits
-        for a GET request with a shelter's UUID, retrieves the pets from the database,
-        and returns a paginated response with the pets' information.
+        This method allows retrieving all pets from a specific shelter. It paginates
+        the response with a total of 10 items and returns a list of pets along with the
+        pagination data.
       parameters:
       - in: path
         name: shelter_uuid
@@ -453,7 +640,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -462,7 +651,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -471,7 +662,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -480,7 +673,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -489,7 +684,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -498,7 +695,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -507,7 +706,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -516,7 +717,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -525,7 +728,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -534,7 +739,9 @@ paths:
                     - pet_name: mascota1
                       pet_type: Perro
                       pet_sex: Macho
-                      shelter: Refugio1
+                      shelter:
+                        uud: 58774f38-96f3-4550-a212-d35923c5bf9e
+                        name: Refugio1
                       pet_race: pastor aleman
                       pet_age: 2
                       pet_observations: sin observaciones
@@ -552,18 +759,12 @@ paths:
                   code:
                     type: string
                   detail:
-                    type: object
-                    properties:
-                      field:
-                        type: string
+                    type: string
               examples:
                 PetNotFound:
                   value:
                     code: pet_not_found
-                    detail:
-                      message: pet with the following filters not found.
-                      filters:
-                        shelter: 97c6efb5d6cc429098e0047bde3de169
+                    detail: No pets were found with the provided filters.
                   summary: Shelter not found
                   description: These are all the basic error messages for each field,
                     in this example you can see how the messages will be sent. In
@@ -764,6 +965,49 @@ components:
       required:
       - email
       - password
+    PetRequest:
+      type: object
+      description: Defines the data required to register or update a pet in the system.
+      properties:
+        pet_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        pet_type:
+          $ref: '#/components/schemas/PetTypeEnum'
+        pet_sex:
+          $ref: '#/components/schemas/PetSexEnum'
+        shelter:
+          type: string
+          format: uuid
+        pet_race:
+          type: string
+          minLength: 1
+          maxLength: 50
+        pet_age:
+          type: integer
+          maximum: 99
+          minimum: 1
+        pet_observations:
+          type: string
+          minLength: 1
+          maxLength: 200
+        pet_description:
+          type: string
+          minLength: 1
+          maxLength: 200
+        pet_image:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 200
+      required:
+      - pet_age
+      - pet_name
+      - pet_race
+      - pet_sex
+      - pet_type
+      - shelter
     PetSexEnum:
       enum:
       - Macho
@@ -807,49 +1051,6 @@ components:
       - confirm_password
       - email
       - password
-    RegisterPetRequest:
-      type: object
-      description: Defines the data required to register a pet in the system.
-      properties:
-        pet_name:
-          type: string
-          minLength: 1
-          maxLength: 50
-        pet_type:
-          $ref: '#/components/schemas/PetTypeEnum'
-        pet_sex:
-          $ref: '#/components/schemas/PetSexEnum'
-        shelter:
-          type: string
-          format: uuid
-        pet_race:
-          type: string
-          minLength: 1
-          maxLength: 50
-        pet_age:
-          type: integer
-          maximum: 99
-          minimum: 1
-        pet_observations:
-          type: string
-          minLength: 1
-          maxLength: 200
-        pet_description:
-          type: string
-          minLength: 1
-          maxLength: 200
-        pet_image:
-          type: string
-          format: uri
-          minLength: 1
-          maxLength: 200
-      required:
-      - pet_age
-      - pet_name
-      - pet_race
-      - pet_sex
-      - pet_type
-      - shelter
     RegisterShelterRequest:
       type: object
       description: Defines the data required to register a shelter in the system.

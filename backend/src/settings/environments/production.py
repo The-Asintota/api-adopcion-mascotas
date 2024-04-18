@@ -53,6 +53,6 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 SPECTACULAR_SETTINGS["SERVERS"] = [
     {
         "url": f"https://{config('SERVER_HOST', cast=str)}/",
-        "description": "FL0 Server",
+        "description": "Railwail Server",
     }
 ]

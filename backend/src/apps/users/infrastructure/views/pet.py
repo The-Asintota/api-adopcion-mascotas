@@ -9,6 +9,11 @@ from apps.users.infrastructure.serializers import (
 )
 from apps.users.infrastructure.db import PetRepository
 from apps.users.use_case import PetUseCase
+from apps.users.endpoint_schemas.pet.views import (
+    CreateUpdatePetSchema,
+    GetAllPetsSchema,
+    GetPetByShelterSchema,
+)
 
 
 class PetAPIView(generics.GenericAPIView):
@@ -89,6 +94,7 @@ class PetAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
+    @CreateUpdatePetSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for pet registration.
@@ -108,6 +114,7 @@ class PetAPIView(generics.GenericAPIView):
 
         return self._handle_invalid_request(serializer=serializer)
 
+    @GetAllPetsSchema
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
         Handles GET requests to retrieve all pets from the database.
@@ -151,6 +158,7 @@ class PetListAPIView(generics.GenericAPIView):
     serializer_class = PetReadOnlySerializer
     application_class = PetUseCase
 
+    @GetPetByShelterSchema
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
         Handles GET requests to retrieve all pets from a specific shelter.
