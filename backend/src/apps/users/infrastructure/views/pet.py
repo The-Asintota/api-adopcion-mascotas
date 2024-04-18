@@ -9,7 +9,6 @@ from apps.users.infrastructure.serializers import (
 )
 from apps.users.infrastructure.db import PetRepository
 from apps.users.use_case import PetUseCase
-from apps.users.endpoint_schemas.register_pet import GetEndPointSchema
 
 
 class PetAPIView(generics.GenericAPIView):
@@ -45,7 +44,7 @@ class PetAPIView(generics.GenericAPIView):
 
         return [permission() for permission in permission_classes]
 
-    def get_serializer_class(self, **attributes) -> Serializer:
+    def get_serializer_class(self) -> Serializer:
         """
         Get the serializer class based on the request method.
         """
@@ -55,7 +54,7 @@ class PetAPIView(generics.GenericAPIView):
         except KeyError:
             raise ValueError(f"Method {self.request.method} not allowed")
 
-        return serializer(**attributes)
+        return serializer
 
     def get_application_class(self) -> Callable:
         """
@@ -63,7 +62,9 @@ class PetAPIView(generics.GenericAPIView):
         """
 
         try:
-            application_class = self.application_mapping[self.request.method]
+            application_class = self.application_mapping.get(
+                self.request.method, PetSerializer
+            )
         except KeyError:
             raise ValueError(f"Method {self.request.method} not allowed")
 
@@ -71,7 +72,8 @@ class PetAPIView(generics.GenericAPIView):
 
     def _handle_valid_request(self, data: Dict[str, Any]) -> Response:
 
-        self.get_application_class()(data=data)
+        application = self.get_application_class()
+        application(data=data)
 
         return Response(status=status.HTTP_201_CREATED)
 
@@ -87,7 +89,6 @@ class PetAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
-    @GetEndPointSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for pet registration.
@@ -97,7 +98,9 @@ class PetAPIView(generics.GenericAPIView):
         a new record if the data is valid or returns an error response if it is not.
         """
 
-        serializer = self.get_serializer_class(data=request.data)
+        serializer_class = self.get_serializer_class()
+        serializer: Serializer = serializer_class(data=request.data)
+
         if serializer.is_valid():
             return self._handle_valid_request(
                 data=serializer.validated_data,
@@ -107,20 +110,66 @@ class PetAPIView(generics.GenericAPIView):
 
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
-        Handle GET requests to retrieve all pets from the database.
-        Returns a paginated response with the pet information.
+        Handles GET requests to retrieve all pets from the database.
+
+        This method allows retrieving all pets from the database. It paginates the
+        response with a total of 10 items and returns a list of pets along with the
+        pagination data.
         """
 
         application_class = self.get_application_class()
+        pet_list = application_class(all=True)
 
-        if kwargs.get("shelter_uuid", None):
-            pet_list = application_class(shelter=kwargs.get("shelter_uuid"))
-        else:
-            pet_list = application_class(all=True)
+        # Paginate the response
         page = self.paginate_queryset(pet_list)
         paginated_response = self.get_paginated_response(page)
         pagination_data = paginated_response.data
-        serializer = self.get_serializer_class(instance=pet_list, many=True)
+
+        serializer_class = self.get_serializer_class()
+        serializer: Serializer = serializer_class(instance=pet_list, many=True)
+
+        return Response(
+            data={
+                "count": pagination_data.get("count"),
+                "next": pagination_data.get("next"),
+                "previous": pagination_data.get("previous"),
+                "results": serializer.data,
+            },
+            status=status.HTTP_200_OK,
+            content_type="application/json",
+        )
+
+
+class PetListAPIView(generics.GenericAPIView):
+    """
+    API View for retrieving all pets from a specific shelter. This view handles the
+    "GET" request to retrieve all pets from a specific shelter.
+    """
+
+    authentication_classes = ()
+    permission_classes = ()
+    serializer_class = PetReadOnlySerializer
+    application_class = PetUseCase
+
+    def get(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Handles GET requests to retrieve all pets from a specific shelter.
+
+        This method allows retrieving all pets from a specific shelter. It paginates
+        the response with a total of 10 items and returns a list of pets along with the
+        pagination data.
+        """
+
+        pet_list = self.application_class(
+            pet_repository=PetRepository
+        ).get_pet(shelter=kwargs["shelter_uuid"])
+
+        # Paginate the response
+        page = self.paginate_queryset(pet_list)
+        paginated_response = self.get_paginated_response(page)
+        pagination_data = paginated_response.data
+
+        serializer = self.serializer_class(instance=pet_list, many=True)
 
         return Response(
             data={

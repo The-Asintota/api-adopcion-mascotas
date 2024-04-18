@@ -6,7 +6,7 @@ from apps.users.infrastructure.serializers.constants import (
 )
 from typing import Dict, Any
 from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
-from apps.users.endpoint_schemas.register_pet import GetSerializerSchema
+from apps.users.endpoint_schemas.pet.serializers import PetSerializerSchema
 from apps.users.models import Pet
 
 
@@ -45,7 +45,7 @@ class PetReadOnlySerializer(serializers.Serializer):
         }
 
 
-@GetSerializerSchema
+@PetSerializerSchema
 class PetSerializer(ErrorMessages):
     """
     Defines the data required to register or update a pet in the system.

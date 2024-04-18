@@ -110,10 +110,7 @@ class PetRepository:
         if not pet_list.exists():
             raise ResourceNotFoundError(
                 code="pet_not_found",
-                detail={
-                    "message": "pet with the following filters not found.",
-                    "filters": filters,
-                },
+                detail="No pets were found with the provided filters.",
             )
 
-        return pet_list.first() if (len(pet_list) == 1) else pet_list
+        return pet_list.first() if (pet_list.count() == 1) else pet_list
