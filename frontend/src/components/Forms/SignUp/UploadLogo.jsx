@@ -58,7 +58,7 @@ const UploadLogo = ({onImageUpload}) => {
   return (
     <div className="mb-6 pt-4">
       <label className="mb-5 block text-white">
-        Upload File
+        Sube tu foto
       </label>
       <div className="mb-8">
         <input

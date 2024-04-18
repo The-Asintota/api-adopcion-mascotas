@@ -3,9 +3,9 @@ import UploadAnimal from "./Forms/UploadAnimal/UploadAnimal";
 
 const ShelterProfile = () => {
   return (
-    <div>
-      <p>Mis mascotas</p>
+    <div className="flex flex-row">
       <UploadAnimal/>
+      <p>Mis mascotas (aca deben ir la lista de mascotas)</p>
     </div>
   );
 };

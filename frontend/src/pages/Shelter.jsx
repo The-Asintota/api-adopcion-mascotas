@@ -13,8 +13,8 @@ const Shelter = () => {
       <Header />
 
       {user ? (
-        <main>
-          <p>Usuario autenticado como {user.role}</p>
+        <main className="bg-[#118A95]">
+          {/* <p>Usuario autenticado como {user.role}</p> */}
           <ShelterProfile />
         </main>
       ) : (
