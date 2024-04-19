@@ -64,7 +64,7 @@ class Authentication:
                 code="authentication_failed",
             )
 
-        refresh, access = self._generate_tokens(user=user)
+        access, refresh = self._generate_tokens(user=user)
 
         for token in [access, refresh]:
             self._jwt_repository.add_to_checklist(

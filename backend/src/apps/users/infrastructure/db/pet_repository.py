@@ -78,7 +78,7 @@ class PetRepository:
             raise DatabaseConnectionError()
 
     @classmethod
-    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet] | Pet:
+    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet]:
         """
         Retrieve a pet from the database based on the provided filters.
 
@@ -113,4 +113,4 @@ class PetRepository:
                 detail="No pets were found with the provided filters.",
             )
 
-        return pet_list.first() if (pet_list.count() == 1) else pet_list
+        return pet_list

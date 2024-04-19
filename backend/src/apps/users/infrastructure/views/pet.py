@@ -1,19 +1,22 @@
 from rest_framework.serializers import Serializer
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework import generics, status, permissions
-from typing import Dict, Any, Callable
+from rest_framework import generics, status, exceptions, permissions
+from typing import List, Dict, Any, Callable
 from apps.users.infrastructure.serializers import (
     PetReadOnlySerializer,
     PetSerializer,
 )
 from apps.users.infrastructure.db import PetRepository
+from apps.users.infrastructure.permissions import IsAuthenticatedShelter
+from apps.users.infrastructure.exceptions import NotAuthenticated
 from apps.users.use_case import PetUseCase
 from apps.users.endpoint_schemas.pet.views import (
     CreateUpdatePetSchema,
     GetAllPetsSchema,
     GetPetByShelterSchema,
 )
+from apps.users.authentication import JWTAuthentication
 
 
 class PetAPIView(generics.GenericAPIView):
@@ -22,22 +25,37 @@ class PetAPIView(generics.GenericAPIView):
     create a new pet in the system.
     """
 
-    authentication_classes = ()
     pet_use_case = PetUseCase(pet_repository=PetRepository)
+    authentication_mapping = {
+        "GET": [],
+        "POST": [JWTAuthentication],
+    }
     application_mapping = {
         "GET": pet_use_case.get_pet,
         "POST": pet_use_case.create_pet,
     }
     permission_mapping = {
         "GET": [],
-        "POST": [],
+        "POST": [IsAuthenticatedShelter],
     }
     serializer_mapping = {
         "GET": PetReadOnlySerializer,
         "POST": PetSerializer,
     }
 
-    def get_permissions(self):
+    def get_authenticators(self):
+        """
+        Instantiates and returns the list of authenticators that this view can use.
+        """
+
+        try:
+            authentication_classes = self.authentication_mapping[self.request.method]
+        except AttributeError:
+            authentication_classes = []
+
+        return [auth() for auth in authentication_classes]
+
+    def get_permissions(self) -> List[permissions.BasePermission]:
         """
         Get the permissions based on the request method.
         """
@@ -75,6 +93,15 @@ class PetAPIView(generics.GenericAPIView):
 
         return application_class
 
+    def permission_denied(self, request: Request, message=None, code=None):
+        """
+        If request is not permitted, determine what kind of exception to raise.
+        """
+
+        if request.authenticators and not request.successful_authenticator:
+            raise NotAuthenticated(code=code, detail=message)
+        raise exceptions.PermissionDenied(code=code, detail=message)
+
     def _handle_valid_request(self, data: Dict[str, Any]) -> Response:
 
         application = self.get_application_class()
@@ -108,9 +135,11 @@ class PetAPIView(generics.GenericAPIView):
         serializer: Serializer = serializer_class(data=request.data)
 
         if serializer.is_valid():
-            return self._handle_valid_request(
-                data=serializer.validated_data,
-            )
+            shelter_uuid = request.decoded_token_access["payload"]["user_uuid"]
+            data = serializer.validated_data
+            data.update({"shelter": shelter_uuid})
+
+            return self._handle_valid_request(data=data)
 
         return self._handle_invalid_request(serializer=serializer)
 

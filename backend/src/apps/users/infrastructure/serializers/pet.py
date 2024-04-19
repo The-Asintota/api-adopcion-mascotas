@@ -78,10 +78,6 @@ class PetSerializer(ErrorMessages):
         },
         choices=PET_SEX_TYPES,
     )
-    shelter = serializers.UUIDField(
-        required=True,
-        error_messages={"invalid": "{input} is not a valid UUID."},
-    )
     pet_race = serializers.CharField(
         error_messages={
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(

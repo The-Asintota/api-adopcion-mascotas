@@ -169,7 +169,7 @@ class IPetRepository(Protocol):
         ...
 
     @classmethod
-    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet] | Pet:
+    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet]:
         """
         Retrieve a pet from the database based on the provided filters.
 

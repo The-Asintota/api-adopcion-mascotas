@@ -126,6 +126,7 @@ REST_FRAMEWORK = {
         "apps.users.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
+    "EXCEPTION_HANDLER": "apps.exceptions.services_exception_handler",
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
