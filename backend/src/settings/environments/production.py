@@ -49,10 +49,14 @@ STATIC_ROOT = Path.joinpath(BASE_DIR, "staticfiles")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
+# SMTP settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+
 # drf-spectacular settings
 SPECTACULAR_SETTINGS["SERVERS"] = [
     {
         "url": f"https://{config('SERVER_HOST', cast=str)}/",
-        "description": "Railwail Server",
+        "description": "Railway Server",
     }
 ]
