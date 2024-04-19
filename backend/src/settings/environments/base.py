@@ -196,6 +196,16 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],
     "COMPONENT_SPLIT_REQUEST": True,
+    "APPEND_COMPONENTS": {
+        "securitySchemes": {
+            "JWTAuthentication": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "This endpoint requires JWT authentication.",
+            }
+        }
+    },
     "LICENSE": {
         "name": "MIT License",
         "url": "https://opensource.org/licenses/MIT",

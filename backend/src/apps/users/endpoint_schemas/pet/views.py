@@ -4,12 +4,18 @@ from drf_spectacular.utils import (
     OpenApiExample,
 )
 from uuid import uuid4
+from apps.users.endpoint_schemas.auth import JWTAuthenticationScheme
 from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
 
 
 CreateUpdatePetSchema = extend_schema(
     operation_id="create_update_pet",
     tags=["Pets"],
+    auth=[
+        {
+            "JWTAuthentication": [],
+        }
+    ],
     responses={
         201: OpenApiResponse(
             description="**CREATED** The pet was created successfully.",
@@ -52,12 +58,6 @@ CreateUpdatePetSchema = extend_schema(
                             ],
                             "pet_sex": [
                                 "M no es una elección válida.",
-                                "Este campo es requerido.",
-                                "Este campo no puede estar en blanco.",
-                                "Este campo no puede ser nulo.",
-                            ],
-                            "shelter": [
-                                "58774f38-96f3-4550-a212-d35923c5bf9e is not a valid UUID.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
@@ -122,6 +122,7 @@ CreateUpdatePetSchema = extend_schema(
 GetAllPetsSchema = extend_schema(
     operation_id="get_all_pets",
     tags=["Pets"],
+    auth=[],
     responses={
         200: OpenApiResponse(
             description="**OK**",
