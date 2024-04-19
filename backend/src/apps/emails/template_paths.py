@@ -1,0 +1,1 @@
+ADOPTION_APPLICATION_EMAIL_BODY = "adoptionRequest.html"
