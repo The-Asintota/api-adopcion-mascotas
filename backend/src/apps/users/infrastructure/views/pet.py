@@ -49,7 +49,9 @@ class PetAPIView(generics.GenericAPIView):
         """
 
         try:
-            authentication_classes = self.authentication_mapping[self.request.method]
+            authentication_classes = self.authentication_mapping[
+                self.request.method
+            ]
         except AttributeError:
             authentication_classes = []
 

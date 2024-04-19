@@ -386,7 +386,7 @@ class PetType(models.Model):
 
     id = models.BigAutoField(db_column="id", primary_key=True)
     type = models.CharField(
-        db_column="type", max_length=50, blank=False, null=False
+        db_column="type", max_length=50, blank=False, null=False, unique=True
     )
     date_joined = models.DateTimeField(
         db_column="date joined", auto_now_add=True
@@ -409,7 +409,7 @@ class PetSex(models.Model):
 
     id = models.BigAutoField(db_column="id", primary_key=True)
     sex = models.CharField(
-        db_column="sex", max_length=50, blank=False, null=False
+        db_column="sex", max_length=50, blank=False, null=False, unique=True
     )
     date_joined = models.DateTimeField(
         db_column="date joined", auto_now_add=True
