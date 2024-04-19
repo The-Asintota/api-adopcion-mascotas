@@ -13,14 +13,14 @@ const SignUpForm = ({ link, onClick }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
-      responsible: "",
-      phone_number: "",
+      shelter_name: "",
+      shelter_responsible: "",
+      shelter_phone_number: "",
       email: "",
-      address: "",
+      shelter_address: "",
       password: "",
       confirm_password: "",
-      logo_url: null,
+      shelter_logo: null,
     },
   });
 
@@ -91,42 +91,42 @@ const SignUpForm = ({ link, onClick }) => {
   }, [userCreated]);
 
   return (
-    <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-8 mt-6">
-      <h2 className="text-center text-4xl font-extrabold text-white">
+    <div className="w-full bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-4 md:space-y-8 mt-4 md:mt-6">
+      <h2 className="text-center text-xl md:text-4xl font-extrabold text-white">
         Registra a tu asociacion
       </h2>
       <form
         method="POST"
         className="space-y-6"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(() => {})}
       >
         <div className="relative">
           <input
             placeholder="Nombre de tu asociacion"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="name"
-            name="name"
+            id="shelter_name"
+            name="shelter_name"
             autoComplete="organization"
-            {...register("name", {
+            {...register("shelter_name", {
               required: "Este campo es obligatorio",
             })}
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="name"
+            htmlFor="shelter_name"
           >
             Nombre de la asociacion
           </label>
-          <ErrorMessage error={errors.name} />
+          <ErrorMessage error={errors.shelter_name} />
         </div>
         <div className="relative">
           <input
             placeholder="Pedro Perez"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="responsible"
-            name="responsible"
+            id="shelter_responsible"
+            name="shelter_responsible"
             autoComplete="name"
-            {...register("responsible", {
+            {...register("shelter_responsible", {
               required: "Este campo es obligatorio",
               pattern: {
                 value: /^([A-Za-z]+\s?)+$/,
@@ -136,7 +136,7 @@ const SignUpForm = ({ link, onClick }) => {
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="responsible"
+            htmlFor="shelter_responsible"
           >
             Nombre de la persona responsable
           </label>
@@ -147,10 +147,10 @@ const SignUpForm = ({ link, onClick }) => {
             <input
               placeholder="Numero de telefono"
               className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-              id="phone_number"
-              name="phone_number"
+              id="shelter_phone_number"
+              name="shelter_phone_number"
               autoComplete="tel-country-code"
-              {...register("phone_number", {
+              {...register("shelter_phone_number", {
                 required: "Este campo es obligatorio",
                 pattern: {
                   value: /^[\d\s+-]+$/,
@@ -160,11 +160,11 @@ const SignUpForm = ({ link, onClick }) => {
             />
             <label
               className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-              htmlFor="phone_number"
+              htmlFor="shelter_phone_number"
             >
               Numero de telefono
             </label>
-            <ErrorMessage error={errors.phone_number} />
+            <ErrorMessage error={errors.shelter_phone_number} />
           </div>
           <div className="relative w-1/2 pl-2 ml-2">
             <input
@@ -194,9 +194,9 @@ const SignUpForm = ({ link, onClick }) => {
           <input
             placeholder="Direccion de la asociacion"
             className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-            id="address"
-            name="address"
-            {...register("address", {
+            id="shelter_address"
+            name="shelter_address"
+            {...register("shelter_address", {
               required: "Este campo es obligatorio",
               pattern: {
                 value: /^[A-Za-z0-9\s.,#\-áéíóúÁÉÍÓÚ]+$/,
@@ -206,11 +206,11 @@ const SignUpForm = ({ link, onClick }) => {
           />
           <label
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-            htmlFor="address"
+            htmlFor="shelter_address"
           >
             Dirección de la asociación
           </label>
-          <ErrorMessage error={errors.address} />
+          <ErrorMessage error={errors.shelter_address} />
         </div>
         <div className="flex flex-row w-full">
           <div className="relative w-1/2 flex">
@@ -268,14 +268,14 @@ const SignUpForm = ({ link, onClick }) => {
         <FormRequest
           endpoint="/api/v1/shelter/"
           formData={{
-            name: getValues("name"),
-            responsible: getValues("responsible"),
-            phone_number:  getValues("phone_number"),
+            shelter_name: getValues("shelter_name"),
+            shelter_responsible: getValues("shelter_responsible"),
+            shelter_phone_number:  getValues("shelter_phone_number"),
             email: getValues("email"),
-            address:  getValues("address"),
+            shelter_address:  getValues("shelter_address"),
             password:  getValues("password"),
             confirm_password: getValues("confirm_password"),
-            logo_url: logo,
+            shelter_logo: logo,
           }}
           onSuccess={() => setUserCreated(true)}
           textButton="Registro"

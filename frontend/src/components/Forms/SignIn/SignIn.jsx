@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
+import { AdminContext } from "../../../context/admin";
 
 const SignIn = ({ isActive, onClose }) => {
   const {
@@ -15,38 +17,41 @@ const SignIn = ({ isActive, onClose }) => {
     },
   });
 
-  const [userLogged, setUserLogged] = useState(false);
+  const { authenticateUser } = useContext(AdminContext)
 
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/`;
+
+  const token = localStorage.getItem("token");
+
+  const navigate = useNavigate()
 
   const onSubmit = (data) => {
     axios
       .post(urlRequest, data, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       })
       .then((response) => {
-        console.log(response);
-        if (response.status === 201) {
-          setUserLogged(true);
-
+        if (response.status === 200) {
+          const {role} = response.data
+          authenticateUser(role)
+          localStorage.setItem('token', response.data.access)
+          navigate(`/${role}`)
         } else if (response.status === 400) {
-          console.log(response.data.detail);
+          console.log(response.data);
         } else if (response.status === 401) {
-          console.log(response.data.detail);
+          console.log(response.data);
         } else if (response.status === 500) {
-          console.log(response.data.detail);
+          console.log(response.data);
         } else {
           console.log(response.data.error);
         }
       })
       .catch((error) => console.log(error));
-    console.log(data);
   };
 
-  /*   useEffect(() => {
-    userLogged ? enviar al dashboard correspondiente : mostrar errror
-  }, [userLogged])
- */
   return (
     <>
       {isActive && (
@@ -126,15 +131,6 @@ const SignIn = ({ isActive, onClose }) => {
                   </label>
                   <ErrorMessage error={errors.password} />
                 </div>
-{/*                 <div className="flex items-center justify-between">
-                  <label className="flex items-center text-sm text-gray-200">
-                    <input
-                      className="form-checkbox h-4 w-4 text-[#118A95] bg-gray-800 border-gray-300 rounded"
-                      type="checkbox"
-                    />
-                    <span className="ml-2">Remember me</span>
-                  </label>
-                </div> */}
                 <button
                   className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
                   type="submit"

@@ -36,9 +36,9 @@ const AdoptionCard = ({urlImage, petName,age, breed, size, description, observat
         <h3>{petName}</h3>
         <p>Edad: {age}</p>
         <p>{breed}</p>
-        <p>Tamaño: {size}</p>
-        <p>Juguetón y muy cariñoso{description}</p>
-        <p>{observations}</p>
+        {size && <p>Tamaño: {description}</p>}
+        {description && <p>{description}</p> }
+        {observations && <p>{observations}</p>}
         <Controls />
       </div>
     </li>

@@ -10,7 +10,7 @@ const SuccessfulNotification = ({ onClick, onClose, isActive, text }) => {
             <div className="relative flex flex-col items-center">
               <div
                 className="absolute top-0 right-0 cursor-pointer"
-                onClose={onClose}
+                onClick={onClose}
               >
                 x
               </div>

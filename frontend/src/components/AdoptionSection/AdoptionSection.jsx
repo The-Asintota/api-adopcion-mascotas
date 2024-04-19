@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import PetRequest from "../Forms/PetRequest/PetRequest";
+import React from "react";
 import AdoptionCard from "./AdoptionCard";
 import './AdoptionSection.css'
 import useSearch from "../../hooks/useSearch";
 import SearchAnimal from "../SearchAnimal/SearchAnimal";
 
 const AdoptionSection = () => {
-  const [showPetRequest, setShowPetRequest] = useState(false)
   const { animals, handleSearch } = useSearch()
-  function handlePetRequest() {
-    setShowPetRequest(true)
+
+  function handlePetRequest({ id }) {
+    window.location.href = `/animal/${id}`
   }
   
   return (
@@ -20,20 +19,16 @@ const AdoptionSection = () => {
         {animals.map(({ id, urlImage, petName, age, bread, size, description, observations }) => (
           <AdoptionCard 
             key={id}
-            onClick={handlePetRequest}
+            onClick={() => handlePetRequest({ id })}
             urlImage={urlImage}
             petName={petName}
             age={age}
             breed={bread}
-            size={size}
-            description={description}
-            observations={observations}
           />
         )) }
 
       </ul>
 
-      <PetRequest isActive={showPetRequest} onClose={() => setShowPetRequest(false)}/>
     </section>
   );
 };

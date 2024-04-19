@@ -37,7 +37,7 @@ const UploadLogo = ({onImageUpload}) => {
     if (!selectedImage.type.startsWith("image/")) {
       console.log("El archivo no es una imagen")
       return;
-    } /* puedo agregar que se muestre <ErrorMessage/> */
+    } 
 
     setUploadingLogo(true)
     const storage = getStorage(firebase)
@@ -58,7 +58,7 @@ const UploadLogo = ({onImageUpload}) => {
   return (
     <div className="mb-6 pt-4">
       <label className="mb-5 block text-white">
-        Upload File
+        Sube tu foto
       </label>
       <div className="mb-8">
         <input
