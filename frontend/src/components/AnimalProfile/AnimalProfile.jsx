@@ -3,14 +3,26 @@ import { mappedAnimals } from "../../../utils/animals";
 import "./AnimalProfile.css";
 import { useState } from "react";
 import PetRequest from "../Forms/PetRequest/PetRequest";
+import paw from "../../assets/paw.svg";
+import sexIcon from "../../assets/sexIcon.svg";
+import ageIcon from "../../assets/ageIcon.svg";
+import sizeIcon from "../../assets/sizeIcon.svg";
 
 const AnimalProfile = () => {
   const { id } = useParams();
   const animals = mappedAnimals().filter(
     (animal) => animal.id === parseInt(id)
   );
-  const { urlImage, petName, age, breed, size, description, observations } =
-    animals[0];
+  const {
+    urlImage,
+    petName,
+    age,
+    breed,
+    sex,
+    size,
+    description,
+    observations,
+  } = animals[0];
   const [showPetRequest, setShowPetRequest] = useState(false);
 
   function handlePetRequest() {
@@ -19,31 +31,55 @@ const AnimalProfile = () => {
 
   return (
     <main className="animal-main h-fit">
-      <h2 className="font-extrabold text-white text-center py-0">{petName}</h2>
-      <article className="animal w-screen px-10 py-2 content-start">
-        <img className="animal-image" src={urlImage} alt={petName} />
-        <div className="animal-info text-lg">
-          <div>
-            <p className="animal-parrafo">
+      <h2 className="font-extrabold text-white text-center py-3">{petName}</h2>
+
+      <div className="flex flex-row m-8 px-4">
+        <img
+          src={urlImage}
+          alt={petName}
+          className="w-96 rounded-2xl shadow-2xl"
+        />
+        <div className="flex flex-col justify-start text-white">
+          <div className="ml-8 flex flex-row text-white text-xl">
+            <p className="relative mb-4 flex">
+              <img src={paw} alt="paw" className="w-6 h-6 mr-2" />
+              Raza: {breed}
+            </p>
+            <p className="relative mb-4 flex">
+              <img src={ageIcon} alt="ageIcon" className="w-6 h-6 mr-2" />
+              Edad: {age}
+            </p>
+
+          </div>
+          <div className="ml-8 flex flex-row text-white text-xl">
+
+            <p className="relative mb-4 flex">
+              <img src={sexIcon} alt="sexIcon" className="w-6 h-6 mr-2" />
+              Sexo: {sex}
+            </p>
+            <p className="relative mb-4 flex">
+              <img src={sizeIcon} alt="sizeIcon" className="w-6 h-6 mr-2" />
               Tamaño: {size}
             </p>
-            <p className="animal-parrafo">Raza: {breed}</p>
-            <p className="animal-parrafo">Edad: {age}</p>
-            <p className="animal-parrafo">Sexo: ???</p>
           </div>
-          <div>Protectora</div>
-          {/*           <p className="animal-parrafo">{description}</p>
-          <p className="animal-parrafo">Observaciones: {observations}</p> */}
+          <div>
+            <p className="ml-8 text-white text-xl">
+              Descripcion: {description}
+            </p>
+            <p className="ml-8 text-white text-xl">
+              Observaciones: {observations}
+            </p>
+            <button className="animal-button ml-11" onClick={handlePetRequest}>
+              Adoptar
+            </button>
+            <PetRequest
+              petName={petName}
+              isActive={showPetRequest}
+              onClose={() => setShowPetRequest(false)}
+            />
+          </div>
         </div>
-        <button className="animal-button" onClick={handlePetRequest}>
-          Adoptar
-        </button>
-        <PetRequest
-          petName={petName}
-          isActive={showPetRequest}
-          onClose={() => setShowPetRequest(false)}
-        />
-      </article>
+      </div>
     </main>
   );
 };
