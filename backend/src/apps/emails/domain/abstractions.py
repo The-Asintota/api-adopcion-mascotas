@@ -1,4 +1,6 @@
+from django.db.models import QuerySet
 from typing import Dict, Any, Protocol
+from apps.emails.models import EmailsSent
 
 
 class IEmailsSentRepository(Protocol):
@@ -20,6 +22,14 @@ class IEmailsSentRepository(Protocol):
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
+        """
+
+        ...
+
+    @classmethod
+    def get_all(cls) -> QuerySet[EmailsSent]:
+        """
+        Get all the records from the sent email database.
         """
 
         ...

@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from django.db import OperationalError
 from typing import Dict, Any
 from apps.emails.models import EmailsSent
@@ -30,3 +31,18 @@ class EmailsSentRepository:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
+
+    @classmethod
+    def get_all(cls) -> QuerySet[EmailsSent]:
+        """
+        Get all the records from the sent email database.
+        """
+
+        try:
+            emails_list = cls.model.objects.all()
+        except OperationalError:
+            # In the future, a retry system will be implemented when the database is
+            # suddenly unavailable.
+            raise DatabaseConnectionError()
+
+        return emails_list

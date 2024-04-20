@@ -103,7 +103,7 @@ PostSchema = extend_schema(
                             "filters": {
                                 "base_user": "123e4567-e89b-12d3-a456-426614174000",
                             },
-                        }
+                        },
                     },
                 ),
             ],

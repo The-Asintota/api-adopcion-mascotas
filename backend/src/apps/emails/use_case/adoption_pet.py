@@ -32,7 +32,11 @@ class AdoptionPetUseCase:
     @staticmethod
     def _get_email_context(data: Dict[str, str]) -> Dict[str, Any]:
         return {
-            key: value.capitalize() if key in ["pet_name", "user_name"] else value
+            key: (
+                value.capitalize()
+                if key in ["pet_name", "user_name"]
+                else value
+            )
             for key, value in data.items()
         }
 
@@ -94,11 +98,13 @@ class AdoptionPetUseCase:
                 "subject": message["subject"],
                 "message": data["message"],
                 "addressee": shelter.base_user.email,
-                "additional_info": json.dumps({
-                    "pet_name": data["pet_name"],
-                    "user_name": data["user_name"],
-                    "user_email": data["user_email"],
-                    "user_phone": data["user_phone"].__str__(),
-                }),
+                "additional_info": json.dumps(
+                    {
+                        "pet_name": data["pet_name"],
+                        "user_name": data["user_name"],
+                        "user_email": data["user_email"],
+                        "user_phone": data["user_phone"].__str__(),
+                    }
+                ),
             }
         )
