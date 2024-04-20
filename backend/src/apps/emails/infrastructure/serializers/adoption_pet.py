@@ -1,12 +1,14 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from phonenumber_field.serializerfields import PhoneNumberField
+from apps.emails.endpoint_schemas.adoption_pet import AdoptionPetSerializerSchema
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
 from apps.utils import ErrorMessages
 
 
+@AdoptionPetSerializerSchema
 class AdoptionPetSerializer(ErrorMessages):
     """
     Defines the data required to send an email to the shelter when a user applies for
@@ -15,8 +17,11 @@ class AdoptionPetSerializer(ErrorMessages):
 
     pet_name = serializers.CharField(
         error_messages={
+            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+                field_name="El valor ingresado"
+            ),
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
-                field_name="El nombre de la mascota", max_length="{max_length}"
+                field_name="El valor ingresado", max_length="{max_length}"
             ),
         },
         required=True,
@@ -24,14 +29,17 @@ class AdoptionPetSerializer(ErrorMessages):
     )
     shelter_uuid = serializers.UUIDField(
         error_messages={
-            "max_length": COMMON_ERROR_MESSAGES["invalid"].format(
-                field_name="El uuid del refugio", max_length="{max_length}"
+            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+                field_name="El id del refugio"
             ),
         },
         required=True,
     )
     user_name = serializers.CharField(
         error_messages={
+            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+                field_name="El nombre"
+            ),
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
                 field_name="El nombre", max_length="{max_length}"
             ),
@@ -71,8 +79,11 @@ class AdoptionPetSerializer(ErrorMessages):
     )
     message = serializers.CharField(
         error_messages={
+            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+                field_name="El valor ingresado"
+            ),
             "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
-                field_name="El mensaje", max_length="{max_length}"
+                field_name="El valor ingresado", max_length="{max_length}"
             ),
         },
         required=True,

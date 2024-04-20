@@ -6,10 +6,14 @@ from typing import Dict, Any
 from apps.emails.infrastructure.serializers import AdoptionPetSerializer
 from apps.emails.infrastructure.db import EmailsSentRepository
 from apps.emails.use_case import AdoptionPetUseCase
+from apps.emails.endpoint_schemas.adoption_pet import PostSchema
 from apps.users.infrastructure.db import UserRepository
 
 
 class AdoptionPetAPIView(generics.GenericAPIView):
+    """
+    API View for sending an email to the shelter when a user applies for adoption.
+    """
 
     authentication_classes = []
     permission_classes = []
@@ -37,7 +41,16 @@ class AdoptionPetAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
+    @PostSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Handle POST requests for sending an email to the shelter when a user applies for adoption.
+
+        This method allows the sending of an email to the shelter when a user applies
+        for adoption. It waits for a POST request with the required data, validates
+        the information, and then sends the email if the data is valid or returns an
+        error response if it is not.
+        """
 
         serializer = self.serializer_class(data=request.data)
 

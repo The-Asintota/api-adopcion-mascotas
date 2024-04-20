@@ -202,6 +202,10 @@ SPECTACULAR_SETTINGS = {
             "name": "Pets",
             "description": "It comprises all the endpoints that manage all the functionality related to a pet in the API.",
         },
+        {
+            "name": "Emails",
+            "description": "It comprises all the endpoints that manage all the functionality related to the sending of emails in the API.",
+        },
     ],
     "SERVE_INCLUDE_SCHEMA": False,
     "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAuthenticated"],

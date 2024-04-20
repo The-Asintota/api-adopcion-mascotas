@@ -279,6 +279,152 @@ paths:
                     to the database. In this example you can see how the information
                     will be represented.
           description: '**INTERNAL_SERVER_ERROR**'
+  /api/v1/email/adoption/:
+    post:
+      operationId: send_adoption_pet_email
+      description: |-
+        Handle POST requests for sending an email to the shelter when a user applies for adoption.
+
+        This method allows the sending of an email to the shelter when a user applies
+        for adoption. It waits for a POST request with the required data, validates
+        the information, and then sends the email if the data is valid or returns an
+        error response if it is not.
+      tags:
+      - Emails
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdoptionPetRequest'
+            examples:
+              DataValid:
+                value:
+                  pet_name: Mascota 1
+                  shelter_uuid: 123e4567-e89b-12d3-a456-426614174000
+                  user_name: User 1
+                  user_email: user@email.com
+                  user_phone: +57 3213514798
+                  message: Mensaje de prueba
+                summary: RegistData required for the message
+                description: |-
+                  Valid data required to send the message to the shelter. This message is a notification that will be sent to the shelter with the necessary information about the adoption request by a user of the platform. The following validations will be applied:
+                  - **pet_name:** Must not be longer than 50 characters and valid string.
+                  - **shelter_uuid:** Must be a valid UUID.
+                  - **user_name:** Must not be longer than 50 characters and valid string.
+                  - **user_email:** Must not be longer than 40 characters and valid email.
+                  - **user_phone:** Must not be longer than 25 characters and valid phone number.
+                  - **message:** Must not be longer than 300 characters and valid string.
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdoptionPetRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdoptionPetRequest'
+        required: true
+      responses:
+        '200':
+          description: '**OK** Mail sent successfully.'
+        '400':
+          content:
+            application/json:
+              schema:
+                properties:
+                  code:
+                    type: string
+                  detail:
+                    type: object
+                    properties:
+                      field:
+                        type: array
+                        items:
+                          type: string
+              examples:
+                InvalidRequestData1:
+                  value:
+                    code: invalid_request_data
+                    detail:
+                      pet_name:
+                      - El valor ingresado es inválido.
+                      - El valor ingresado no puede tener más de 50 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      shelter_uuid:
+                      - El id del refugio es inválido.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      user_phone:
+                      - El número de teléfono es inválido.
+                      - El número de teléfono no puede tener más de 25 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      user_name:
+                      - El nombre es inválido.
+                      - El nombre no puede tener más de 50 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      user_email:
+                      - El correo electrónico es inválido.
+                      - El correo electrónico no puede tener más de 40 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                      message:
+                      - El valor ingresado es inválido.
+                      - El valor ingresado no puede tener más de 300 caracteres.
+                      - Este campo es requerido.
+                      - Este campo no puede estar en blanco.
+                      - Este campo no puede ser nulo.
+                  summary: Invalid request data
+                  description: These are all the basic error messages for each field,
+                    in this example you can see how the messages will be sent. In
+                    a real use case, the error message for the validation or validations
+                    that have failed will be displayed.
+          description: '**(BAD_REQUEST)**'
+        '404':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: object
+              examples:
+                ShelterNotFound:
+                  value:
+                    code: shelter_not_found
+                    detail:
+                      message: shelter with the following filters not found.
+                      filters:
+                        base_user: 123e4567-e89b-12d3-a456-426614174000
+                  summary: Pet shelter not found
+                  description: This message is used when the shelter is not found.
+                    In this example you can see how the information will be represented.
+          description: '**NOT_FOUND**'
+        '500':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: string
+              examples:
+                DatabaseConnectionError:
+                  value:
+                    code: database_connection_error
+                    detail: Unable to establish a connection with the database. Please
+                      try again later.
+                  summary: Database connection error
+                  description: This error message is used when the API cannot connect
+                    to the database. In this example you can see how the information
+                    will be represented.
+          description: '**INTERNAL_SERVER_ERROR**'
   /api/v1/pet/:
     get:
       operationId: get_all_pets
@@ -317,7 +463,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: b8ddeeb8-3779-4cfc-bb40-9a219db1ae9a
+                        uud: 64e51d91-33de-4e19-886c-b4b49ec2931b
                         name: Refugio 1
                       pet_race: pastor aleman
                       pet_age: 2
@@ -328,7 +474,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: b03e2233-fb2c-42d1-8eff-8fb83b7bfa84
+                        uud: ce536b47-7b18-499a-88ba-6b30c8c3c58d
                         name: Refugio 2
                       pet_race: pastor aleman
                       pet_age: 2
@@ -339,7 +485,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 57258606-c2c8-42e8-a2e5-b72d1f14d62f
+                        uud: 1d250fcd-1918-4a15-a922-5eeba9e7d987
                         name: Refugio 3
                       pet_race: pastor aleman
                       pet_age: 2
@@ -350,7 +496,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 3b1ef4c8-4804-4ca3-8334-a129b99e63cc
+                        uud: da38168d-eaaf-44d8-9325-aea045ff3d01
                         name: Refugio 4
                       pet_race: pastor aleman
                       pet_age: 2
@@ -361,7 +507,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: df51236b-c87e-4066-83d1-9de13e1a8171
+                        uud: b3c89ec2-8a05-47e0-a8e4-ca5d84730700
                         name: Refugio 5
                       pet_race: pastor aleman
                       pet_age: 2
@@ -372,7 +518,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: e990692d-eb1a-4474-be86-0fc0dfae3beb
+                        uud: aa4aeb9b-9067-4063-8a45-7c70b1628835
                         name: Refugio 6
                       pet_race: pastor aleman
                       pet_age: 2
@@ -383,7 +529,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: bda14da5-3fc0-46e2-bb38-e5c8ae813593
+                        uud: 93633b93-b2da-42f0-b3d7-f8ec61f9a98b
                         name: Refugio 7
                       pet_race: pastor aleman
                       pet_age: 2
@@ -394,7 +540,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 86dc824b-1395-49b8-8430-47f82bf156eb
+                        uud: 5db3ba4e-a7e2-4563-b421-8f252b2d7679
                         name: Refugio 8
                       pet_race: pastor aleman
                       pet_age: 2
@@ -405,7 +551,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: bf51fe0b-053f-4d4e-a53a-7db9287ae03e
+                        uud: d045612b-8ba9-4696-a5ca-3f1ceb38e8d6
                         name: Refugio 9
                       pet_race: pastor aleman
                       pet_age: 2
@@ -416,7 +562,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 0634cc6b-c373-41ac-a946-e769a33ac2da
+                        uud: 755eba4e-5dfc-448d-a1e1-bd99ae0b3fd4
                         name: Refugio 10
                       pet_race: pastor aleman
                       pet_age: 2
@@ -941,6 +1087,43 @@ paths:
           description: '**INTERNAL_SERVER_ERROR**'
 components:
   schemas:
+    AdoptionPetRequest:
+      type: object
+      description: |-
+        Defines the data required to send an email to the shelter when a user applies for
+        adoption.
+      properties:
+        pet_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        shelter_uuid:
+          type: string
+          format: uuid
+        user_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        user_email:
+          type: string
+          minLength: 1
+          pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
+          maxLength: 40
+        user_phone:
+          type: string
+          minLength: 1
+          maxLength: 25
+        message:
+          type: string
+          minLength: 1
+          maxLength: 300
+      required:
+      - message
+      - pet_name
+      - shelter_uuid
+      - user_email
+      - user_name
+      - user_phone
     AuthenticationRequest:
       type: object
       description: |-
@@ -1108,3 +1291,6 @@ tags:
 - name: Pets
   description: It comprises all the endpoints that manage all the functionality related
     to a pet in the API.
+- name: Emails
+  description: It comprises all the endpoints that manage all the functionality related
+    to the sending of emails in the API.
