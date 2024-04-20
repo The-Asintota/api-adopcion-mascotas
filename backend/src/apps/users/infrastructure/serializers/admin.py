@@ -3,13 +3,13 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from typing import Dict
-from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
 from apps.users.infrastructure.db import UserRepository
 from apps.exceptions import ResourceNotFoundError
 from apps.users.endpoint_schemas.register_admin import GetSerializerSchema
+from apps.utils import ErrorMessages
 
 
 @GetSerializerSchema

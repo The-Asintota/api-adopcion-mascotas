@@ -6,6 +6,7 @@ from apps.emails.domain.constants import SubjectsMail
 from apps.emails.domain.abstractions import IEmailsSentRepository
 from apps.users.domain.abstractions import IUserRepository
 from apps.emails.template_paths import ADOPTION_APPLICATION_EMAIL_BODY
+import json
 
 
 class AdoptionPetUseCase:
@@ -28,7 +29,15 @@ class AdoptionPetUseCase:
         self._user_repository = user_repository
         self._smtp_class = smtp_class or EmailMessage
 
-    def _get_message(self, data: Dict[str, str]) -> Dict[str, Any]:
+    @staticmethod
+    def _get_email_context(data: Dict[str, str]) -> Dict[str, Any]:
+        return {
+            key: value.capitalize() if key in ["pet_name", "user_name"] else value
+            for key, value in data.items()
+        }
+
+    @staticmethod
+    def _get_message(data: Dict[str, str]) -> Dict[str, Any]:
         """
         Construct the email body and subject.
 
@@ -51,7 +60,7 @@ class AdoptionPetUseCase:
         }
 
     def _compose_and_dispatch(
-        self, data: Dict[str, Any], addressee: Model
+        self, message: Dict[str, Any], addressee: Model
     ) -> None:
         """
         Compose and send an email.
@@ -61,7 +70,7 @@ class AdoptionPetUseCase:
         - addressee: User to send the email.
         """
 
-        email = self._smtp_class(to=addressee, **self._get_message(data))
+        email = self._smtp_class(to=[addressee], **message)
         email.content_subtype = "html"
         email.send()
 
@@ -74,5 +83,22 @@ class AdoptionPetUseCase:
         - data: Data to compose the email.
         """
 
-        shelter = self._user_repository.get_user(uuid=data["shelter_uuid"])
-        self._compose_and_dispatch(data=data, addressee=shelter)
+        message = self._get_message(data)
+        shelter_uuid = data.pop("shelter_uuid")
+        shelter = self._user_repository.get_shelter(base_user=shelter_uuid)
+        self._compose_and_dispatch(
+            message=message, addressee=shelter.base_user.email
+        )
+        self._email_repository.add_record(
+            data={
+                "subject": message["subject"],
+                "message": data["message"],
+                "addressee": shelter.base_user.email,
+                "additional_info": json.dumps({
+                    "pet_name": data["pet_name"],
+                    "user_name": data["user_name"],
+                    "user_email": data["user_email"],
+                    "user_phone": data["user_phone"].__str__(),
+                }),
+            }
+        )

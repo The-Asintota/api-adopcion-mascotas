@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework import serializers
-from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
@@ -8,6 +7,7 @@ from typing import Dict, Any
 from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
 from apps.users.endpoint_schemas.pet.serializers import PetSerializerSchema
 from apps.users.models import Pet
+from apps.utils import ErrorMessages
 
 
 class PetReadOnlySerializer(serializers.Serializer):

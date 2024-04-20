@@ -5,11 +5,11 @@ from rest_framework_simplejwt.serializers import (
 )
 from rest_framework import serializers
 from django.core.validators import RegexValidator
-from apps.users.infrastructure.serializers.utils import ErrorMessages
 from apps.users.infrastructure.serializers.constants import (
     COMMON_ERROR_MESSAGES,
 )
 from apps.users.endpoint_schemas.authentication import GetSerializerSchema
+from apps.utils import ErrorMessages
 
 
 @GetSerializerSchema
