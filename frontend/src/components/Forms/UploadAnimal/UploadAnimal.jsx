@@ -212,10 +212,6 @@ const UploadAnimal = () => {
             })}
           />
           <label
-<<<<<<< HEAD
->>>>>>> 7abce3f (refactor(frontend): Update uploadAnimal form values based on backend requirements)
-=======
->>>>>>> feature/update-shelter-profile
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
             htmlFor="pet_observations"
           >
@@ -226,11 +222,6 @@ const UploadAnimal = () => {
         <div className="relative">
           <UploadLogo onImageUpload={handlePetImage}/>
         </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> feature/update-shelter-profile
         <FormRequest
           endpoint="/api/v1/pet/"
           formData={{

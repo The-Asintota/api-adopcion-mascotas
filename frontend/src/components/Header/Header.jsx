@@ -9,13 +9,7 @@ export default function Header() {
   function handleShowSignIn() {
     setShowSignIn(true);
   }
-<<<<<<< HEAD
-  function handleShowSignIn() {
-    setShowSignIn(true);
-  }
-=======
 
->>>>>>> feature/update-shelter-profile
   return (
     <header className="px-8 py-6 text-xs md:text-base">
       <img src="/images/logo3.jpg" alt="logo sitio" className="w-28 md:w-32" />

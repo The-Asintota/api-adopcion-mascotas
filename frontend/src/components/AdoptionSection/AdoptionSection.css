@@ -14,45 +14,6 @@
   gap: 20px;
   padding: 20px;
   margin: 0 auto;
-<<<<<<< HEAD
-=======
-}
-
-@media(width > 468px) {
-  .animal-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media(width > 768px) {
-  .animal-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media(width > 1200px) {
-  .animal-list {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-@media(width > 468px) {
-  .animal-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media(width > 768px) {
-  .animal-list {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media(width > 1200px) {
-  .animal-list {
-    grid-template-columns: repeat(4, 1fr);
-  }
->>>>>>> feature/update-shelter-profile
 }
 
 @media(width > 468px) {
