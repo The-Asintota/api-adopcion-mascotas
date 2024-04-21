@@ -4,6 +4,7 @@ from rest_framework import generics, status
 from apps.emails.infrastructure.serializers import EmailsListReadOnlySerializer
 from apps.emails.infrastructure.db import EmailsSentRepository
 from apps.emails.use_case import GetAllEmailsUseCase
+from apps.emails.endpoint_schemas.get_all_emails import GetAllEmailsSentSchema
 from apps.users.infrastructure.permissions import IsAuthenticatedAdmin
 from apps.users.authentication import JWTAuthentication
 
@@ -18,6 +19,7 @@ class EmailsSentListAPIView(generics.GenericAPIView):
     serializer_class = EmailsListReadOnlySerializer
     application_class = GetAllEmailsUseCase
 
+    @GetAllEmailsSentSchema
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
         Handles the GET request to retrieve all the emails sent.
