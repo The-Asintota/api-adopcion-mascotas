@@ -21,7 +21,7 @@ const AdoptionCard = ({
         <p className="text-center text-xl font-semibold py-0">{petName}</p>
         <div className="flex flex-row w-full justify-around items-center">
           <p>Edad: {age}</p>
-          <p>{breed}</p>
+          <p className="p-0">{breed}</p>
           {size && <p>Tamaño: {description}</p>}
           {description && <p>{description}</p>}
           {observations && <p>{observations}</p>}

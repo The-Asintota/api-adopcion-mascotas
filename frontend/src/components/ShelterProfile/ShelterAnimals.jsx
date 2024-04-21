@@ -13,7 +13,7 @@ const ShelterAnimals = () => {
  */
   return (
     <div className="mt-4 pt-2 px-3">
-      <ul className="grid grid-cols-4 gap-5">
+      <ul className="grid grid-cols-3 gap-5">
         {petData.perros.map((pet) => (
           <AdoptionCard
             key={pet.id}
