@@ -26,7 +26,7 @@ const AdoptionCard = ({
           {description && <p>{description}</p>}
           {observations && <p>{observations}</p>}
         </div>
-        <button onClick={onClick}>Adoptar</button>;
+        <button onClick={onClick}>Adoptar</button>
       </div>
     </li>
   );
