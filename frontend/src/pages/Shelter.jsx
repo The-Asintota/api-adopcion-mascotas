@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Header from "../components/Header/Header";
-import ShelterProfile from "../components/ShelterProfile";
+import ShelterProfile from "../components/ShelterProfile/ShelterProfile";
 import Footer from "../components/Footer/Footer";
 import { AdminContext } from "../context/admin";
 import { Link } from "react-router-dom";
@@ -14,7 +14,6 @@ const Shelter = () => {
 
       {user ? (
         <main className="bg-[#118A95]">
-          {/* <p>Usuario autenticado como {user.role}</p> */}
           <ShelterProfile />
         </main>
       ) : (

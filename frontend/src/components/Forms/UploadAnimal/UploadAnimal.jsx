@@ -3,12 +3,14 @@ import { useForm } from "react-hook-form";
 import ErrorMessage from "../ErrorMessage";
 import UploadLogo from "../SignUp/UploadLogo";
 import FormRequest from "../FormRequest";
+import SuccessfulNotification from "../SuccessfulNotification";
 
 const UploadAnimal = () => {
   const {
     register,
     getValues,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -24,8 +26,9 @@ const UploadAnimal = () => {
     },
   });
 
-  const [petType, setPetType] = useState("perro");
-  const [petSex, setPetSex] = useState("hembra");
+  const [petType, setPetType] = useState("Perro");
+  const [petSex, setPetSex] = useState("Hembra");
+  const [showSuccess, setShowSuccess] = useState(false);
   const [petImage, setPetImage] = useState(null)
   const [petCreated, setPetCreated] = useState(false)
 
@@ -41,11 +44,26 @@ const UploadAnimal = () => {
     setPetImage(url)
   }
 
+  function handleClickButton() {
+    setShowSuccess(false);
+    reset({
+      pet_name: "",
+      pet_type: "",
+      pet_race: "",
+      pet_sex: "",
+      pet_age: "",
+      pet_observations: "",
+      pet_description: "",
+      pet_image: null,
+    });
+  }
+
   useEffect(() => {
     if (petCreated) {
-      console.log("Pet created");
+      setShowSuccess(true);
     }
   }, [petCreated]);
+
 
   return (
     <div className="w-1/3 bg-[#4db8c0] rounded-xl shadow-2xl overflow-hidden p-8 space-y-4 md:space-y-8 mt-4 md:mt-6 text-white">
@@ -66,6 +84,14 @@ const UploadAnimal = () => {
             autoComplete=""
             {...register("pet_name", {
               required: "Este campo es obligatorio",
+              pattern: {
+                value: /^[\p{L}\s]+$/,
+                message: "Por favor, introduce solo letras y espacios",
+              },
+              maxLength: {
+                value: 50,
+                message: "El nombre debe tener menos de 50 caracteres",
+              }
             })}
           />
           <label
@@ -78,34 +104,34 @@ const UploadAnimal = () => {
         </div>
         <div className="flex flex-row w-full">
           <div className="relative w-1/2">
-            <label htmlFor="petType" className="text-gray-200">
+            <label htmlFor="pet_type" className="text-gray-200">
               Tipo de mascota:
             </label>
             <select
-              id="petType"
+              id="pet_type"
               value={petType}
               onChange={handlePetType}
               className="peer h-10 w-28 border-gray-300 text-gray-200 bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
             >
-              <option value="perro">Perro</option>
-              <option value="gato">Gato</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
             </select>
             <ErrorMessage error={errors.pet_type} />
           </div>
           <div className="relative w-1/2 pl-2 ml-2">
-            <label htmlFor="petSex" className="text-gray-200">
+            <label htmlFor="pet_sex" className="text-gray-200">
               Sexo:
             </label>
             <select
-              id="petSex"
+              id="pet_sex"
               value={petSex}
               onChange={handlePetSex}
               className="peer h-10 w-28 border-gray-300 text-gray-200 bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
             >
-              <option value="hembra">Hembra</option>
-              <option value="macho">Macho</option>
+              <option value="Hembra">Hembra</option>
+              <option value="Macho">Macho</option>
             </select>
-            <ErrorMessage error={errors.petSex} />
+            <ErrorMessage error={errors.pet_sex} />
           </div>
         </div>
         <div className="flex flex-row w-full">
@@ -118,6 +144,10 @@ const UploadAnimal = () => {
               autoComplete=""
               {...register("pet_race", {
                 required: "Este campo es obligatorio",
+                pattern: {
+                  value: /^[\p{L}\s]+$/,
+                  message: "Por favor, introduce solo letras y espacios",
+                }
               })}
             />
             <label
@@ -137,6 +167,11 @@ const UploadAnimal = () => {
               type="pet_age"
               {...register("pet_age", {
                 required: "Este campo es obligatorio",
+                value: {
+                  min: 1,
+                  max: 99,
+                  message: "La edad debe estar entre 1 y 99",
+                },
               })}
             />
             <label
@@ -177,6 +212,10 @@ const UploadAnimal = () => {
             })}
           />
           <label
+<<<<<<< HEAD
+>>>>>>> 7abce3f (refactor(frontend): Update uploadAnimal form values based on backend requirements)
+=======
+>>>>>>> feature/update-shelter-profile
             className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
             htmlFor="pet_observations"
           >
@@ -187,13 +226,18 @@ const UploadAnimal = () => {
         <div className="relative">
           <UploadLogo onImageUpload={handlePetImage}/>
         </div>
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> feature/update-shelter-profile
         <FormRequest
           endpoint="/api/v1/pet/"
           formData={{
             pet_name: getValues("pet_name"),
             pet_type: petType,
-            pet_race: petSex,
-            pet_sex: getValues("email"),
+            pet_race: getValues("pet_race"),
+            pet_sex: petSex,
             pet_age:  getValues("pet_age"),
             pet_observations:  getValues("pet_observations"),
             pet_description: getValues("pet_description"),
@@ -203,6 +247,12 @@ const UploadAnimal = () => {
           textButton="Registro"
         />
       </form>
+      <SuccessfulNotification
+        isActive={showSuccess}
+        onClick={handleClickButton}
+        onClose={handleClickButton}
+        text="Registro de mascota exitoso"
+      />
     </div>
   );
 };

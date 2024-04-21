@@ -38,9 +38,9 @@ const FormRequest = ({ endpoint, formData, onSuccess, textButton }) => {
 
   return (
     <button
-      type="submit"  
-      className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
-      onClick={handleRequest}
+    type="button"  
+    className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
+    onClick={handleRequest}
     >
       {textButton}
     </button>

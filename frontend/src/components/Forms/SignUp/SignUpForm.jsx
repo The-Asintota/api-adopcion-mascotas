@@ -269,8 +269,18 @@ const SignUpForm = ({ link, onClick }) => {
           endpoint="/api/v1/shelter/"
           formData={{
             shelter_name: getValues("shelter_name"),
+<<<<<<< HEAD
+<<<<<<< HEAD
             shelter_responsible: getValues("shelter_responsible"),
             shelter_phone_number:  getValues("shelter_phone_number"),
+=======
+            responsible: getValues("responsible"),
+            phone_number:  getValues("phone_number"),
+>>>>>>> 736369a (feat(frontend): Add ProtectedRoute and ShelterProfile to manage animals of shelter)
+=======
+            shelter_responsible: getValues("shelter_responsible"),
+            shelter_phone_number:  getValues("shelter_phone_number"),
+>>>>>>> feature/update-shelter-profile
             email: getValues("email"),
             shelter_address:  getValues("shelter_address"),
             password:  getValues("password"),

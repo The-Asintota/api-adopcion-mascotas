@@ -7,12 +7,12 @@ import SearchAnimal from "../SearchAnimal/SearchAnimal";
 const AdoptionSection = () => {
   const { animals, handleSearch } = useSearch()
 
-  function handlePetRequest({ id }) {
+  function handlePetRequest({ id = 1 }) {
     window.location.href = `/animal/${id}`
   }
   
   return (
-    <section className="adoption-section">
+    <section className="adoption-section w-sceen">
       <h2>Adopción</h2>
       <SearchAnimal onChange={handleSearch} />
       <ul className="animal-list">

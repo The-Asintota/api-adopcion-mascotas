@@ -1,14 +1,15 @@
 .animal-main {
     display: grid;
-    place-items: center;
-    height: 100vh;
-    background-color: var(--green);
+    /* place-items: start; */
+    /* height: 100vh; */
+    background-color: var(--dark-green);
 
 }
 
 .animal {
   display: flex;
   align-items: center;
+  place-items: start;
   gap: 50px;
   color: var(--white);
 }
@@ -18,7 +19,7 @@
 }
 
 .animal-image {
-  width: 100%;
+  width: 20rem;
   height: auto;
 }
 
@@ -33,7 +34,7 @@
 
 .animal-info {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: start;
   gap: 10px;
 }
