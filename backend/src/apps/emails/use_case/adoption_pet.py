@@ -6,7 +6,6 @@ from apps.emails.domain.constants import SubjectsMail
 from apps.emails.domain.abstractions import IEmailsSentRepository
 from apps.users.domain.abstractions import IUserRepository
 from apps.emails.template_paths import ADOPTION_APPLICATION_EMAIL_BODY
-import json
 
 
 class AdoptionPetUseCase:
@@ -98,13 +97,11 @@ class AdoptionPetUseCase:
                 "subject": message["subject"],
                 "message": data["message"],
                 "addressee": shelter.base_user.email,
-                "additional_info": json.dumps(
-                    {
-                        "pet_name": data["pet_name"],
-                        "user_name": data["user_name"],
-                        "user_email": data["user_email"],
-                        "user_phone": data["user_phone"].__str__(),
-                    }
-                ),
+                "additional_info": {
+                    "pet_name": data["pet_name"],
+                    "user_name": data["user_name"],
+                    "user_email": data["user_email"],
+                    "user_phone": data["user_phone"].__str__(),
+                },
             }
         )
