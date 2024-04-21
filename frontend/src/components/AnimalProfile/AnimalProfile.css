@@ -1,7 +1,6 @@
 .animal-main {
     display: grid;
-    /* place-items: start; */
-    /* height: 100vh; */
+    height: 45rem;
     background-color: var(--dark-green);
 
 }
