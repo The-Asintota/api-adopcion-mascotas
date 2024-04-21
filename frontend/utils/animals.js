@@ -12,7 +12,8 @@ export const mappedAnimals = () => {
         urlImage : item.imagen,
         petName : item.nombre,
         age : item.edad,
-        bread : item.raza,
+        breed : item.raza,
+        sex : item.sexo,
         size : item.tamaño,
         description : item.descripcion,
         observations : item.observaciones

@@ -3,16 +3,18 @@
       {
         "id": 1,
         "nombre": "Tito",
+        "sexo": "macho",
         "edad": "10 Meses",
         "tamaño": "Pequeño",
-        "descripcion": "Juguetón y muy cariñoso",
+        "descripcion": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p",
         "raza": "Chihuahua",
-        "observaciones": "Se lleva bien con otros perros",
+        "observaciones": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis p",
         "imagen": "https://picsum.photos/id/237/200/300"
       },
       {
         "id": 2,
         "nombre": "Luna",
+        "sexo": "hembra",
         "edad": "2 años",
         "tamaño": "Mediano",
         "descripcion": "Activo y protector",
@@ -23,6 +25,7 @@
       {
         "id": 3,
         "nombre": "Buddy",
+        "sexo": "hembra",
         "edad": "3 años",
         "tamaño": "Grande",
         "descripcion": "Amigable y leal",
@@ -33,7 +36,9 @@
       {
         "id": 4,
         "nombre": "Max",
+        "sexo": "macho",
         "edad": "1 año",
+        "sexo": "hembra",
         "tamaño": "Mediano",
         "descripcion": "Energético y amoroso",
         "raza": "Border Collie",
@@ -45,6 +50,7 @@
       {
         "id": 5,
         "nombre": "Whiskers",
+        "sexo": "macho",
         "edad": "1 año",
         "tamaño": "Pequeño",
         "descripcion": "Cariñoso y curioso",
@@ -55,6 +61,7 @@
       {
         "id": 6,
         "nombre": "Mittens",
+        "sexo": "macho",
         "edad": "3 años",
         "tamaño": "Mediano",
         "descripcion": "Independiente pero afectuoso",
@@ -65,6 +72,7 @@
       {
         "id": 7,
         "nombre": "Salem",
+        "sexo": "macho",
         "edad": "2 años",
         "tamaño": "Pequeño",
         "descripcion": "Misterioso y tranquilo",
@@ -75,6 +83,7 @@
       {
         "id": 8,
         "nombre": "Felix",
+        "sexo": "macho",
         "edad": "4 años",
         "tamaño": "Mediano",
         "descripcion": "Curioso y juguetón",

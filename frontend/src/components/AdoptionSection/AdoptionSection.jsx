@@ -7,7 +7,7 @@ import SearchAnimal from "../SearchAnimal/SearchAnimal";
 const AdoptionSection = () => {
   const { animals, handleSearch } = useSearch()
 
-  function handlePetRequest({ id = 1 }) {
+  function handlePetRequest({ id }) {
     window.location.href = `/animal/${id}`
   }
   
