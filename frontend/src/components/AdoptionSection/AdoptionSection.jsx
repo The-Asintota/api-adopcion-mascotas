@@ -1,11 +1,11 @@
 import React from "react";
 import AdoptionCard from "./AdoptionCard";
 import './AdoptionSection.css'
-import useSearch from "../../hooks/useSearch";
 import SearchAnimal from "../SearchAnimal/SearchAnimal";
+import useAnimals from "../../hooks/useAnimals";
 
 const AdoptionSection = () => {
-  const { animals, handleSearch } = useSearch()
+  const { animals } = useAnimals()
 
   function handlePetRequest({ id }) {
     window.location.href = `/animal/${id}`
@@ -14,9 +14,9 @@ const AdoptionSection = () => {
   return (
     <section className="adoption-section w-sceen">
       <h2>Adopción</h2>
-      <SearchAnimal onChange={handleSearch} />
+      <SearchAnimal />
       <ul className="animal-list">
-        {animals.map(({ id, urlImage, petName, age, bread, size, description, observations }) => (
+        {animals && animals.map(({ id, urlImage, petName, age, bread, size, description, observations }) => (
           <AdoptionCard 
             key={id}
             onClick={() => handlePetRequest({ id })}
