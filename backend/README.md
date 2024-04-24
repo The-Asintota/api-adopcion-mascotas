@@ -1,26 +1,37 @@
 # API Adopción de mascotas
-> [!NOTE]
+> [!WARNING]
 > Este proyecto aun está en desarrollo.
 
 <div>
-    <a href="" target="_blank">
+    <a href="https://api-adopcion-mascotas-production.up.railway.app/api/documentation/" target="_blank">
         <img src="/backend/images/ApiBanner.png">
     </a>
 </div>
 
-En este repositorio encontrarás el código fuente de la API para la plataforma de gestión de inmobiliaria Bonpland. Para desarrollar este API nos hemos apoyado de un marco de trabajo como [Django Rest Framework](https://www.django-rest-framework.org/).
+### 1. Descripción del proyecto
+Bienvenido a la API de adopción de mascotas, diseñada para agilizar el proceso de adopción de mascotas al proporcionar una interfaz perfecta entre los solicitantes de mascotas y los refugios. Esta API, creada con [Django Rest Framework](https://www.django-rest-framework.org/) y [PostgreSQL](https://www.postgresql.org/), ofrece un sólido conjunto de funcionalidades destinadas a simplificar los procedimientos de adopción de mascotas.
 
-## 1. Descripción del proyecto
+#### 1.1. Características de los usuarios
+En el sistema se definen dos tipos de usuarios:
+- **Refugios:** Los refugios son organizaciones o personas físicas encargadas de cuidar y facilitar la adopción de mascotas. Interactúan con la plataforma para registrarse, registrar mascotas disponibles para adopción y recibir comunicaciones y notificaciones relacionadas con consultas de adopción.
 
-La inmobiliaria opera principalmente a través de sus oficinas físicas y busca aprovechar la tecnología para ampliar su presencia en el mercado digital. La creación de una plataforma en línea no solo mejorará su visibilidad sino también la eficiencia de sus servicios.
+- **Administradores:** Los administradores son usuarios con privilegios elevados que supervisan y administran la plataforma. Tienen acceso a funcionalidades que les permiten administrar la información del refugio, ver registros de correo electrónico y realizar tareas administrativas para garantizar el buen funcionamiento del proceso de adopción.
 
-### 1.1. Características de los usuarios
-Por definir...
+#### 1.2. Requerimientos funcionales
+- **Registro de refugio**: El proceso de registro de refugios está diseñado para ser sencillo e integral. Los refugios pueden proporcionar detalles esenciales durante el registro, como información de contacto, personal responsable e incluso cargar el logotipo del refugio. Esto no sólo ayuda a presentar una imagen profesional, sino que también agiliza la comunicación entre los refugios y los posibles adoptantes, fomentando una experiencia de adopción más fluida en general.
 
-### 1.2. Requerimientos funcionales
-Por definir...
+- **Registro de mascotas para refugios**: La funcionalidad de registro de mascotas  permite a los refugios exhibir a sus mascotas de manera efectiva. Los refugios autenticados pueden proporcionar información completa sobre cada mascota, incluido su nombre, raza, edad, historial médico y fotografías. Este perfil detallado no sólo mejora la visibilidad de las mascotas sino que también aumenta sus posibilidades de adopción.
 
-### 1.3. Estructura
+- **Autenticación**: Los mecanismos de autenticación estan diseñados para proteger datos confidenciales y garantizar que solo los usuarios autorizados puedan acceder y administrar los recursos o datos del sistema. Se utiliza **JSON Web Token** para el inicio de sesión de usuarios y el control de acceso basado en roles. Esto garantiza que los usuarios puedan autenticarse de forma segura y acceder al sistema mientras mantienen la seguridad e integridad de los datos durante todo el proceso.
+
+- **Envío de correos electrónicos a los refugios**: Se envían notificaciones automáticas por correo electrónico a los refugios para comunicarse con respecto a consultas de adopción, actualizaciones y notificaciones administrativas.
+
+Los **administradores** tendrán acceso a funcionalidades que les facilitara la gestión de la plataforma desde el panel de administración:
+
+- **Administrar información del refugio:** los administradores pueden ver y administrar toda la información relacionada con los refugios registrados, incluidos detalles de contacto, listados de mascotas y procesos de adopción.
+- **Ver registros de correo electrónico:** los administradores pueden acceder a un registro de todos los correos electrónicos enviados desde la plataforma, incluidas consultas de adopción, notificaciones y comunicaciones con refugios.
+
+#### 1.3. Arquitectura del proyecto
 La estructura del proyecto es la siguiente:
 
 ```
@@ -56,78 +67,106 @@ La estructura del proyecto es la siguiente:
 - **[pytest.ini](./src/pytest.ini):** Este archivo contiene la configuración para pytest, un marco de prueba para Python.
 
 
-## 2. Instalación en local
-
-Primero debes clonar este repositorio utilizando los siguientes comando en tu consola.
-
-```bash
-git clone https://github.com/No-Country/c17-71-m-python.git
-cd c17-71-m-python/backend
-```
-
-### 2.1. Instalación manual
-
+## 2. Instalación del proyecto
 > [!NOTE]
 > Asegúrese que Python 3.11.5 esté instalado en su sistema operativo.
 
-- **Paso 1 (instalar dependencias):** Para instalar las teconologias y paquetes que usa el proyecto usa el siguiente comando. Asegurate estar en el directotio raíz.
+Primero debes seguir las siguientes instrucciones y dependiendo de que manera quieres realizar la instalación seguiras los pasos para instalar el proyecto de manera manual o utilizando Docker.
 
+- **Clonar repositorio:** Para clonar este repositorio ejecuta los siguientes comandos.
+    
     ```bash
-    pip install -r "requirements.txt"
+    git clone https://github.com/No-Country/c17-71-m-python.git
+    cd c17-71-m-python/backend
     ```
-
-- **Paso 2 (configurar variables de entorno):** Crea un archivo con el nombre _.env_ dentro del directorio raíz. Dentro de este archivo se definiran todas las variables de entorno de este proyecto.
+    
+- **Crear y activar entorno virtual:** Creares un entorno virtual con el siguiente comando, en este entorno instalaremos todas las dependencias de este proyecto.
+    
+    ```bash
+    python3 -m venv <nombre_del_entorno>
+    ```
+    
+    Por ultimo activamos el entorno con el siguiente comando.
+    
+    ```bash
+    # Linux y macOS
+    source <nombre_del_entorno>/bin/activate
+    
+    # Windows
+    .<nombre_del_entorno>\Scripts\activate
+    ```
+    
+- **Configurar variables de entorno:** Crea un archivo con el nombre _.env_ dentro del directorio _src_. En este archivo se definiran todas las variables de entorno de este proyecto. Las variables que se deben configurar son las siguientes.
 
     ```.env
     KEY_DJANGO=value
+
+    # SMTP settings
+    EMAIL_HOST_USER=<tu correo electrónico>
+    EMAIL_HOST=smtp.gmail.com
+    EMAIL_HOST_PASSWORD=<contraseña de aplicación de tu correo>
+    EMAIL_PORT=587
+    EMAIL_USE_TLS=true
     ```
 
-    El valor de la variable `KEY_DJANGO` lo puedes obtener ejecutando los siguientes comandos. El ultimo comando retorna el valor de la variable que deberas copiar en el archivo _.env_.
+    El valor de la variable `KEY_DJANGO` lo puedes obtener ejecutando los siguientes comandos. Primero iniciamos el intérprete de Python.
 
     ```bash
     python3
+    ```
+    El siguiente comando te va retornar el valor de `KEY_DJANGO` que deberas copiar en el archivo _.env_.
+
+    ```bash
     from django.core.management.utils import get_random_secret_key; print(get_random_secret_key()); exit()
     ```
 
-- **Paso 4 (realizar migraciones):** Migramos los modelos del proyecto necesarios para el funcionamiento del servidor con el siguiente comando.
+### 2.1. Instalación manual
 
+- **Paso 1 (instalar dependencias):** Para instalar las teconologias y paquetes que usa el proyecto usa el siguiente comando. Asegurate estar en el directotio raíz.
+    
     ```bash
-    python3 manage.py migrate --settings=settings.environments.development
+    pip install -r "requirements.txt"
     ```
-
-- **Paso 5 (poblar las tablas auxiliares de la tabla pets):** La tabla `pets` utiliza tablas auxiliares que se utilizan para el registro de mascotas, para poblar estas tablas debes ejecutar los siguientes comandos.
-
+    
+- **Paso 2 (realizar migraciones):** Migramos los modelos del proyecto necesarios para el funcionamiento del servidor con el siguiente comando.
+    
     ```bash
-    python3 manage.py addpettypes --settings=settings.environments.development
-    python3 manage.py addpetsextypes --settings=settings.environments.development
+    python3 src/manage.py migrate --settings=settings.environments.development
     ```
-
-- **Paso 6 (Iniciar el servidor):** Para iniciar el servidor de manera local ejecuta el siguiente comando.
-
+    
+- **Paso 3 (poblar las tablas auxiliares):** La tabla `pets` utiliza tablas auxiliares que se utilizan para el registro de mascotas, para poblar estas tablas debes ejecutar los siguientes comandos.
+    
     ```bash
-    python3 manage.py runserver --settings=settings.environments.development
+    python3 src/manage.py addpettypes --settings=settings.environments.development
+    python3 src/manage.py addpetsextypes --settings=settings.environments.development
     ```
-
+    
+- **Paso 4 (iniciar el servidor):** Para iniciar el servidor de manera local ejecuta el siguiente comando.
+    
+    ```bash
+    python3 src/manage.py runserver --settings=settings.environments.development
+    ```
+    
 ### 2.1. Instalación con Docker
 
 - **Paso 1 (Construir imagen):** para construir la imagen del contenedor de este pryecto debes ejecutar el siguiente comando.
-
+    
     ```bash
     docker build -t api-adopcion-mascotas .
     ```
-
+    
 - **Paso 2 (Correr imagen):** para iniciar el contenedor de este pryecto debes ejecutar el siguiente comando.
-
+    
     ```bash
     docker run -p 8000:8000 api-adopcion-mascotas
     ```
-
+    
 De esta manera podrás usar todas las funcionalidades que este proyecto tiene para ofrecer. Es importante que hayas seguido todos los pasos explicados en el orden establecido.
 
-## 3. Instalación de hooks
+> [!WARNING]
+> Si vas a realizar contribuciones deberas instalar los hooks de Git que se estan utilizando en este proyecto.
 
-> [!NOTE]
-> Si vas a contribuir al proyecto debes ejecutar estos comandos.
+## 3. Instalación de hooks
 
 Los ganchos de Git son scripts que Git ejecuta antes o después de eventos como: `commits`, `push` y `receive`. Son una característica integrada de Git y se utilizan para automatizar tareas en el flujo de trabajo de desarrollo de software. Por ejemplo, puede utilizar un _hook_ de **pre-commit** para ejecutar el conjunto de pruebas configuradas antes de cada _commit_, evitando confirmaciones con pruebas fallidas.
 
@@ -146,8 +185,9 @@ pytest src/tests
 ```
 
 ## 5. Integrantes del equipo backend
-| Nombre | Rol | 
-|----------|----------|
-| [Amanda Pares](https://github.com/AParesFermandez) | Backend |
-| [Nico Xynos](https://github.com/nicoxynos5) | Backend |
-| [Carlos Andres Aguirre Ariza](https://github.com/The-Asintota) | Backend |
+
+| Nombre | Enlaces | Rol | 
+|----------|----------|----------|
+| Amanda Pares | [Git Hub](https://github.com/AParesFermandez) - [LinkedIn](https://www.linkedin.com/in/amanda-pares-fern%C3%A1ndez-761689171/) | Backend |
+| Nico Xynos | [Git Hub](https://github.com/nicoxynos5) - [LinkedIn](https://www.linkedin.com/in/nicoxynos/) | Backend |
+| Carlos Aguirre | [Git Hub](https://github.com/The-Asintota) - [LinkedIn](https://www.linkedin.com/in/carlosaguirredev/) | Backend |
