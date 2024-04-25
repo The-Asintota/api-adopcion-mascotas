@@ -4,18 +4,39 @@ import { USERS } from "../../utils/constants";
 export const AdminContext = createContext()
 
 export const AdminProvider = ({ children }) => {
-    const [user, setUser] = useState(null) 
-    
-    const authenticateUser = (role) => {
+    const [user, setUser] = useState(() => {
+        const role = sessionStorage.getItem("role")
+        const token = sessionStorage.getItem("token")
+
+        return { role, token }
+    }) 
+
+    const authenticateUser = ({ role, token }) => {
         if (role === USERS.ADMIN || role === USERS.SHELTER) {
-            setUser({role})
+            setUser({ role, token })
+            sessionStorage.setItem("role", role)
+            sessionStorage.setItem("token", token)
         } else {
             setUser(null)
         }
     }
 
+    const logOutAdmin = () => {
+        setUser({
+            role: null,
+            token: null
+        })
+
+        sessionStorage.removeItem("role")
+        sessionStorage.removeItem("token")
+    }
+
+    const isLogged = () => {
+        return (user?.role === USERS.ADMIN || user?.role === USERS.SHELTER) && user?.token
+    }
+
     return (
-        <AdminContext.Provider value={{ user, authenticateUser }}>
+        <AdminContext.Provider value={{ user, authenticateUser, logOutAdmin, isLogged }}>
             {children}
         </AdminContext.Provider>
     )

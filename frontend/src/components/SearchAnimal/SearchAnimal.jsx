@@ -13,16 +13,18 @@ export default function SearchAnimal () {
                     <option value="Gato">Gato</option>
                     <option value="Perro">Perro</option>
                 </select>
-                <select className="rounded-md bg-[var(--green)] px-2" name="tamaño" id="tamaño">
-                    <option value="Tamaño">Tamaño</option>
-                    <option value="Grande">Grande</option>
-                    <option value="Mediano">Mediano</option>
-                    <option value="Pequeño">Pequeño</option>
-                </select>
                 <select className="rounded-md bg-[var(--green)] px-2" name="edad" id="edad">
                     <option value="Edad">Edad</option>
                     <option value="1">1 año</option>
                     <option value="2">2 años</option>
+                    <option value="3">3 años</option>
+                    <option value="4">4 años</option>
+                    <option value="5">5 años</option>
+                    <option value="6">6 años</option>
+                    <option value="7">7 años</option>
+                    <option value="8">8 años</option>
+                    <option value="9">9 años</option>
+                    <option value="10">10 años</option>
                 </select>
                 <input className="bg-[var(--green)] cursor-pointer w-full py-2 px-8 rounded-md shadow-lg font-semibold " 
                     type="submit" 

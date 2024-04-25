@@ -5,7 +5,7 @@ import SearchAnimal from "../SearchAnimal/SearchAnimal";
 import useAnimals from "../../hooks/useAnimals";
 
 const AdoptionSection = () => {
-  const { animals } = useAnimals()
+  const { filterAnimals } = useAnimals()
 
   function handlePetRequest({ id }) {
     window.location.href = `/animal/${id}`
@@ -16,17 +16,16 @@ const AdoptionSection = () => {
       <h2>Adopción</h2>
       <SearchAnimal />
       <ul className="animal-list">
-        {animals && animals.map(({ id, urlImage, petName, age, bread, size, description, observations }) => (
+        {filterAnimals && filterAnimals.map(({ id, urlImage, petName, age, breed, size, description, observations }) => (
           <AdoptionCard 
             key={id}
             onClick={() => handlePetRequest({ id })}
             urlImage={urlImage}
             petName={petName}
             age={age}
-            breed={bread}
+            breed={breed}
           />
-        )) }
-
+        ))}
       </ul>
 
     </section>
