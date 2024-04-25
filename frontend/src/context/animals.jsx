@@ -8,7 +8,6 @@ export const AnimalsProvider = ({ children }) => {
     const [filters, setFilters] = useState({
         nombre: "",
         tipo: "",
-        tamaño: "",
         edad: ""
     })
 
@@ -20,13 +19,14 @@ export const AnimalsProvider = ({ children }) => {
             setAnimals(data);
         });
     }, [])
-
+ 
     useEffect(() => {
         if(!animals) return;
 
         const filter = filteredAnimals();
         setFilterAnimals(filter);
-    }, [animals, filters])
+
+    }, [animals, filters]) 
 
     const fetchAnimals = async () => {
         const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/v1/pet/",
@@ -46,9 +46,8 @@ export const AnimalsProvider = ({ children }) => {
         const data = new FormData(e.target);
         const animal = {
             nombre : data.get("nombre"),
-            tipo : data.get("tipo") === "tipo" ? "" : data.get("tipo"),
-            tamaño : data.get("tamaño") === "tamaño" ? "" : data.get("tamaño"),
-            edad : data.get("edad") === "edad" ? "" : data.get("edad")
+            tipo : data.get("tipo") === "Tipo" ? "" : data.get("tipo"),
+            edad : data.get("edad") === "Edad" ? "" : data.get("edad")
         }
 
         setFilters(animal);
@@ -69,20 +68,14 @@ export const AnimalsProvider = ({ children }) => {
                 }
             }
 
-            if(filters.tipo !== "Tipo") {
+            if(filters.tipo !== "") {
                 if(item.type !== filters.tipo) {
                     result = false
                 }
             }
-
-            if(filters.tamaño !== "Tamaño") {
-                if(item.size !== filters.tamaño) {
-                    result = false
-                }
-            }
             
-            if(filters.edad !== "Edad") {
-                if(item.age !== filters.edad) {
+            if(filters.edad !== "") {
+                if(parseInt(item.age) !== parseInt(filters.edad)) {
                     result = false
                 }
             }
@@ -94,7 +87,7 @@ export const AnimalsProvider = ({ children }) => {
     } 
 
     return (
-        <AnimalsContext.Provider value={{ animals: filterAnimals , handleSearch }}>
+        <AnimalsContext.Provider value={{ animals , filterAnimals, handleSearch }}>
             {children}
         </AnimalsContext.Provider>
     )
