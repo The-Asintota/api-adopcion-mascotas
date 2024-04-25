@@ -2,17 +2,17 @@ import React, { useContext } from "react";
 import Header from "../components/Header/Header";
 import ShelterProfile from "../components/ShelterProfile/ShelterProfile";
 import Footer from "../components/Footer/Footer";
-import { AdminContext } from "../context/admin";
 import { Link } from "react-router-dom";
+import useUser from "../hooks/useUser";
 
 const Shelter = () => {
-  const { user } = useContext(AdminContext);
+  const { isLogged } = useUser();
 
   return (
     <>
       <Header />
 
-      {user ? (
+      {isLogged() ? (
         <main className="bg-[#118A95]">
           <ShelterProfile />
         </main>
