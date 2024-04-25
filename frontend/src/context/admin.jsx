@@ -32,7 +32,7 @@ export const AdminProvider = ({ children }) => {
     }
 
     const isLogged = () => {
-        return (user?.role !== USERS.ADMIN && user?.role !== USERS.SHELTER) && user?.token !== null
+        return (user?.role === USERS.ADMIN || user?.role === USERS.SHELTER) && user?.token
     }
 
     return (
