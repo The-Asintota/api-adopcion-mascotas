@@ -29,6 +29,7 @@ const AnimalProfile = () => {
       size,
       description,
       observations,
+      shelter_uuid
     } = data;
 
     return (
@@ -79,6 +80,7 @@ const AnimalProfile = () => {
               </button>
               <PetRequest
                 petName={petName}
+                shelterId={shelter_uuid}
                 isActive={showPetRequest}
                 onClose={() => setShowPetRequest(false)}
               />
