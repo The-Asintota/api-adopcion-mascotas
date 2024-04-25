@@ -1,9 +1,9 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import ErrorMessage from "../ErrorMessage";
-import { AdminContext } from "../../../context/admin";
+import useUser from "../../../hooks/useUser";
 
 const SignIn = ({ isActive, onClose }) => {
   const {
@@ -17,28 +17,24 @@ const SignIn = ({ isActive, onClose }) => {
     },
   });
 
-  const { authenticateUser } = useContext(AdminContext)
+  const { authenticateUser } = useUser()
 
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/`;
 
-  const token = localStorage.getItem("token");
-
-  const navigate = useNavigate()
+  const navigate = useNavigate() 
 
   const onSubmit = (data) => {
     axios
       .post(urlRequest, data, {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json"
         },
       })
       .then((response) => {
         if (response.status === 200) {
-          const {role} = response.data
-          authenticateUser(role)
-          localStorage.setItem('token', response.data.access)
+          const { role, access } = response.data
           navigate(`/${role}`)
+          authenticateUser({ role : role, token: access })
         } else if (response.status === 400) {
           console.log(response.data);
         } else if (response.status === 401) {
