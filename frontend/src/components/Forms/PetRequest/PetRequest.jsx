@@ -1,16 +1,22 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../ErrorMessage";
+import FormRequest from "../FormRequest";
 
-const PetRequest = ({ isActive, onClose, petName }) => {
+const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
   const {
     register,
     getValues,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-
-  const onSubmit = (data) => console.log(data);
+  } = useForm({
+    defaultValues: {
+      userName: "",
+      email: "",
+      phoneNumber: "",
+      address: "",
+    },
+  });
 
   return (
     <>
@@ -35,9 +41,27 @@ const PetRequest = ({ isActive, onClose, petName }) => {
               </p>
               <form
                 method="POST"
-                onSubmit={handleSubmit(onSubmit)}
+                onSubmit={handleSubmit(() => {})}
                 className="space-y-6 pt-4"
               >
+                  <div className="relative">
+                    <input
+                      placeholder="Nombre de usuario"
+                      className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
+                      id="userName"
+                      name="userName"
+                      {...register("userName", {
+                        required: "Este campo es obligatorio",
+                      })}
+                    />
+                    <label
+                      className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
+                      htmlFor="userName"
+                    >
+                    Nombre
+                  </label>
+                </div>
+
                 <div className="relative">
                   <input
                     placeholder="john@prueba.com"
@@ -111,12 +135,19 @@ const PetRequest = ({ isActive, onClose, petName }) => {
                   </label>
                   <ErrorMessage error={errors.address} />
                 </div>
-                <button
-                  className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
-                  type="submit"
-                >
-                  Enviar Mensaje
-                </button>
+                <FormRequest
+                  endpoint="/api/v1/email/adoption/"
+                  formData={{
+                    pet_name: petName,
+                    shelter_uuid: shelterId,
+                    user_email: getValues("email"),
+                    user_name: getValues("userName"),
+                    user_phone: `+${getValues("phoneNumber")}`,
+                    message: getValues("address"),
+                  }}
+                  onSuccess={onClose}
+                  textButton="Enviar"
+                />
               </form>
             </div>
           </div>
