@@ -7,6 +7,7 @@ import useUser from "../hooks/useUser";
 
 const Shelter = () => {
   const { isLogged } = useUser();
+
   return (
     <>
       <Header />
