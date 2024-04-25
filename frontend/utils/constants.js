@@ -1,4 +1,4 @@
 export const USERS = {
-    ADMIN: 'AdminProfile',
-    SHELTER: 'ShelterProfile'
+    ADMIN: 'admin',
+    SHELTER: 'shelter'
 };
