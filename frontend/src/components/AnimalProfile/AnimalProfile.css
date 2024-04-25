@@ -2,7 +2,7 @@
     display: grid;
     height: 45rem;
     background-color: var(--dark-green);
-
+    place-content: center;
 }
 
 .animal {
