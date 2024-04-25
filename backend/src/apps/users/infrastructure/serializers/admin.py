@@ -1,16 +1,16 @@
-from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
+from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from typing import Dict
 from apps.users.infrastructure.db import UserRepository
 from apps.users.domain.constants import UserRoles
 from apps.users.endpoint_schemas.register_admin import GetSerializerSchema
-from apps.utils import ErrorMessages, ERROR_MESSAGES
+from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
 @GetSerializerSchema
-class RegisterAdminSerializer(ErrorMessages):
+class AdminSerializer(ErrorMessagesSpanishSerializer):
     """
     Defines the data required to register a admin in the system.
     """

@@ -4,11 +4,11 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from apps.emails.endpoint_schemas.adoption_pet import (
     AdoptionPetSerializerSchema,
 )
-from apps.utils import ErrorMessages, ERROR_MESSAGES
+from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
 @AdoptionPetSerializerSchema
-class AdoptionPetSerializer(ErrorMessages):
+class AdoptionPetSerializer(ErrorMessagesSpanishSerializer):
     """
     Defines the data required to send an email to the shelter when a user applies for
     adoption.

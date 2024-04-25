@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import (
-    RegisterShelterAPIView,
+from apps.users.infrastructure.views import (
+    ShelterAPIView,
     AuthenticationAPIView,
-    RegisterAdminAPIView,
+    AdminAPIView,
     PetAPIView,
     PetListAPIView,
 )
@@ -10,8 +10,8 @@ from .views import (
 urlpatterns = [
     path(
         route="shelter/",
-        view=RegisterShelterAPIView.as_view(),
-        name="register_shelter",
+        view=ShelterAPIView.as_view(),
+        name="shelter",
     ),
     path(
         route="auth/",
@@ -20,13 +20,13 @@ urlpatterns = [
     ),
     path(
         route="admin/",
-        view=RegisterAdminAPIView.as_view(),
-        name="register_admin",
+        view=AdminAPIView.as_view(),
+        name="admin",
     ),
     path(
         route="pet/",
         view=PetAPIView.as_view(),
-        name="register_pet",
+        name="pet",
     ),
     path(
         route="pet/<str:shelter_uuid>/",

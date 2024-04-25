@@ -1,5 +1,8 @@
 from django.urls import path
-from .views import AdoptionPetAPIView, EmailsSentListAPIView
+from apps.emails.infrastructure.views import (
+    AdoptionPetAPIView,
+    EmailsSentListAPIView,
+)
 
 urlpatterns = [
     path(

@@ -1,13 +1,12 @@
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
-from django.db.models import Model
 from typing import Dict, Tuple
 from apps.users.domain.abstractions import IJWTRepository, ITokenClass
 from apps.users.domain.typing import AccessToken, RefreshToken, JWToken
-from apps.exceptions import UserInactiveError
+from apps.users.models import User
 
 
-class Authentication:
+class JWTUsesCases:
     """
     Use case that is responsible for authenticating the user.
 
@@ -21,14 +20,12 @@ class Authentication:
         self._jwt_class = jwt_class
         self._jwt_repository = jwt_repository
 
-    def _generate_tokens(
-        self, user: Model
-    ) -> Tuple[AccessToken, RefreshToken]:
+    def _generate_tokens(self, user: User) -> Tuple[AccessToken, RefreshToken]:
         """
         Generates access and refresh tokens for a given user.
 
         #### Parameters:
-        - user: An instance of the `Shelter` or `AdminUser` model.
+        - user: An instance of the `User` model.
         """
 
         refresh = self._jwt_class.get_token(user=user)
@@ -48,10 +45,9 @@ class Authentication:
 
         #### Raises:
         - AuthenticationFailed: If the authentication process fails.
-        - UserInactiveError: If the user is inactive.
         """
 
-        user = authenticate(**credentials)
+        user: User = authenticate(**credentials)
 
         if not user:
             raise AuthenticationFailed(
@@ -59,7 +55,7 @@ class Authentication:
                 detail="Correo o contraseña inválida.",
             )
         elif not user.is_active:
-            raise UserInactiveError(
+            raise AuthenticationFailed(
                 detail="Cuenta del usuario inactiva.",
                 code="authentication_failed",
             )

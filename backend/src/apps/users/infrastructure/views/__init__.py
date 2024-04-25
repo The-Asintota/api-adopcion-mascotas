@@ -2,7 +2,7 @@
 This module is responsible for importing all the views related to the users app.
 """
 
-from .register_shelter import RegisterShelterAPIView
-from .authentication import AuthenticationAPIView
-from .register_admin import RegisterAdminAPIView
+from .shelter import ShelterAPIView
+from .jwt import AuthenticationAPIView
+from .admin import AdminAPIView
 from .pet import PetAPIView, PetListAPIView

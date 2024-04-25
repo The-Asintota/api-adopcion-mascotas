@@ -5,7 +5,7 @@ from apps.users.models import Pet
 from apps.exceptions import ResourceNotFoundError
 
 
-class PetUseCase:
+class PetUsesCases:
     """
     Use case that is responsible for retrieving pets from a specific shelter.
 
@@ -38,7 +38,7 @@ class PetUseCase:
 
         return pet_list
 
-    def create_pet(self, data: Dict[str, Any]) -> None:
+    def register_pet(self, data: Dict[str, Any]) -> None:
         """
         Handles the registration process for pets.
 

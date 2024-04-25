@@ -2,6 +2,6 @@
 This module initializes the use cases of the users app.
 """
 
-from .register import UserRegister, PetRegister
-from .authentication import Authentication
-from .pet import PetUseCase
+from .user import UserUsesCases
+from .jwt import JWTUsesCases
+from .pet import PetUsesCases

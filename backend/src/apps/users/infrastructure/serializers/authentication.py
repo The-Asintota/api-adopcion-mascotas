@@ -6,11 +6,11 @@ from rest_framework import serializers
 from django.core.validators import RegexValidator
 from apps.users.endpoint_schemas.authentication import GetSerializerSchema
 from apps.users.models import User
-from apps.utils import ErrorMessages, ERROR_MESSAGES
+from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
 @GetSerializerSchema
-class AuthenticationSerializer(ErrorMessages):
+class AuthenticationSerializer(ErrorMessagesSpanishSerializer):
     """
     Handles the data for user authentication. Checks that the provided email and
     password meet the necessary requirements.

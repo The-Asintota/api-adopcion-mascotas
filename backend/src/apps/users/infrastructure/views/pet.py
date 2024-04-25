@@ -1,7 +1,7 @@
 from rest_framework.serializers import Serializer
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework import generics, status, exceptions, permissions
+from rest_framework import generics, status, exceptions
 from typing import List, Dict, Any, Callable
 from apps.users.infrastructure.serializers import (
     PetReadOnlySerializer,
@@ -10,7 +10,7 @@ from apps.users.infrastructure.serializers import (
 from apps.users.infrastructure.db import PetRepository
 from apps.users.infrastructure.permissions import IsAuthenticatedShelter
 from apps.users.infrastructure.exceptions import NotAuthenticated
-from apps.users.use_case import PetUseCase
+from apps.users.use_case import PetUsesCases
 from apps.users.endpoint_schemas.pet.views import (
     CreateUpdatePetSchema,
     GetAllPetsSchema,
@@ -25,14 +25,14 @@ class PetAPIView(generics.GenericAPIView):
     create a new pet in the system.
     """
 
-    pet_use_case = PetUseCase(pet_repository=PetRepository)
+    pet_use_case = PetUsesCases(pet_repository=PetRepository)
     authentication_mapping = {
         "GET": [],
         "POST": [JWTAuthentication],
     }
     application_mapping = {
         "GET": pet_use_case.get_pet,
-        "POST": pet_use_case.create_pet,
+        "POST": pet_use_case.register_pet,
     }
     permission_mapping = {
         "GET": [],
@@ -57,7 +57,7 @@ class PetAPIView(generics.GenericAPIView):
 
         return [auth() for auth in authentication_classes]
 
-    def get_permissions(self) -> List[permissions.BasePermission]:
+    def get_permissions(self) -> List:
         """
         Get the permissions based on the request method.
         """
@@ -184,10 +184,10 @@ class PetListAPIView(generics.GenericAPIView):
     "GET" request to retrieve all pets from a specific shelter.
     """
 
-    authentication_classes = ()
-    permission_classes = ()
+    authentication_classes = []
+    permission_classes = []
     serializer_class = PetReadOnlySerializer
-    application_class = PetUseCase
+    application_class = PetUsesCases
 
     @GetPetByShelterSchema
     def get(self, request: Request, *args, **kwargs) -> Response:

@@ -3,10 +3,10 @@ This module is responsible for importing all the serializers that are used in th
 users app.
 """
 
-from .shelter import RegisterShelterSerializer
+from .shelter import ShelterSerializer
 from .authentication import (
     AuthenticationSerializer,
     CustomTokenObtainPairSerializer,
 )
-from .admin import RegisterAdminSerializer
+from .admin import AdminSerializer
 from .pet import PetReadOnlySerializer, PetSerializer

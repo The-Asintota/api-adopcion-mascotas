@@ -16,7 +16,7 @@ ERROR_MESSAGES = {
 }
 
 
-class ErrorMessages(serializers.Serializer):
+class ErrorMessagesSpanishSerializer(serializers.Serializer):
     """
     A serializer class that provides custom error messages for fields.
     """

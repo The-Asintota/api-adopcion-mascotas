@@ -1,15 +1,14 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.serializers import Serializer
 from rest_framework import status
-from typing import Dict
+from typing import Dict, List
 from apps.users.infrastructure.serializers import (
     AuthenticationSerializer,
     CustomTokenObtainPairSerializer,
 )
 from apps.users.infrastructure.db import JWTRepository
-from apps.users.use_case import Authentication
+from apps.users.use_case import JWTUsesCases
 from apps.users.endpoint_schemas.authentication import GetEndPointSchema
 
 
@@ -21,13 +20,12 @@ class AuthenticationAPIView(TokenObtainPairView):
     management system.
     """
 
-    authentication_classes = ()
-    permission_classes = ()
+    authentication_classes = []
+    permission_classes = []
     serializer_class = AuthenticationSerializer
-    application_class = Authentication
+    application_class = JWTUsesCases
 
     def _handle_valid_request(self, data: Dict[str, str]) -> Response:
-
         tokens = self.application_class(
             jwt_class=CustomTokenObtainPairSerializer,
             jwt_repository=JWTRepository,
@@ -40,12 +38,12 @@ class AuthenticationAPIView(TokenObtainPairView):
         )
 
     @staticmethod
-    def _handle_invalid_request(serializer: Serializer) -> Response:
+    def _handle_invalid_request(errors: List[Dict[str, List]]) -> Response:
 
         return Response(
             data={
                 "code": "invalid_request_data",
-                "detail": serializer.errors,
+                "detail": errors,
             },
             status=status.HTTP_400_BAD_REQUEST,
             content_type="application/json",
@@ -63,7 +61,8 @@ class AuthenticationAPIView(TokenObtainPairView):
         """
 
         serializer = self.serializer_class(data=request.data)
+
         if serializer.is_valid():
             return self._handle_valid_request(data=serializer.validated_data)
 
-        return self._handle_invalid_request(serializer=serializer)
+        return self._handle_invalid_request(errors=serializer.errors)

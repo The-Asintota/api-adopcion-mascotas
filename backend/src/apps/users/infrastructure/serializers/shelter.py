@@ -7,11 +7,11 @@ from typing import Dict
 from apps.users.infrastructure.db import UserRepository
 from apps.users.domain.constants import UserRoles
 from apps.users.endpoint_schemas.register_shelter import GetSerializerSchema
-from apps.utils import ErrorMessages, ERROR_MESSAGES
+from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
 @GetSerializerSchema
-class RegisterShelterSerializer(ErrorMessages):
+class ShelterSerializer(ErrorMessagesSpanishSerializer):
     """
     Defines the data required to register a shelter in the system.
     """

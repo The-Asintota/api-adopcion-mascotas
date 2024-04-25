@@ -9,7 +9,7 @@ from apps.users.domain.constants import (
 )
 from apps.users.endpoint_schemas.pet.serializers import PetSerializerSchema
 from apps.users.models import Pet
-from apps.utils import ErrorMessages, ERROR_MESSAGES
+from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
 class PetReadOnlySerializer(serializers.Serializer):
@@ -56,7 +56,7 @@ class PetReadOnlySerializer(serializers.Serializer):
 
 
 @PetSerializerSchema
-class PetSerializer(ErrorMessages):
+class PetSerializer(ErrorMessagesSpanishSerializer):
     """
     Defines the data required to register or update a pet in the system.
     """
