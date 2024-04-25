@@ -3,7 +3,7 @@ import axios from "axios";
 
 const FormRequest = ({ endpoint, formData, onSuccess, textButton }) => {
   const urlRequest = `${import.meta.env.VITE_BACKEND_URL}${endpoint}`;
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   const configHeader = {
     headers: { 
