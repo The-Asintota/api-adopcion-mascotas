@@ -8,7 +8,7 @@ export const AdminProvider = ({ children }) => {
         const role = sessionStorage.getItem("role")
         const token = sessionStorage.getItem("token")
 
-        return role && token ? { role, token } : null
+        return { role, token }
     }) 
 
     const authenticateUser = ({ role, token }) => {
@@ -32,7 +32,7 @@ export const AdminProvider = ({ children }) => {
     }
 
     const isLogged = () => {
-        return user?.role !== null && user?.token !== null
+        return (user?.role !== USERS.ADMIN && user?.role !== USERS.SHELTER) && user?.token !== null
     }
 
     return (
