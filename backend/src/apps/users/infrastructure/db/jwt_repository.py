@@ -4,8 +4,8 @@ from django.db import OperationalError
 from apps.users.infrastructure.db import UserRepository
 from apps.users.infrastructure.utils import decode_jwt
 from apps.users.domain.typing import JWToken
-from apps.users.models import BaseUser, JWT, JWTBlacklist
-from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
+from apps.users.models import User, JWT, JWTBlacklist
+from apps.exceptions import DatabaseConnectionError
 
 
 class JWTRepository:
@@ -41,7 +41,6 @@ class JWTRepository:
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         try:
@@ -53,16 +52,10 @@ class JWTRepository:
             # suddenly unavailable.
             raise DatabaseConnectionError()
 
-        if not token:
-            raise ResourceNotFoundError(
-                code="token_not_found",
-                detail="JSON Web Token not found.",
-            )
-
         return token
 
     @classmethod
-    def add_to_checklist(cls, token: JWToken, user: BaseUser) -> None:
+    def add_to_checklist(cls, token: JWToken, user: User) -> None:
         """
         Associate a JSON Web Token with a user by adding it to the checklist.
 
@@ -71,7 +64,7 @@ class JWTRepository:
 
         #### Parameters:
         - token: A JWToken.
-        - user: An instance of the BaseUser model.
+        - user: An instance of the User model.
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
@@ -83,7 +76,7 @@ class JWTRepository:
             cls.jwt_model.objects.create(
                 jti=payload["jti"],
                 token=token,
-                content_object=user,
+                user=user,
                 expires_at=datetime_from_epoch(ts=payload["exp"]),
             )
         except OperationalError:

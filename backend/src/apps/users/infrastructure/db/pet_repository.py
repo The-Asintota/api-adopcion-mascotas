@@ -2,7 +2,7 @@ from django.db import OperationalError
 from django.db.models import Q, QuerySet
 from typing import Dict, Any
 from apps.users.infrastructure.db import UserRepository
-from apps.users.models import Pet, PetType, PetSex, Shelter
+from apps.users.models import Pet, PetType, PetSex
 from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
 
 
@@ -15,14 +15,10 @@ class PetRepository:
     pet_model = Pet
     pet_type_model = PetType
     pet_sex_model = PetSex
-    shelter_model = Shelter
-    shelter_repository = UserRepository
+    user_repository = UserRepository
     related_fields = {
-        field.name: "shelter" for field in shelter_model._meta.get_fields()
+        field.name: "pet_type" for field in pet_type_model._meta.get_fields()
     }
-    related_fields.update(
-        {field.name: "pet_type" for field in pet_type_model._meta.get_fields()}
-    )
     related_fields.update(
         {field.name: "pet_sex" for field in pet_sex_model._meta.get_fields()}
     )
@@ -57,19 +53,25 @@ class PetRepository:
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If the shelter provided does not exist.
         """
+
+        shelter = cls.user_repository.get(uuid=data.pop("shelter")).first()
+
+        if not shelter:
+            raise ResourceNotFoundError(
+                code="shelter_not_found",
+                detail="The shelter provided does not exist.",
+            )
 
         pet_type = data.pop("pet_type")
         pet_sex = data.pop("pet_sex")
-        shelter_uuid = data.pop("shelter")
 
         try:
             cls.pet_model.objects.create(
                 pet_type=cls.pet_type_model.objects.get(type=pet_type),
                 pet_sex=cls.pet_sex_model.objects.get(sex=pet_sex),
-                shelter=cls.shelter_repository.get_shelter(
-                    base_user=shelter_uuid
-                ),
+                shelter=shelter,
                 **data,
             )
         except OperationalError:
@@ -78,7 +80,7 @@ class PetRepository:
             raise DatabaseConnectionError()
 
     @classmethod
-    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet]:
+    def get(cls, all: bool, **filters) -> QuerySet[Pet]:
         """
         Retrieve a pet from the database based on the provided filters.
 
@@ -87,30 +89,22 @@ class PetRepository:
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no pets are found in the database.
         """
 
         query_params = cls._create_query_params(**filters)
 
         try:
-            objs = cls.pet_model.objects.select_related(
-                "pet_type", "pet_sex", "shelter"
-            )
-            pet_list = (
-                objs.filter(query_params).defer("date_joined")
-                if not all
-                else objs.all().defer("date_joined")
-            )
-
+            objs = cls.pet_model.objects.defer(
+                "date_joined",
+                "shelter__password",
+                "shelter__last_login",
+                "shelter__is_superuser",
+                "shelter__date_joined",
+            ).select_related("pet_type", "pet_sex", "shelter")
+            pet_list = objs.filter(query_params) if not all else objs.all()
         except OperationalError:
             # In the future, a retry system will be implemented when the database is
             # suddenly unavailable.
             raise DatabaseConnectionError()
-
-        if not pet_list.exists():
-            raise ResourceNotFoundError(
-                code="pet_not_found",
-                detail="No pets were found with the provided filters.",
-            )
 
         return pet_list

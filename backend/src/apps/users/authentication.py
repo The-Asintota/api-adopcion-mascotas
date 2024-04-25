@@ -1,6 +1,5 @@
 from rest_framework_simplejwt.authentication import (
     JWTAuthentication as BaseAuthentication,
-    AuthUser,
 )
 from rest_framework_simplejwt.exceptions import (
     TokenError,
@@ -10,7 +9,7 @@ from rest_framework_simplejwt.exceptions import (
 from rest_framework_simplejwt.utils import get_md5_hash_password
 from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import Token
-from apps.users.models import BaseUser
+from apps.users.models import User
 
 
 class JWTAuthentication(BaseAuthentication):
@@ -20,7 +19,9 @@ class JWTAuthentication(BaseAuthentication):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.user_model = BaseUser
+        from apps.users.infrastructure.db import UserRepository
+
+        self._user_repository = UserRepository
 
     def get_validated_token(self, raw_token: bytes) -> Token:
         """
@@ -39,29 +40,32 @@ class JWTAuthentication(BaseAuthentication):
                         "message": e.args[0],
                     }
                 )
+
         raise InvalidToken(code="authentication_failed", detail=messages)
 
-    def get_user(self, validated_token: Token) -> AuthUser:
+    def get_user(self, validated_token: Token) -> User:
         """
         Attempts to find and return a user using the given validated token.
         """
+
         try:
-            user_id = validated_token[api_settings.USER_ID_CLAIM]
+            user_uuid = validated_token[api_settings.USER_ID_CLAIM]
         except KeyError:
             raise InvalidToken(
                 detail="Token contained no recognizable user identification"
             )
 
-        try:
-            user = self.user_model.objects.get(uuid=user_id)
-        except self.user_model.DoesNotExist:
+        user = self._user_repository.get(uuid=user_uuid).first()
+
+        if not user:
             raise AuthenticationFailed(
-                detail="User not found", code="user_not_found"
+                code="authentication_failed", detail="User does not exist."
             )
 
         if not user.is_active:
             raise AuthenticationFailed(
-                detail="User is inactive", code="user_inactive"
+                code="authentication_failed",
+                detail="User with inactive account.",
             )
 
         if api_settings.CHECK_REVOKE_TOKEN:
@@ -69,8 +73,8 @@ class JWTAuthentication(BaseAuthentication):
                 api_settings.REVOKE_TOKEN_CLAIM
             ) != get_md5_hash_password(user.password):
                 raise AuthenticationFailed(
+                    code="authentication_failed",
                     detail="The user's password has been changed.",
-                    code="password_changed",
                 )
 
         return user

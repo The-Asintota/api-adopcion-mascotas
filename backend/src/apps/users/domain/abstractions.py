@@ -1,8 +1,8 @@
 from rest_framework_simplejwt.tokens import Token
 from django.db.models import QuerySet, Model
 from typing import Dict, Any, Protocol
-from apps.users.domain.typing import JWToken, StrUUID
-from apps.users.models import BaseUser, JWT, Pet, Shelter, AdminUser
+from apps.users.domain.typing import JWToken
+from apps.users.models import User, JWT, Pet
 
 
 class IUserRepository(Protocol):
@@ -15,7 +15,7 @@ class IUserRepository(Protocol):
     """
 
     @classmethod
-    def create_user(cls, data: Dict[str, str], role: str) -> None:
+    def create(cls, data: Dict[str, str], role: str) -> None:
         """
         Insert a new user into the database and add it to the directory.
 
@@ -30,52 +30,31 @@ class IUserRepository(Protocol):
         ...
 
     @classmethod
-    def get_user(cls, uuid: StrUUID = None, **other_fields) -> Model:
+    def get(cls, **filters) -> QuerySet[User]:
         """
-        Retrieve a user from the database according to the provided filters, the
-        search is performed on the `UserDIrectory` table.
+        Retrieves a user from the database according to the provided filters.
 
         #### Parameters:
-        - uuid: The UUID of the user to retrieve.
         - filters: Keyword arguments that define the filters to apply.
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no shelters matches the provided filters.
-        - ValueError: If the `uuid` and `email` fields are not provided.
-
-        #### Returns:
-        - An instance of the `Shelter` or `AdminUser` model.
         """
 
         ...
 
     @classmethod
-    def get_shelter(cls, **filters) -> Shelter:
+    def get_profile_data(cls, role: str, **filters) -> QuerySet[Model]:
         """
-        Retrieve a shelter from the database based on the provided filters.
+        Retrieves the related data of a user profile from the database according to the
+        provided filters.
 
         #### Parameters:
+        - role: The role of the user.
         - filters: Keyword arguments that define the filters to apply.
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no JWT matches the provided filters.
-        """
-
-        ...
-
-    @classmethod
-    def get_admin(cls, **filters) -> AdminUser:
-        """
-        Retrieve a admin user from the database based on the provided filters.
-
-        #### Parameters:
-        - filters: Keyword arguments that define the filters to apply.
-
-        #### Raises:
-        - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no JWT matches the provided filters.
         """
 
         ...
@@ -93,25 +72,31 @@ class IJWTRepository(Protocol):
     @classmethod
     def get_token(cls, **filters) -> JWT:
         """
-        Retrieve a token from the database based on the provided filters.
+        Retrieve a JWT from the database based on the provided filters.
 
-        Parameters:
+        #### Parameters:
         - filters: Keyword arguments that define the filters to apply.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         ...
 
     @classmethod
-    def add_to_checklist(cls, token: JWToken, user: BaseUser) -> None:
+    def add_to_checklist(cls, token: JWToken, user: User) -> None:
         """
         Associate a JSON Web Token with a user by adding it to the checklist.
 
         This way you can keep track of which tokens are associated with which
         users, and which tokens created are pending expiration or invalidation.
 
-        Parameters:
+        #### Parameters:
         - token: A JWToken.
-        - user: An instance of the BaseUser model.
+        - user: An instance of the User model.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         ...
@@ -121,10 +106,14 @@ class IJWTRepository(Protocol):
         """
         Invalidates a JSON Web Token by adding it to the blacklist.
 
-        Once a token is blacklisted, it can no longer be used for authentication purposes until it is removed from the blacklist or has expired.
+        Once a token is blacklisted, it can no longer be used for authentication
+        purposes until it is removed from the blacklist or has expired.
 
-        Parameters:
+        #### Parameters:
         - token: An instance of the `JWT` model.
+
+        #### Raises:
+        - DatabaseConnectionError: If there is an operational error with the database.
         """
 
         ...
@@ -136,11 +125,11 @@ class ITokenClass(Protocol):
     JWT class.
     """
 
-    def get_token(self, user: BaseUser) -> Token:
+    def get_token(self, user: User) -> Token:
         """
         This method should return a JWT token for the given user.
 
-        Parameters:
+        #### Parameters:
         - user: An instance of the BaseUser model. The user for which to generate
         the token.
         """
@@ -164,12 +153,13 @@ class IPetRepository(Protocol):
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
+        - ResourceNotFoundError: If the shelter provided does not exist.
         """
 
         ...
 
     @classmethod
-    def get_pet(cls, all: bool, **filters) -> QuerySet[Pet]:
+    def get(cls, all: bool, **filters) -> QuerySet[Pet]:
         """
         Retrieve a pet from the database based on the provided filters.
 
@@ -178,7 +168,6 @@ class IPetRepository(Protocol):
 
         #### Raises:
         - DatabaseConnectionError: If there is an operational error with the database.
-        - ResourceNotFoundError: If no pets are found in the database.
         """
 
         ...

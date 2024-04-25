@@ -58,7 +58,7 @@ class Authentication:
                 code="authentication_failed",
                 detail="Correo o contraseña inválida.",
             )
-        elif not user.base_user.is_active:
+        elif not user.is_active:
             raise UserInactiveError(
                 detail="Cuenta del usuario inactiva.",
                 code="authentication_failed",
@@ -75,5 +75,5 @@ class Authentication:
         return {
             "access": access,
             "refresh": refresh,
-            "role": user.__class__.__name__.lower(),
+            "role": user.content_type.model_class().__name__,
         }

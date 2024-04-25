@@ -1,15 +1,12 @@
-from rest_framework import serializers
 from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from rest_framework import serializers
 from typing import Dict
-from apps.users.infrastructure.serializers.constants import (
-    COMMON_ERROR_MESSAGES,
-)
 from apps.users.infrastructure.db import UserRepository
-from apps.exceptions import ResourceNotFoundError
+from apps.users.domain.constants import UserRoles
 from apps.users.endpoint_schemas.register_admin import GetSerializerSchema
-from apps.utils import ErrorMessages
+from apps.utils import ErrorMessages, ERROR_MESSAGES
 
 
 @GetSerializerSchema
@@ -18,9 +15,13 @@ class RegisterAdminSerializer(ErrorMessages):
     Defines the data required to register a admin in the system.
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._user_repository = UserRepository
+
     email = serializers.CharField(
         error_messages={
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El correo electrónico", max_length="{max_length}"
             ),
         },
@@ -28,7 +29,7 @@ class RegisterAdminSerializer(ErrorMessages):
             RegexValidator(
                 regex=r"^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$",
                 code="invalid_data",
-                message=COMMON_ERROR_MESSAGES["invalid"].format(
+                message=ERROR_MESSAGES["invalid"].format(
                     field_name="El correo electrónico"
                 ),
             ),
@@ -38,10 +39,10 @@ class RegisterAdminSerializer(ErrorMessages):
     )
     password = serializers.CharField(
         error_messages={
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="La contraseña", max_length="{max_length}"
             ),
-            "min_length": COMMON_ERROR_MESSAGES["min_length"].format(
+            "min_length": ERROR_MESSAGES["min_length"].format(
                 field_name="La contraseña", min_length="{min_length}"
             ),
         },
@@ -56,7 +57,7 @@ class RegisterAdminSerializer(ErrorMessages):
     )
     admin_name = serializers.CharField(
         error_messages={
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El nombre", max_length="{max_length}"
             ),
         },
@@ -71,46 +72,53 @@ class RegisterAdminSerializer(ErrorMessages):
             if value.isdecimal():
                 raise serializers.ValidationError(
                     code="invalid_data",
-                    detail=COMMON_ERROR_MESSAGES["password_no_upper_lower"],
+                    detail=ERROR_MESSAGES["password_no_upper_lower"],
                 )
             raise serializers.ValidationError(
                 code="invalid_data",
-                detail=COMMON_ERROR_MESSAGES["password_common"],
+                detail=ERROR_MESSAGES["password_common"],
             )
 
         return value
 
     def validate_email(self, value: str) -> str:
-        try:
-            _ = UserRepository.get_admin(email=value)
-        except ResourceNotFoundError:
-            return value
+        user = self._user_repository.get(email=value).exists()
 
-        raise serializers.ValidationError(
-            code="invalid_data",
-            detail=COMMON_ERROR_MESSAGES["email_in_use"],
-        )
+        if user:
+            raise serializers.ValidationError(
+                code="invalid_data",
+                detail=ERROR_MESSAGES["email_in_use"],
+            )
+
+        return value
 
     def validate_admin_name(self, value: str) -> str:
+        user = self._user_repository.get_profile_data(
+            role=UserRoles.ADMIN_USER.value,
+            admin_name=value,
+        ).exists()
 
-        try:
-            _ = UserRepository.get_admin(admin_name=value)
-        except ResourceNotFoundError:
-            return value
+        if user:
+            raise serializers.ValidationError(
+                code="invalid_data",
+                detail=ERROR_MESSAGES["name_in_use"],
+            )
 
-        raise serializers.ValidationError(
-            code="invalid_data",
-            detail=COMMON_ERROR_MESSAGES["name_in_use"],
-        )
+        return value
 
     def validate(self, data: Dict[str, str]) -> Dict[str, str]:
+        # Validate that the password and confirm_password fields match
         password = data["password"]
         confirm_password = data["confirm_password"]
 
         if not password == confirm_password:
             raise serializers.ValidationError(
                 code="invalid_data",
-                detail=COMMON_ERROR_MESSAGES["password_mismatch"],
+                detail={
+                    "confirm_password": [
+                        ERROR_MESSAGES["password_mismatch"],
+                    ]
+                },
             )
 
         return data

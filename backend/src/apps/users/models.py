@@ -15,7 +15,7 @@ class CustomUserManager(UserManager):
     UserManager is a class that provides helper functions to manage users.
     """
 
-    def _create_base_user(
+    def _create_user(
         self,
         uuid: UUID = None,
         email: str = None,
@@ -35,7 +35,7 @@ class CustomUserManager(UserManager):
 
         return user
 
-    def create_base_user(
+    def create_user(
         self,
         uuid: UUID = None,
         email: str = None,
@@ -51,13 +51,12 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault("is_superuser", False)
         extra_fields.setdefault("is_active", True)
 
-        return self._create_base_user(
+        return self._create_user(
             uuid=uuid, email=email, password=password, **extra_fields
         )
 
     def create_superuser(
         self,
-        uuid: UUID = None,
         email: str = None,
         password: str = None,
         **extra_fields,
@@ -79,19 +78,16 @@ class CustomUserManager(UserManager):
         if extra_fields.get("is_active") is not True:
             raise ValueError("Active user must have is_active=True.")
 
-        return self._create_base_user(
-            uuid=uuid,
+        return self._create_user(
             email=email,
             password=password,
             **extra_fields,
         )
 
 
-class BaseUser(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin):
     """
-    BaseUser is a model that represents the base information of each user in the
-    system. This model is not just another type of user, but rather it contains the
-    "base" information for each type of user.
+    User is a model that represents a type of user in the system.
     """
 
     uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
@@ -105,6 +101,19 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     )
     password = models.CharField(
         db_column="password", max_length=128, blank=False, null=False
+    )
+    content_type = models.ForeignKey(
+        to=ContentType, on_delete=models.SET_NULL, null=True
+    )
+    profile = models.UUIDField(
+        db_column="profile",
+        null=False,
+        blank=False,
+        db_index=True,
+        unique=True,
+    )
+    content_object = GenericForeignKey(
+        ct_field="content_type", fk_field="profile"
     )
     is_active = models.BooleanField(
         db_column="is active", default=False, db_index=True
@@ -124,9 +133,9 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     class Meta:
-        db_table = "base_user"
-        verbose_name = "Base user"
-        verbose_name_plural = "Base users"
+        db_table = "user"
+        verbose_name = "User"
+        verbose_name_plural = "Users"
         ordering = ["is_active", "-date_joined"]
         indexes = [
             models.Index(
@@ -135,21 +144,15 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
         ]
 
     def __str__(self):
-        return self.uuid.__str__()
+        return f"User {self.uuid.__str__()}"
 
 
-class Shelter(models.Model):
+class ShelterProfile(models.Model):
     """
     Shelter is a model that represents a type of user in the system.
     """
 
-    base_user = models.OneToOneField(
-        db_column="base_user",
-        to="BaseUser",
-        to_field="uuid",
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
     shelter_name = models.CharField(
         db_column="shelter_name",
         max_length=50,
@@ -158,43 +161,45 @@ class Shelter(models.Model):
         null=False,
     )
     shelter_address = models.CharField(
-        db_column="shelter_address", max_length=100, blank=False, null=False
+        db_column="shelter_address",
+        max_length=100,
+        blank=False,
+        null=False,
+        unique=True,
     )
     shelter_phone_number = PhoneNumberField(
         db_column="shelter_phone_number",
         max_length=25,
         blank=False,
         null=False,
+        unique=True,
     )
     shelter_responsible = models.CharField(
-        db_column="shelter_responsible", max_length=50, blank=False, null=False
+        db_column="shelter_responsible",
+        max_length=50,
+        blank=False,
+        null=False,
+        unique=True,
     )
     shelter_logo = models.URLField(
         db_column="shelter_logo", max_length=200, blank=False, null=False
     )
 
     def __str__(self):
-        return self.shelter_name
+        return self.uuid.__str__()
 
     class Meta:
-        db_table = "shelter"
-        verbose_name = "Shelter"
-        verbose_name_plural = "Shelters"
-        ordering = ["-base_user__date_joined"]
+        db_table = "shelter_profile"
+        verbose_name = "Shelter Profile"
+        verbose_name_plural = "Shelters Profiles"
 
 
-class AdminUser(models.Model):
+class AdminProfile(models.Model):
     """
     AdminUser is a model that represents a type of user in the system.
     """
 
-    base_user = models.OneToOneField(
-        db_column="base_user",
-        to="BaseUser",
-        to_field="uuid",
-        on_delete=models.CASCADE,
-        primary_key=True,
-    )
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
     admin_name = models.CharField(
         db_column="admin_name",
         max_length=50,
@@ -207,37 +212,9 @@ class AdminUser(models.Model):
         return self.admin_name
 
     class Meta:
-        db_table = "admin"
-        verbose_name = "Admin"
-        verbose_name_plural = "Admins"
-        ordering = ["-base_user__date_joined"]
-
-
-class UserDirectory(models.Model):
-    """
-    UserDirectory is a model that represents a list of all users in the system.
-    """
-
-    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
-    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
-    user_uuid = models.UUIDField(
-        db_column="user_uuid",
-        null=False,
-        blank=False,
-        db_index=True,
-        unique=True,
-    )
-    content_object = GenericForeignKey(
-        ct_field="content_type", fk_field="user_uuid"
-    )
-
-    class Meta:
-        db_table = "user_directory"
-        verbose_name = "User directory"
-        verbose_name_plural = "User directories"
-
-    def __str__(self):
-        return f"Object id {self.user_uuid} ({self.content_type})"
+        db_table = "admin_profile"
+        verbose_name = "Administator Profile"
+        verbose_name_plural = "Administrators Profiles"
 
 
 class JWT(models.Model):
@@ -246,18 +223,13 @@ class JWT(models.Model):
     users and which created tokens are pending expiration or invalidation.
     """
 
-    jwt_uuid = models.UUIDField(
-        db_column="jwt_uuid", primary_key=True, default=uuid4
-    )
-    content_type = models.ForeignKey(to=ContentType, on_delete=models.CASCADE)
-    user_uuid = models.UUIDField(
-        db_column="user_uuid",
-        null=False,
-        blank=False,
-        db_index=True,
-    )
-    content_object = GenericForeignKey(
-        ct_field="content_type", fk_field="user_uuid"
+    uuid = models.UUIDField(db_column="uuid", primary_key=True, default=uuid4)
+    user = models.ForeignKey(
+        db_column="user",
+        to="User",
+        to_field="uuid",
+        on_delete=models.SET_NULL,
+        null=True,
     )
     jti = models.CharField(
         db_column="jti",
@@ -283,7 +255,7 @@ class JWT(models.Model):
 
     def __str__(self) -> str:
         return "Token for {} ({})".format(
-            self.user_uuid,
+            self.user,
             self.jti,
         )
 
@@ -294,10 +266,10 @@ class JWTBlacklist(models.Model):
     that they cannot be used for authentication purposes.
     """
 
-    token_id = models.OneToOneField(
-        db_column="token_id",
+    token = models.OneToOneField(
+        db_column="token",
         to="JWT",
-        to_field="jwt_uuid",
+        to_field="uuid",
         on_delete=models.CASCADE,
         primary_key=True,
     )
@@ -312,7 +284,7 @@ class JWTBlacklist(models.Model):
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
-        return f"Blacklisted token for {self.token_id}"
+        return f"Blacklisted token for {self.token.user}"
 
 
 class Pet(models.Model):
@@ -339,8 +311,8 @@ class Pet(models.Model):
     )
     shelter = models.ForeignKey(
         db_column="shelter",
-        to="Shelter",
-        to_field="base_user",
+        to="User",
+        to_field="uuid",
         on_delete=models.CASCADE,
     )
     pet_name = models.CharField(
@@ -376,7 +348,7 @@ class Pet(models.Model):
         ordering = ["-date_joined"]
 
     def __str__(self) -> str:
-        return f"Pet {self.pet_name} from Shelter {self.shelter.shelter_name}"
+        return f"Pet {self.pet_name} from Shelter {self.shelter.uuid}"
 
 
 class PetType(models.Model):

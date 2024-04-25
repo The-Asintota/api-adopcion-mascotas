@@ -4,10 +4,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from apps.emails.endpoint_schemas.adoption_pet import (
     AdoptionPetSerializerSchema,
 )
-from apps.users.infrastructure.serializers.constants import (
-    COMMON_ERROR_MESSAGES,
-)
-from apps.utils import ErrorMessages
+from apps.utils import ErrorMessages, ERROR_MESSAGES
 
 
 @AdoptionPetSerializerSchema
@@ -19,10 +16,10 @@ class AdoptionPetSerializer(ErrorMessages):
 
     pet_name = serializers.CharField(
         error_messages={
-            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+            "invalid": ERROR_MESSAGES["invalid"].format(
                 field_name="El valor ingresado"
             ),
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"
             ),
         },
@@ -31,7 +28,7 @@ class AdoptionPetSerializer(ErrorMessages):
     )
     shelter_uuid = serializers.UUIDField(
         error_messages={
-            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+            "invalid": ERROR_MESSAGES["invalid"].format(
                 field_name="El id del refugio"
             ),
         },
@@ -39,10 +36,10 @@ class AdoptionPetSerializer(ErrorMessages):
     )
     user_name = serializers.CharField(
         error_messages={
-            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+            "invalid": ERROR_MESSAGES["invalid"].format(
                 field_name="El nombre"
             ),
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El nombre", max_length="{max_length}"
             ),
         },
@@ -51,7 +48,7 @@ class AdoptionPetSerializer(ErrorMessages):
     )
     user_email = serializers.CharField(
         error_messages={
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El correo electrónico", max_length="{max_length}"
             ),
         },
@@ -61,7 +58,7 @@ class AdoptionPetSerializer(ErrorMessages):
             RegexValidator(
                 regex=r"^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$",
                 code="invalid_data",
-                message=COMMON_ERROR_MESSAGES["invalid"].format(
+                message=ERROR_MESSAGES["invalid"].format(
                     field_name="El correo electrónico"
                 ),
             ),
@@ -70,10 +67,10 @@ class AdoptionPetSerializer(ErrorMessages):
     user_phone = PhoneNumberField(
         required=True,
         error_messages={
-            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+            "invalid": ERROR_MESSAGES["invalid"].format(
                 field_name="El número de teléfono"
             ),
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El número de teléfono", max_length="{max_length}"
             ),
         },
@@ -81,10 +78,10 @@ class AdoptionPetSerializer(ErrorMessages):
     )
     message = serializers.CharField(
         error_messages={
-            "invalid": COMMON_ERROR_MESSAGES["invalid"].format(
+            "invalid": ERROR_MESSAGES["invalid"].format(
                 field_name="El valor ingresado"
             ),
-            "max_length": COMMON_ERROR_MESSAGES["max_length"].format(
+            "max_length": ERROR_MESSAGES["max_length"].format(
                 field_name="El valor ingresado", max_length="{max_length}"
             ),
         },

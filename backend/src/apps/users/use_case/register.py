@@ -22,7 +22,7 @@ class UserRegister:
         """
 
         del data["confirm_password"]
-        self._user_repository.create_user(data=data, role="shelter")
+        self._user_repository.create(data=data, role="ShelterProfile")
 
     def admin_registration(self, data: Dict[str, Any]) -> None:
         """
@@ -33,7 +33,7 @@ class UserRegister:
         """
 
         del data["confirm_password"]
-        self._user_repository.create_user(data=data, role="admin")
+        self._user_repository.create(data=data, role="AdminProfile")
 
 
 class PetRegister:

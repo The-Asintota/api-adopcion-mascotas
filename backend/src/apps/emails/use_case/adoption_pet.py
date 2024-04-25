@@ -6,6 +6,7 @@ from apps.emails.domain.constants import SubjectsMail
 from apps.emails.domain.abstractions import IEmailsSentRepository
 from apps.users.domain.abstractions import IUserRepository
 from apps.emails.template_paths import ADOPTION_APPLICATION_EMAIL_BODY
+from apps.exceptions import ResourceNotFoundError
 
 
 class AdoptionPetUseCase:
@@ -29,17 +30,6 @@ class AdoptionPetUseCase:
         self._smtp_class = smtp_class or EmailMessage
 
     @staticmethod
-    def _get_email_context(data: Dict[str, str]) -> Dict[str, Any]:
-        return {
-            key: (
-                value.capitalize()
-                if key in ["pet_name", "user_name"]
-                else value
-            )
-            for key, value in data.items()
-        }
-
-    @staticmethod
     def _get_message(data: Dict[str, str]) -> Dict[str, Any]:
         """
         Construct the email body and subject.
@@ -53,8 +43,8 @@ class AdoptionPetUseCase:
             "body": render_to_string(
                 template_name=ADOPTION_APPLICATION_EMAIL_BODY,
                 context={
-                    "pet_name": data["pet_name"].capitalize(),
-                    "user_name": data["user_name"].capitalize(),
+                    "pet_name": data["pet_name"],
+                    "user_name": data["user_name"],
                     "user_email": data["user_email"],
                     "user_phone": data["user_phone"],
                     "message": data["message"],
@@ -79,24 +69,33 @@ class AdoptionPetUseCase:
 
     def send_email(self, data: Dict[str, Any]) -> None:
         """
-        Send an email to the user with the activation link. The link contains a token that
-        is used to activate the user's account.
+        Send an email to the user with the activation link. The link contains a token
+        that is used to activate the user's account.
 
         #### Parameters:
         - data: Data to compose the email.
+
+        #### Raises:
+        - ResourceNotFoundError: If no shelter is found with the provided UUID.
         """
 
+        shelter = self._user_repository.get(
+            uuid=data.pop("shelter_uuid")
+        ).first()
+
+        if not shelter:
+            raise ResourceNotFoundError(
+                code="shelter_not_found",
+                detail="No shelter found with the provided UUID.",
+            )
+
         message = self._get_message(data)
-        shelter_uuid = data.pop("shelter_uuid")
-        shelter = self._user_repository.get_shelter(base_user=shelter_uuid)
-        self._compose_and_dispatch(
-            message=message, addressee=shelter.base_user.email
-        )
+        self._compose_and_dispatch(message=message, addressee=shelter.email)
         self._email_repository.add_record(
             data={
                 "subject": message["subject"],
                 "message": data["message"],
-                "addressee": shelter.base_user.email,
+                "addressee": shelter.email,
                 "additional_info": {
                     "pet_name": data["pet_name"],
                     "user_name": data["user_name"],

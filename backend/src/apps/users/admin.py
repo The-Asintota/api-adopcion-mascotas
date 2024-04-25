@@ -1,25 +1,26 @@
 from django.contrib import admin
 from .models import (
-    BaseUser,
-    Shelter,
+    User,
+    ShelterProfile,
+    AdminProfile,
     JWT,
     JWTBlacklist,
-    AdminUser,
     Pet,
     PetType,
     PetSex,
 )
 
 
-class BaseUserAdminPanel(admin.ModelAdmin):
+class UserAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the `BaseUser` model.
+    Admin panel configuration for the `User` model.
     """
 
     list_display = (
         "uuid",
         "email",
         "password",
+        "profile",
         "is_staff",
         "is_superuser",
         "is_active",
@@ -32,36 +33,36 @@ class BaseUserAdminPanel(admin.ModelAdmin):
         "is_staff",
         "is_superuser",
         "is_active",
-        "date_joined",
+        "profile",
     )
 
 
-class ShelterAdminPanel(admin.ModelAdmin):
+class ShelterProfileAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the `Shelter` model.
+    Admin panel configuration for the `ShelterProfile` model.
     """
 
     list_display = (
-        "base_user",
+        "uuid",
         "shelter_name",
         "shelter_address",
         "shelter_phone_number",
         "shelter_responsible",
         "shelter_logo",
     )
-    search_fields = ("base_user",)
+    search_fields = ("uuid", "shelter_name")
 
 
-class AdminUserAdminPanel(admin.ModelAdmin):
+class AdminProfileAdminPanel(admin.ModelAdmin):
     """
-    Admin panel configuration for the `AdminUser` model.
+    Admin panel configuration for the `AdminProfile` model.
     """
 
     list_display = (
-        "base_user",
+        "uuid",
         "admin_name",
     )
-    search_fields = ("base_user",)
+    search_fields = ("uuid", "admin_name")
 
 
 class JWTAdminPanel(admin.ModelAdmin):
@@ -70,15 +71,14 @@ class JWTAdminPanel(admin.ModelAdmin):
     """
 
     list_display = (
-        "jwt_uuid",
-        "user_uuid",
-        "content_type",
+        "uuid",
+        "user",
         "jti",
         "token",
         "date_joined",
         "expires_at",
     )
-    search_fields = ("user_uuid", "jti")
+    search_fields = ("user", "jti")
 
 
 class JWTBlacklistAdminPanel(admin.ModelAdmin):
@@ -86,8 +86,8 @@ class JWTBlacklistAdminPanel(admin.ModelAdmin):
     Admin panel configuration for the `JWTBlacklist` model.
     """
 
-    list_display = ("token_id", "date_joined")
-    search_fields = ("token_id",)
+    list_display = ("token", "date_joined")
+    search_fields = ("token",)
 
 
 class PetAdminPanel(admin.ModelAdmin):
@@ -143,9 +143,9 @@ class PetSexAdminPanel(admin.ModelAdmin):
     search_fields = ("id",)
 
 
-admin.site.register(BaseUser, BaseUserAdminPanel)
-admin.site.register(Shelter, ShelterAdminPanel)
-admin.site.register(AdminUser, AdminUserAdminPanel)
+admin.site.register(User, UserAdminPanel)
+admin.site.register(ShelterProfile, ShelterProfileAdminPanel)
+admin.site.register(AdminProfile, AdminProfileAdminPanel)
 admin.site.register(JWT, JWTAdminPanel)
 admin.site.register(JWTBlacklist, JWTBlacklistAdminPanel)
 admin.site.register(Pet, PetAdminPanel)

@@ -1,10 +1,7 @@
 from django.contrib.auth.backends import ModelBackend
-from django.db import OperationalError
 from rest_framework.request import Request
-from typing import Optional
 from apps.users.infrastructure.db import UserRepository
-from apps.users.models import BaseUser
-from apps.exceptions import DatabaseConnectionError
+from apps.users.models import User
 
 
 class EmailBackend(ModelBackend):
@@ -13,21 +10,12 @@ class EmailBackend(ModelBackend):
     and password.
     """
 
+    user_repository = UserRepository
+
     def authenticate(
         self, request: Request, email: str, password: str
-    ) -> Optional[BaseUser]:
-        try:
-            user = UserRepository.get_user(email=email)
-        except OperationalError:
-            # In the future, a retry system will be implemented when the database is
-            # suddenly unavailable.
-            raise DatabaseConnectionError()
+    ) -> User | None:
 
-        if not user:
-            return None
+        user = self.user_repository.get(email=email).first()
 
-        return (
-            user
-            if user.base_user.check_password(raw_password=password)
-            else None
-        )
+        return user if user and user.check_password(password) else None

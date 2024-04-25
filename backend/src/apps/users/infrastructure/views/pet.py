@@ -137,7 +137,7 @@ class PetAPIView(generics.GenericAPIView):
         serializer: Serializer = serializer_class(data=request.data)
 
         if serializer.is_valid():
-            shelter_uuid = request.decoded_token_access["payload"]["user_uuid"]
+            shelter_uuid = request.decoded_token_access["payload"]["user"]
             data = serializer.validated_data
             data.update({"shelter": shelter_uuid})
 
