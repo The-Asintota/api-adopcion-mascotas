@@ -11,10 +11,12 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      userName: "",
-      email: "",
-      phoneNumber: "",
-      address: "",
+      pet_name: "",
+      shelter_uuid: "",
+      user_email: "",
+      user_name: "",
+      user_phone: "",
+      message: "",
     },
   });
 
@@ -48,15 +50,15 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
                     <input
                       placeholder="Nombre de usuario"
                       className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-                      id="userName"
-                      name="userName"
-                      {...register("userName", {
+                      id="user_name"
+                      name="user_name"
+                      {...register("user_name", {
                         required: "Este campo es obligatorio",
                       })}
                     />
                     <label
                       className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-                      htmlFor="userName"
+                      htmlFor="user_name"
                     >
                     Nombre
                   </label>
@@ -66,10 +68,10 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
                   <input
                     placeholder="john@prueba.com"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-                    id="email"
-                    name="email"
+                    id="user_email"
+                    name="user_email"
                     type="email"
-                    {...register("email", {
+                    {...register("user_email", {
                       required: "Este campo es obligatorio",
                       pattern: {
                         value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -79,21 +81,21 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
                   />
                   <label
                     className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-                    htmlFor="email"
+                    htmlFor="user_email"
                   >
                     Correo Electronico
                   </label>
-                  <ErrorMessage error={errors.email} />
+                  <ErrorMessage error={errors.user_email} />
                 </div>
                 <div className="relative">
                   <input
                     placeholder="Numero de telefono"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
-                    id="phoneNumber"
-                    name="phoneNumber"
-                    type="number"
+                    id="user_phone"
+                    name="user_phone"
+                    type="tel"
                     autoComplete="tel-country-code"
-                    {...register("phoneNumber", {
+                    {...register("user_phone", {
                       required: "Este campo es obligatorio",
                       pattern: {
                         value: /^[\d\s+-]+$/,
@@ -103,11 +105,11 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
                   />
                   <label
                     className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-                    htmlFor="phoneNumber"
+                    htmlFor="user_phone"
                   >
                     Numero de telefono
                   </label>
-                  <ErrorMessage error={errors.phoneNumber} />
+                  <ErrorMessage error={errors.user_phone} />
                 </div>
 
                 <div className="relative">
@@ -115,35 +117,31 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
                     placeholder="Tu mensaje"
                     className="peer w-full border-b-2 border-gray-300 text-white bg-transparent placeholder-transparent focus:outline-none focus:border-[#118A95]"
                     required
-                    id="address"
-                    name="address"
+                    id="message"
+                    name="message"
                     type="text"
                     rows="6"
-                    {...register("address", {
-                      required: "Este campo es obligatorio",
-                      pattern: {
-                        value: /^[A-Za-z0-9\s.,#-]+$/,
-                        message: "Por favor, introduce una dirección válida",
-                      },
+                    {...register("message", {
+                      required: "Este campo es obligatorio"
                     })}
                   />
                   <label
                     className="absolute left-0 -top-3.5 text-gray-200 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-200 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm"
-                    htmlFor="address"
+                    htmlFor="message"
                   >
                     Tu mensaje
                   </label>
-                  <ErrorMessage error={errors.address} />
+                  <ErrorMessage error={errors.message} />
                 </div>
                 <FormRequest
                   endpoint="/api/v1/email/adoption/"
                   formData={{
                     pet_name: petName,
                     shelter_uuid: shelterId,
-                    user_email: getValues("email"),
-                    user_name: getValues("userName"),
-                    user_phone: `+${getValues("phoneNumber")}`,
-                    message: getValues("address"),
+                    user_email: getValues("user_email"),
+                    user_name: getValues("user_name"),
+                    user_phone: `+${getValues("user_phone")}`,
+                    message: getValues("message"),
                   }}
                   onSuccess={onClose}
                   textButton="Enviar"
