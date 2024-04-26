@@ -33,17 +33,17 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
       message: data.message,
     };
 
-    fetch(urlRequest, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
+      fetch(urlRequest, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
       .then((response) => {
+        onClose();
         console.log(response)
       })
-    
   }
 
   return (
