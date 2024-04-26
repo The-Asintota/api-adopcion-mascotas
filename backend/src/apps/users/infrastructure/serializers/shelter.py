@@ -5,12 +5,12 @@ from rest_framework import serializers
 from phonenumber_field.serializerfields import PhoneNumberField
 from typing import Dict
 from apps.users.infrastructure.db import UserRepository
+from apps.users.infrastructure.schemas.shelter import ShelterSerializerSchema
 from apps.users.domain.constants import UserRoles
-from apps.users.endpoint_schemas.register_shelter import GetSerializerSchema
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
-@GetSerializerSchema
+@ShelterSerializerSchema
 class ShelterSerializer(ErrorMessagesSpanishSerializer):
     """
     Defines the data required to register a shelter in the system.

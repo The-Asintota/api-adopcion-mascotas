@@ -65,7 +65,7 @@ class JWTAuthentication(BaseAuthentication):
         if not user.is_active:
             raise AuthenticationFailed(
                 code="authentication_failed",
-                detail="User with inactive account.",
+                detail="Cuenta del usuario inactiva.",
             )
 
         if api_settings.CHECK_REVOKE_TOKEN:

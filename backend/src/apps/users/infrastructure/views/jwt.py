@@ -8,8 +8,8 @@ from apps.users.infrastructure.serializers import (
     CustomTokenObtainPairSerializer,
 )
 from apps.users.infrastructure.db import JWTRepository
+from apps.users.infrastructure.schemas.jwt import AuthSchema
 from apps.users.use_case import JWTUsesCases
-from apps.users.endpoint_schemas.authentication import GetEndPointSchema
 
 
 class AuthenticationAPIView(TokenObtainPairView):
@@ -49,7 +49,7 @@ class AuthenticationAPIView(TokenObtainPairView):
             content_type="application/json",
         )
 
-    @GetEndPointSchema
+    @AuthSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for user authentication.

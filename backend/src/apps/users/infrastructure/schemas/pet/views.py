@@ -1,14 +1,30 @@
 from drf_spectacular.utils import (
+    PolymorphicProxySerializer,
     extend_schema,
     OpenApiResponse,
     OpenApiExample,
 )
-from uuid import uuid4
-from apps.users.endpoint_schemas.auth import JWTAuthenticationScheme
+from rest_framework import serializers
+from apps.users.infrastructure.schemas.security_schemas import (
+    JWTAuthenticationScheme,
+)
 from apps.users.domain.constants import PET_TYPES, PET_SEX_TYPES
+from uuid import uuid4
 
 
-CreateUpdatePetSchema = extend_schema(
+class StringSerializer(serializers.Serializer):
+
+    detail = serializers.CharField()
+    code = serializers.CharField()
+
+
+class ArraySerializer(serializers.Serializer):
+
+    detail = serializers.ListField(child=serializers.JSONField())
+    code = serializers.CharField()
+
+
+PetPostSchema = extend_schema(
     operation_id="create_update_pet",
     tags=["Pets"],
     auth=[
@@ -91,6 +107,66 @@ CreateUpdatePetSchema = extend_schema(
                 ),
             ],
         ),
+        401: OpenApiResponse(
+            description="**UNAUTHORIZED**",
+            response=PolymorphicProxySerializer(
+                resource_type_field_name="detail",
+                component_name="Response",
+                serializers=[
+                    StringSerializer,
+                    ArraySerializer,
+                ],
+            ),
+            examples=[
+                OpenApiExample(
+                    name="authentication_failed1",
+                    summary="JWT was not found in headers",
+                    description="This error message is used when the JWT token is not found in the headers. In this example you can see how the information will be represented.",
+                    value={
+                        "code": "authentication_failed",
+                        "detail": "Authentication credentials were not provided.",
+                    },
+                ),
+                OpenApiExample(
+                    name="authentication_failed2",
+                    summary="JWT token is invalid or expired",
+                    description="This error message is used when the JWT token is invalid or expired. In this example you can see how the information will be represented.",
+                    value={
+                        "code": "authentication_failed",
+                        "detail": [
+                            {
+                                "token_type": "access",
+                                "message": "Token is invalid or expired",
+                            }
+                        ],
+                    },
+                ),
+            ],
+        ),
+        403: OpenApiResponse(
+            description="**FORBIDDEN**",
+            response={
+                "properties": {
+                    "detail": {
+                        "type": "string",
+                    },
+                    "code": {
+                        "type": "string",
+                    },
+                }
+            },
+            examples=[
+                OpenApiExample(
+                    name="permission_denied",
+                    summary="Permission denied",
+                    description="This error message is used when the user does not have permission to access the resource, this endpoint can only be used by authenticated users with **ShelterProfile** role. In this example you can see how the information will be represented.",
+                    value={
+                        "code": "permission_denied",
+                        "detail": "You are not allowed to access this resource.",
+                    },
+                ),
+            ],
+        ),
         500: OpenApiResponse(
             description="**INTERNAL_SERVER_ERROR**",
             response={
@@ -119,7 +195,7 @@ CreateUpdatePetSchema = extend_schema(
 )
 
 
-GetAllPetsSchema = extend_schema(
+PetGetSchema = extend_schema(
     operation_id="get_all_pets",
     tags=["Pets"],
     auth=[],
@@ -307,7 +383,7 @@ GetAllPetsSchema = extend_schema(
                     description="These are all the basic error messages for each field, in this example you can see how the messages will be sent. In a real use case, the error message for the validation or validations that have failed will be displayed.",
                     value={
                         "code": "pet_not_found",
-                        "detail": "No pets were found with the provided filters.",
+                        "detail": "No pets found with the provided filters.",
                     },
                 ),
             ],
@@ -340,7 +416,7 @@ GetAllPetsSchema = extend_schema(
 )
 
 
-GetPetByShelterSchema = extend_schema(
+PetListGetSchema = extend_schema(
     operation_id="get_pet_by_shelter",
     tags=["Pets"],
     responses={
@@ -527,7 +603,7 @@ GetPetByShelterSchema = extend_schema(
                     description="These are all the basic error messages for each field, in this example you can see how the messages will be sent. In a real use case, the error message for the validation or validations that have failed will be displayed.",
                     value={
                         "code": "pet_not_found",
-                        "detail": "No pets were found with the provided filters.",
+                        "detail": "No pets found with the provided filters.",
                     },
                 ),
             ],

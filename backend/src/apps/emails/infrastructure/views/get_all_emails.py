@@ -6,7 +6,7 @@ from apps.emails.infrastructure.db import EmailsSentRepository
 from apps.emails.use_case import GetAllEmailsUseCase
 from apps.emails.endpoint_schemas.get_all_emails import GetAllEmailsSentSchema
 from apps.users.infrastructure.permissions import IsAuthenticatedAdmin
-from apps.users.authentication import JWTAuthentication
+from apps.authentication import JWTAuthentication
 
 
 class EmailsSentListAPIView(generics.GenericAPIView):

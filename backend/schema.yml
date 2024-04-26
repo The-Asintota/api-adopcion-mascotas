@@ -14,9 +14,9 @@ info:
 paths:
   /api/v1/admin/:
     post:
-      operationId: v1_admin_create
+      operationId: register_admin
       description: |-
-        Handle POST requests for admin registration.
+        Handle POST requests for user registration with the administrator role.
 
         This method allows the registration of a new admin. It waits for a POST
         request with a admin's data, validates the information, and then creates
@@ -27,7 +27,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterAdminRequest'
+              $ref: '#/components/schemas/AdminRequest'
             examples:
               DataValid:
                 value:
@@ -44,10 +44,10 @@ paths:
                   - **admin_name:** Must not be longer than 50 characters and not in use.
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/RegisterAdminRequest'
+              $ref: '#/components/schemas/AdminRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RegisterAdminRequest'
+              $ref: '#/components/schemas/AdminRequest'
         required: true
       responses:
         '201':
@@ -98,7 +98,7 @@ paths:
                   value:
                     code: invalid_request_data2
                     detail:
-                      non_field_errors:
+                      confirm_password:
                       - Las contraseñas no coinciden.
                   summary: Passwords do not match
                   description: This error message is used when the passwords do not
@@ -611,7 +611,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 9e526deb-1cf7-434d-82f1-51b5ac915923
+                        uud: 9b092964-2425-4084-8886-94bb1aaffe79
                         name: Refugio 1
                       pet_race: pastor aleman
                       pet_age: 2
@@ -622,7 +622,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: d8639ed9-3a2e-4a74-9306-d7ed44cf2560
+                        uud: 7c6d696a-4905-4d1c-a87e-5d689b75e2c5
                         name: Refugio 2
                       pet_race: pastor aleman
                       pet_age: 2
@@ -633,7 +633,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: c242f0cb-be1a-46bc-bf4a-36b0ed742d7f
+                        uud: a9d566eb-0357-4e8d-9f82-caf679e42902
                         name: Refugio 3
                       pet_race: pastor aleman
                       pet_age: 2
@@ -644,7 +644,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 49a915f8-b14b-4657-8ffb-06794e1fbc05
+                        uud: e8ebbec0-c55c-4c32-9ea2-69e1e689fd85
                         name: Refugio 4
                       pet_race: pastor aleman
                       pet_age: 2
@@ -655,7 +655,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 853abda1-1942-4677-a207-97791a5c7878
+                        uud: c6f7b04b-9f3d-45a7-b8e1-0ba7b8ccaaeb
                         name: Refugio 5
                       pet_race: pastor aleman
                       pet_age: 2
@@ -666,7 +666,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: f3c1a9e1-c0f8-44b0-a955-7b445b668d5f
+                        uud: e4b0f9df-f69b-4c18-8422-76c32a1e6358
                         name: Refugio 6
                       pet_race: pastor aleman
                       pet_age: 2
@@ -677,7 +677,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: daba251c-71cf-4a94-b255-2a5a5e3a847b
+                        uud: 08cd74f2-ea1b-4c65-8dd9-7c17f71b660f
                         name: Refugio 7
                       pet_race: pastor aleman
                       pet_age: 2
@@ -688,7 +688,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 01c984f4-c1aa-4b3d-b840-52806e5b84a6
+                        uud: 60804cce-36d4-48bc-b026-9bd05d075e51
                         name: Refugio 8
                       pet_race: pastor aleman
                       pet_age: 2
@@ -699,7 +699,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 479e2a53-c254-41ae-a15c-d4dea5fc4a1f
+                        uud: b0c325f7-6337-44b1-b3f3-972a2d648648
                         name: Refugio 9
                       pet_race: pastor aleman
                       pet_age: 2
@@ -710,7 +710,7 @@ paths:
                       pet_type: Perro
                       pet_sex: Macho
                       shelter:
-                        uud: 9660375e-7ce2-49eb-992f-b7cfc679664e
+                        uud: 16389d01-89dc-4ccf-83af-f09a08b575dc
                         name: Refugio 10
                       pet_race: pastor aleman
                       pet_age: 2
@@ -734,7 +734,7 @@ paths:
                 PetNotFound:
                   value:
                     code: pet_not_found
-                    detail: No pets were found with the provided filters.
+                    detail: No pets found with the provided filters.
                   summary: Shelter not found
                   description: These are all the basic error messages for each field,
                     in this example you can see how the messages will be sent. In
@@ -866,6 +866,51 @@ paths:
                     a real use case, the error message for the validation or validations
                     that have failed will be displayed.
           description: '**BAD_REQUEST**'
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+              examples:
+                AuthenticationFailed1:
+                  value:
+                    code: authentication_failed
+                    detail: Authentication credentials were not provided.
+                  summary: JWT was not found in headers
+                  description: This error message is used when the JWT token is not
+                    found in the headers. In this example you can see how the information
+                    will be represented.
+                AuthenticationFailed2:
+                  value:
+                    code: authentication_failed
+                    detail:
+                    - token_type: access
+                      message: Token is invalid or expired
+                  summary: JWT token is invalid or expired
+                  description: This error message is used when the JWT token is invalid
+                    or expired. In this example you can see how the information will
+                    be represented.
+          description: '**UNAUTHORIZED**'
+        '403':
+          content:
+            application/json:
+              schema:
+                properties:
+                  detail:
+                    type: string
+                  code:
+                    type: string
+              examples:
+                PermissionDenied:
+                  value:
+                    code: permission_denied
+                    detail: You are not allowed to access this resource.
+                  summary: Permission denied
+                  description: This error message is used when the user does not have
+                    permission to access the resource, this endpoint can only be used
+                    by authenticated users with **ShelterProfile** role. In this example
+                    you can see how the information will be represented.
+          description: '**FORBIDDEN**'
         '500':
           content:
             application/json:
@@ -1053,7 +1098,7 @@ paths:
                 PetNotFound:
                   value:
                     code: pet_not_found
-                    detail: No pets were found with the provided filters.
+                    detail: No pets found with the provided filters.
                   summary: Shelter not found
                   description: These are all the basic error messages for each field,
                     in this example you can see how the messages will be sent. In
@@ -1095,7 +1140,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterShelterRequest'
+              $ref: '#/components/schemas/ShelterRequest'
             examples:
               DataValid:
                 value:
@@ -1120,10 +1165,10 @@ paths:
                   - **shelter_logo:** Must not be longer than 200 characters.
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/RegisterShelterRequest'
+              $ref: '#/components/schemas/ShelterRequest'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/RegisterShelterRequest'
+              $ref: '#/components/schemas/ShelterRequest'
         required: true
       responses:
         '201':
@@ -1196,7 +1241,7 @@ paths:
                   value:
                     code: invalid_request_data2
                     detail:
-                      non_field_errors:
+                      confirm_password:
                       - Las contraseñas no coinciden.
                   summary: Passwords do not match
                   description: This error message is used when the passwords do not
@@ -1235,6 +1280,33 @@ paths:
           description: '**INTERNAL_SERVER_ERROR**'
 components:
   schemas:
+    AdminRequest:
+      type: object
+      description: Defines the data required to register a admin in the system.
+      properties:
+        email:
+          type: string
+          minLength: 1
+          pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
+          maxLength: 40
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+          maxLength: 20
+        confirm_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        admin_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+      required:
+      - admin_name
+      - confirm_password
+      - email
+      - password
     AdoptionPetRequest:
       type: object
       description: |-
@@ -1272,6 +1344,17 @@ components:
       - user_email
       - user_name
       - user_phone
+    Array:
+      type: object
+      properties:
+        detail:
+          type: array
+          items: {}
+        code:
+          type: string
+      required:
+      - code
+      - detail
     AuthenticationRequest:
       type: object
       description: |-
@@ -1346,34 +1429,16 @@ components:
       description: |-
         * `Perro` - Perro
         * `Gato` - Gato
-    RegisterAdminRequest:
-      type: object
-      description: Defines the data required to register a admin in the system.
-      properties:
-        email:
-          type: string
-          minLength: 1
-          pattern: ^([A-Za-z0-9]+[-_.])*[A-Za-z0-9]+@[A-Za-z]+(\.[A-Z|a-z]{2,4}){1,2}$
-          maxLength: 40
-        password:
-          type: string
-          writeOnly: true
-          minLength: 8
-          maxLength: 20
-        confirm_password:
-          type: string
-          writeOnly: true
-          minLength: 1
-        admin_name:
-          type: string
-          minLength: 1
-          maxLength: 50
-      required:
-      - admin_name
-      - confirm_password
-      - email
-      - password
-    RegisterShelterRequest:
+    Response:
+      oneOf:
+      - $ref: '#/components/schemas/String'
+      - $ref: '#/components/schemas/Array'
+      discriminator:
+        propertyName: detail
+        mapping:
+          None: '#/components/schemas/String'
+          Array: '#/components/schemas/Array'
+    ShelterRequest:
       type: object
       description: Defines the data required to register a shelter in the system.
       properties:
@@ -1420,6 +1485,16 @@ components:
       - shelter_name
       - shelter_phone_number
       - shelter_responsible
+    String:
+      type: object
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - code
+      - detail
   securitySchemes:
     JWTAuthentication:
       type: http

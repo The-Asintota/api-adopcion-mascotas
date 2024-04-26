@@ -2,12 +2,12 @@ from rest_framework import serializers
 from rest_framework import serializers
 from typing import Dict, Any
 from apps.users.infrastructure.db import UserRepository
+from apps.users.infrastructure.schemas.pet import PetSerializerSchema
 from apps.users.domain.constants import (
     PET_TYPES,
     PET_SEX_TYPES,
     UserRoles,
 )
-from apps.users.endpoint_schemas.pet.serializers import PetSerializerSchema
 from apps.users.models import Pet
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 

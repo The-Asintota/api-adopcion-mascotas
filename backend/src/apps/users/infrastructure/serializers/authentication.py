@@ -4,12 +4,12 @@ from rest_framework_simplejwt.serializers import (
 )
 from rest_framework import serializers
 from django.core.validators import RegexValidator
-from apps.users.endpoint_schemas.authentication import GetSerializerSchema
+from apps.users.infrastructure.schemas.jwt import AuthSerializerSchema
 from apps.users.models import User
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
-@GetSerializerSchema
+@AuthSerializerSchema
 class AuthenticationSerializer(ErrorMessagesSpanishSerializer):
     """
     Handles the data for user authentication. Checks that the provided email and

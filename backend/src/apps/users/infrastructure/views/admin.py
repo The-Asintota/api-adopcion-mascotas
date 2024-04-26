@@ -6,9 +6,9 @@ from typing import Dict, Any, List, Callable
 from apps.users.infrastructure.serializers import AdminSerializer
 from apps.users.infrastructure.db import UserRepository
 from apps.users.infrastructure.exceptions import NotAuthenticated
+from apps.users.infrastructure.schemas.admin import AdminPostSchema
 from apps.users.use_case import UserUsesCases
 from apps.users.domain.constants import UserRoles
-from apps.users.endpoint_schemas.register_admin import GetEndPointSchema
 
 
 class AdminAPIView(generics.GenericAPIView):
@@ -110,7 +110,7 @@ class AdminAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
-    @GetEndPointSchema
+    @AdminPostSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for user registration with the administrator role.

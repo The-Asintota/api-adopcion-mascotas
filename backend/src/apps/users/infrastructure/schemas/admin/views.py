@@ -1,19 +1,19 @@
 from drf_spectacular.utils import (
-    extend_schema_serializer,
     extend_schema,
     OpenApiResponse,
     OpenApiExample,
 )
 
 
-GetEndPointSchema = extend_schema(
-    tags=["Shelters"],
+AdminPostSchema = extend_schema(
+    operation_id="register_admin",
+    tags=["Administrators"],
     responses={
         201: OpenApiResponse(
-            description="**CREATED** The shelter was created successfully.",
+            description="**CREATED** The admin was created successfully.",
         ),
         400: OpenApiResponse(
-            description="**(BAD_REQUEST)**",
+            description="**BAD_REQUEST**",
             response={
                 "properties": {
                     "code": {"type": "string"},
@@ -52,34 +52,8 @@ GetEndPointSchema = extend_schema(
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
                             ],
-                            "shelter_phone_number": [
-                                "El número de teléfono es inválido.",
-                                "El número de teléfono no puede tener más de 25 caracteres.",
-                                "Este campo es requerido.",
-                                "Este campo no puede estar en blanco.",
-                                "Este campo no puede ser nulo.",
-                            ],
-                            "shelter_name": [
+                            "admin_name": [
                                 "El nombre no puede tener más de 50 caracteres.",
-                                "Este nombre ya está en uso.",
-                                "Este campo es requerido.",
-                                "Este campo no puede estar en blanco.",
-                                "Este campo no puede ser nulo.",
-                            ],
-                            "shelter_address": [
-                                "El dirección no puede tener más de 100 caracteres.",
-                                "Este campo es requerido.",
-                                "Este campo no puede estar en blanco.",
-                                "Este campo no puede ser nulo.",
-                            ],
-                            "shelter_responsible": [
-                                "El valor ingresado no puede tener más de 50 caracteres.",
-                                "Este campo es requerido.",
-                                "Este campo no puede estar en blanco.",
-                                "Este campo no puede ser nulo.",
-                            ],
-                            "shelter_logo": [
-                                "El valor ingresado no puede tener más de 200 caracteres.",
                                 "Este campo es requerido.",
                                 "Este campo no puede estar en blanco.",
                                 "Este campo no puede ser nulo.",
@@ -94,7 +68,7 @@ GetEndPointSchema = extend_schema(
                     value={
                         "code": "invalid_request_data2",
                         "detail": {
-                            "non_field_errors": [
+                            "confirm_password": [
                                 "Las contraseñas no coinciden."
                             ]
                         },
@@ -119,12 +93,8 @@ GetEndPointSchema = extend_schema(
             description="**INTERNAL_SERVER_ERROR**",
             response={
                 "properties": {
-                    "detail": {
-                        "type": "string",
-                    },
-                    "code": {
-                        "type": "string",
-                    },
+                    "detail": {"type": "string"},
+                    "code": {"type": "string"},
                 }
             },
             examples=[
@@ -140,26 +110,4 @@ GetEndPointSchema = extend_schema(
             ],
         ),
     },
-)
-
-
-GetSerializerSchema = extend_schema_serializer(
-    examples=[
-        OpenApiExample(
-            name="data_valid",
-            summary="Register a new shelter.",
-            description="A valid shelter registration data. The following validations will be applied:\n- **email:** Must be in a valid email format, no longer than 40 characters and not in use.\n- **password:** Must be at least 8 characters, not more than 20 characters, and not a common or simple password.\n- **confirm_password:** Must match the password.\n- **shelter_phone_number:** Must be a valid phone number, no longer than 25 characters.\n- **shelter_name:** Must not be longer than 50 characters and not in use.\n- **shelter_address:** Must not be longer than 100 characters.\n- **shelter_responsible:** Must not be longer than 50 characters.\n- **shelter_logo:** Must not be longer than 200 characters.",
-            value={
-                "email": "shelter1@example.com",
-                "password": "contraseña1234",
-                "confirm_password": "contraseña1234",
-                "shelter_phone_number": "+57 3213149578",
-                "shelter_name": "Refugio de animales",
-                "shelter_address": "Calle 123 # 45-67",
-                "shelter_responsible": "Juan Pérez",
-                "shelter_logo": "https://example.com/logo.png",
-            },
-            request_only=True,
-        ),
-    ],
 )

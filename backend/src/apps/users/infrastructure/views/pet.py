@@ -10,13 +10,13 @@ from apps.users.infrastructure.serializers import (
 from apps.users.infrastructure.db import PetRepository
 from apps.users.infrastructure.permissions import IsAuthenticatedShelter
 from apps.users.infrastructure.exceptions import NotAuthenticated
-from apps.users.use_case import PetUsesCases
-from apps.users.endpoint_schemas.pet.views import (
-    CreateUpdatePetSchema,
-    GetAllPetsSchema,
-    GetPetByShelterSchema,
+from apps.users.infrastructure.schemas.pet import (
+    PetPostSchema,
+    PetGetSchema,
+    PetListGetSchema,
 )
-from apps.users.authentication import JWTAuthentication
+from apps.users.use_case import PetUsesCases
+from apps.authentication import JWTAuthentication
 
 
 class PetAPIView(generics.GenericAPIView):
@@ -123,7 +123,7 @@ class PetAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
-    @CreateUpdatePetSchema
+    @PetPostSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for pet registration.
@@ -145,7 +145,7 @@ class PetAPIView(generics.GenericAPIView):
 
         return self._handle_invalid_request(serializer=serializer)
 
-    @GetAllPetsSchema
+    @PetGetSchema
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
         Handles GET requests to retrieve all pets from the database.
@@ -189,7 +189,7 @@ class PetListAPIView(generics.GenericAPIView):
     serializer_class = PetReadOnlySerializer
     application_class = PetUsesCases
 
-    @GetPetByShelterSchema
+    @PetListGetSchema
     def get(self, request: Request, *args, **kwargs) -> Response:
         """
         Handles GET requests to retrieve all pets from a specific shelter.

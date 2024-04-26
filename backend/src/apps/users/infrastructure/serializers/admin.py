@@ -4,12 +4,12 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from typing import Dict
 from apps.users.infrastructure.db import UserRepository
+from apps.users.infrastructure.schemas.admin import AdminSerializerSchema
 from apps.users.domain.constants import UserRoles
-from apps.users.endpoint_schemas.register_admin import GetSerializerSchema
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
 
 
-@GetSerializerSchema
+@AdminSerializerSchema
 class AdminSerializer(ErrorMessagesSpanishSerializer):
     """
     Defines the data required to register a admin in the system.

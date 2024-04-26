@@ -133,7 +133,7 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
 # API settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "apps.users.authentication.JWTAuthentication",
+        "apps.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "EXCEPTION_HANDLER": "apps.exceptions.services_exception_handler",
