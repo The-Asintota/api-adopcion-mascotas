@@ -14,7 +14,8 @@ export const mappedAnimals = ({ animales }) => {
         sex : item.pet_sex,
         description : item.pet_description,
         observations : item.pet_observations,
-        type: item.pet_type
+        type: item.pet_type,
+        shelter_uuid: item.shelter.uuid
       }
     })
     
