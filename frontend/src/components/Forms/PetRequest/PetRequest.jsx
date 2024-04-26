@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../ErrorMessage";
-import FormRequest from "../FormRequest";
 
 const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
   const {
@@ -19,6 +18,33 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
       message: "",
     },
   });
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+
+    const urlRequest = `${import.meta.env.VITE_BACKEND_URL}/api/v1/email/adoption/`;
+    const data = getValues();
+    const formData = {
+      pet_name: petName,
+      shelter_uuid: shelterId,
+      user_email: data.user_email,
+      user_name: data.user_name,
+      user_phone: data.user_phone,
+      message: data.message,
+    };
+
+    fetch(urlRequest, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        console.log(response)
+      })
+    
+  }
 
   return (
     <>
@@ -43,7 +69,7 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
               </p>
               <form
                 method="POST"
-                onSubmit={handleSubmit(() => {})}
+                onSubmit={onSubmit}
                 className="space-y-6 pt-4"
               >
                   <div className="relative">
@@ -133,19 +159,12 @@ const PetRequest = ({ isActive, onClose, petName, shelterId }) => {
                   </label>
                   <ErrorMessage error={errors.message} />
                 </div>
-                <FormRequest
-                  endpoint="/api/v1/email/adoption/"
-                  formData={{
-                    pet_name: petName,
-                    shelter_uuid: shelterId,
-                    user_email: getValues("user_email"),
-                    user_name: getValues("user_name"),
-                    user_phone: `+${getValues("user_phone")}`,
-                    message: getValues("message"),
-                  }}
-                  onSuccess={onClose}
-                  textButton="Enviar"
-                />
+                <button
+                  className="w-full py-2 px-4 bg-[#118A95] hover:bg-[#3bdbe9] rounded-md shadow-lg text-white font-semibold transition duration-200"
+                  type="submit"
+                >
+                  Enviar
+                </button>
               </form>
             </div>
           </div>
