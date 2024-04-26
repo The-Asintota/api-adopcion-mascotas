@@ -6,7 +6,7 @@ from drf_spectacular.utils import (
 )
 
 
-PostSchema = extend_schema(
+AdoptionPetPostSchema = extend_schema(
     operation_id="send_adoption_pet_email",
     tags=["Emails"],
     responses={

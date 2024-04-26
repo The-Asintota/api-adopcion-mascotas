@@ -6,7 +6,7 @@ from drf_spectacular.utils import (
 )
 
 
-GetAllEmailsSentSchema = extend_schema(
+EmailSentListSchema = extend_schema(
     operation_id="get_all_emails",
     tags=["Emails"],
     auth=[

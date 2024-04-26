@@ -5,8 +5,10 @@ from rest_framework import generics, status
 from typing import Dict, Any
 from apps.emails.infrastructure.serializers import AdoptionPetSerializer
 from apps.emails.infrastructure.db import EmailsSentRepository
+from apps.emails.infrastructure.schemas.adoption_pet import (
+    AdoptionPetPostSchema,
+)
 from apps.emails.use_case import AdoptionPetUseCase
-from apps.emails.endpoint_schemas.adoption_pet import PostSchema
 from apps.users.infrastructure.db import UserRepository
 
 
@@ -41,7 +43,7 @@ class AdoptionPetAPIView(generics.GenericAPIView):
             content_type="application/json",
         )
 
-    @PostSchema
+    @AdoptionPetPostSchema
     def post(self, request: Request, *args, **kwargs) -> Response:
         """
         Handle POST requests for sending an email to the shelter when a user applies for adoption.

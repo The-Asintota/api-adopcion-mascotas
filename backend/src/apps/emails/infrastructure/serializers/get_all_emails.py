@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.emails.models import EmailsSent
-from apps.emails.endpoint_schemas.get_all_emails import (
+from apps.emails.infrastructure.schemas.get_all_emails import (
     EmailsListSerializerSchema,
 )
 

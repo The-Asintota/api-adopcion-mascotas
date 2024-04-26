@@ -1,7 +1,7 @@
 from django.core.validators import RegexValidator
 from rest_framework import serializers
 from phonenumber_field.serializerfields import PhoneNumberField
-from apps.emails.endpoint_schemas.adoption_pet import (
+from apps.emails.infrastructure.schemas.adoption_pet import (
     AdoptionPetSerializerSchema,
 )
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
