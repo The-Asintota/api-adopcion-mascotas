@@ -1,6 +1,6 @@
 from django.db.models import QuerySet
-from typing import Dict, Any, Protocol
 from apps.emails.models import EmailsSent
+from typing import Dict, Any, Protocol
 
 
 class IEmailsSentRepository(Protocol):

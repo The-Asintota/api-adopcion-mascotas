@@ -1,9 +1,9 @@
 from django.db import OperationalError
 from django.db.models import Q, QuerySet
-from typing import Dict, Any
 from apps.users.infrastructure.db import UserRepository
 from apps.users.models import Pet, PetType, PetSex
 from apps.exceptions import DatabaseConnectionError, ResourceNotFoundError
+from typing import Dict, Any
 
 
 class PetRepository:

@@ -3,11 +3,11 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from phonenumber_field.serializerfields import PhoneNumberField
-from typing import Dict
 from apps.users.infrastructure.db import UserRepository
 from apps.users.infrastructure.schemas.shelter import ShelterSerializerSchema
 from apps.users.domain.constants import UserRoles
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
+from typing import Dict
 
 
 @ShelterSerializerSchema

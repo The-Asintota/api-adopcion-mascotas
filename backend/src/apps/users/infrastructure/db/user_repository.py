@@ -1,6 +1,5 @@
 from django.db.models import Model, QuerySet
 from django.db import OperationalError
-from typing import Dict
 from apps.users.domain.constants import UserRoles
 from apps.users.models import (
     ShelterProfile,
@@ -9,6 +8,7 @@ from apps.users.models import (
     CustomUserManager,
 )
 from apps.exceptions import DatabaseConnectionError
+from typing import Dict
 
 
 class UserRepository:

@@ -1,9 +1,9 @@
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from django.contrib.auth import authenticate
-from typing import Dict, Tuple
 from apps.users.domain.abstractions import IJWTRepository, ITokenClass
 from apps.users.domain.typing import AccessToken, RefreshToken, JWToken
 from apps.users.models import User
+from typing import Dict, Tuple
 
 
 class JWTUsesCases:

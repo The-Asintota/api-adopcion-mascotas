@@ -1,8 +1,8 @@
 from django.db.models import QuerySet
-from typing import Dict, Any
 from apps.users.domain.abstractions import IPetRepository
 from apps.users.models import Pet
 from apps.exceptions import ResourceNotFoundError
+from typing import Dict, Any
 
 
 class PetUsesCases:

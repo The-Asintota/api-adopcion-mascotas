@@ -1,7 +1,7 @@
 from rest_framework.exceptions import APIException
 from rest_framework import status
-from typing import Dict, Any
 from apps.exceptions import DetailDictMixin
+from typing import Dict, Any
 
 
 class NotAuthenticated(APIException, DetailDictMixin):

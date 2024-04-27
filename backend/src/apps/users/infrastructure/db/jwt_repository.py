@@ -32,7 +32,7 @@ class JWTRepository:
         return query
 
     @classmethod
-    def get_token(cls, **filters) -> JWT:
+    def get(cls, **filters) -> JWT:
         """
         Retrieve a JWT from the database based on the provided filters.
 

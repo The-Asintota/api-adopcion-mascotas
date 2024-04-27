@@ -1,8 +1,8 @@
 from rest_framework_simplejwt.tokens import Token
 from django.db.models import QuerySet, Model
-from typing import Dict, Any, Protocol
 from apps.users.domain.typing import JWToken
 from apps.users.models import User, JWT, Pet
+from typing import Dict, Any, Protocol
 
 
 class IUserRepository(Protocol):
@@ -70,7 +70,7 @@ class IJWTRepository(Protocol):
     """
 
     @classmethod
-    def get_token(cls, **filters) -> JWT:
+    def get(cls, **filters) -> JWT:
         """
         Retrieve a JWT from the database based on the provided filters.
 

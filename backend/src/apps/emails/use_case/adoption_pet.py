@@ -1,12 +1,12 @@
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.db.models import Model
-from typing import Any, Dict
 from apps.emails.domain.constants import SubjectsMail
 from apps.emails.domain.abstractions import IEmailsSentRepository
-from apps.users.domain.abstractions import IUserRepository
 from apps.emails.template_paths import ADOPTION_APPLICATION_EMAIL_BODY
+from apps.users.domain.abstractions import IUserRepository
 from apps.exceptions import ResourceNotFoundError
+from typing import Any, Dict
 
 
 class AdoptionPetUseCase:

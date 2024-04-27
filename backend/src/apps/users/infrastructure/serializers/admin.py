@@ -2,11 +2,11 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
-from typing import Dict
 from apps.users.infrastructure.db import UserRepository
 from apps.users.infrastructure.schemas.admin import AdminSerializerSchema
 from apps.users.domain.constants import UserRoles
 from apps.utils import ErrorMessagesSpanishSerializer, ERROR_MESSAGES
+from typing import Dict
 
 
 @AdminSerializerSchema

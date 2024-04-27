@@ -1,11 +1,6 @@
 """
-This module initializes the import of the repositories used in the application. A
-repository is a class that encapsulates logic related to database queries.
-
-It imports the following repositories:
-    - UserRepository: Handles database operations related to the User model.
-    - JWTRepository: Handles database operations related to the JWT and JWTBlacklisted models.
-    - PetRepository: Handles database operations related to the Pet model.
+This module initializes the database repositories for the users app. A repository is
+a class that encaps logic related to database queries.
 """
 
 from .user_repository import UserRepository

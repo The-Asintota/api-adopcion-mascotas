@@ -1,8 +1,8 @@
 from django.db.models import QuerySet
 from django.db import OperationalError
-from typing import Dict, Any
 from apps.emails.models import EmailsSent
 from apps.exceptions import DatabaseConnectionError
+from typing import Dict, Any
 
 
 class EmailsSentRepository:

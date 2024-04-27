@@ -2,7 +2,6 @@ from rest_framework.serializers import Serializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import generics, status
-from typing import Dict, Any
 from apps.emails.infrastructure.serializers import AdoptionPetSerializer
 from apps.emails.infrastructure.db import EmailsSentRepository
 from apps.emails.infrastructure.schemas.adoption_pet import (
@@ -10,6 +9,7 @@ from apps.emails.infrastructure.schemas.adoption_pet import (
 )
 from apps.emails.use_case import AdoptionPetUseCase
 from apps.users.infrastructure.db import UserRepository
+from typing import Dict, Any
 
 
 class AdoptionPetAPIView(generics.GenericAPIView):
@@ -23,7 +23,6 @@ class AdoptionPetAPIView(generics.GenericAPIView):
     application_class = AdoptionPetUseCase
 
     def _handle_valid_request(self, data: Dict[str, Any]) -> Response:
-
         self.application_class(
             email_repository=EmailsSentRepository,
             user_repository=UserRepository,
