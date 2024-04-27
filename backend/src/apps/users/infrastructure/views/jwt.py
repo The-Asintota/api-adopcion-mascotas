@@ -2,7 +2,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
-from typing import Dict, List
 from apps.users.infrastructure.serializers import (
     AuthenticationSerializer,
     CustomTokenObtainPairSerializer,
@@ -10,6 +9,7 @@ from apps.users.infrastructure.serializers import (
 from apps.users.infrastructure.db import JWTRepository
 from apps.users.infrastructure.schemas.jwt import AuthSchema
 from apps.users.use_case import JWTUsesCases
+from typing import Dict, List
 
 
 class AuthenticationAPIView(TokenObtainPairView):

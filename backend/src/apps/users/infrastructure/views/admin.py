@@ -1,17 +1,18 @@
 from rest_framework.serializers import Serializer
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework import generics, status, exceptions
-from typing import Dict, Any, List, Callable
+from rest_framework import status, exceptions
 from apps.users.infrastructure.serializers import AdminSerializer
 from apps.users.infrastructure.db import UserRepository
 from apps.users.infrastructure.exceptions import NotAuthenticated
 from apps.users.infrastructure.schemas.admin import AdminPostSchema
+from apps.users.infrastructure.views.base import MappedAPIView
 from apps.users.use_case import UserUsesCases
 from apps.users.domain.constants import UserRoles
+from typing import Dict, Any, List
 
 
-class AdminAPIView(generics.GenericAPIView):
+class AdminAPIView(MappedAPIView):
     """
     API view for managing operations for users with `administrator roles`.
 
@@ -32,56 +33,6 @@ class AdminAPIView(generics.GenericAPIView):
     serializer_mapping = {
         "POST": AdminSerializer,
     }
-
-    def get_authenticators(self):
-        """
-        Instantiates and returns the list of authenticators that this view can use.
-        """
-
-        try:
-            authentication_classes = self.authentication_mapping[
-                self.request.method
-            ]
-        except AttributeError:
-            authentication_classes = []
-
-        return [auth() for auth in authentication_classes]
-
-    def get_permissions(self) -> List:
-        """
-        Get the permissions based on the request method.
-        """
-
-        try:
-            permission_classes = self.permission_mapping[self.request.method]
-        except KeyError:
-            raise ValueError(f"Method {self.request.method} not allowed")
-
-        return [permission() for permission in permission_classes]
-
-    def get_serializer_class(self) -> Serializer:
-        """
-        Get the serializer class based on the request method.
-        """
-
-        try:
-            serializer = self.serializer_mapping[self.request.method]
-        except KeyError:
-            raise ValueError(f"Method {self.request.method} not allowed")
-
-        return serializer
-
-    def get_application_class(self) -> Callable:
-        """
-        Get the application class based on the request method.
-        """
-
-        try:
-            application_class = self.application_mapping[self.request.method]
-        except KeyError:
-            raise ValueError(f"Method {self.request.method} not allowed")
-
-        return application_class
 
     def permission_denied(self, request: Request, message=None, code=None):
         """

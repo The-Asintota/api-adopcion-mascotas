@@ -2,7 +2,6 @@ from rest_framework.serializers import Serializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import generics, status, exceptions
-from typing import List, Dict, Any, Callable
 from apps.users.infrastructure.serializers import (
     PetReadOnlySerializer,
     PetSerializer,
@@ -15,24 +14,26 @@ from apps.users.infrastructure.schemas.pet import (
     PetGetSchema,
     PetListGetSchema,
 )
+from apps.users.infrastructure.views.base import MappedAPIView
 from apps.users.use_case import PetUsesCases
 from apps.authentication import JWTAuthentication
+from typing import Dict, Any
 
 
-class PetAPIView(generics.GenericAPIView):
+class PetAPIView(MappedAPIView):
     """
     API View for registering a new pet. This view handles the "POST" request to
     create a new pet in the system.
     """
 
-    pet_use_case = PetUsesCases(pet_repository=PetRepository)
+    application_class = PetUsesCases(pet_repository=PetRepository)
     authentication_mapping = {
         "GET": [],
         "POST": [JWTAuthentication],
     }
     application_mapping = {
-        "GET": pet_use_case.get_pet,
-        "POST": pet_use_case.register_pet,
+        "GET": application_class.get_pet,
+        "POST": application_class.register_pet,
     }
     permission_mapping = {
         "GET": [],
@@ -42,58 +43,6 @@ class PetAPIView(generics.GenericAPIView):
         "GET": PetReadOnlySerializer,
         "POST": PetSerializer,
     }
-
-    def get_authenticators(self):
-        """
-        Instantiates and returns the list of authenticators that this view can use.
-        """
-
-        try:
-            authentication_classes = self.authentication_mapping[
-                self.request.method
-            ]
-        except AttributeError:
-            authentication_classes = []
-
-        return [auth() for auth in authentication_classes]
-
-    def get_permissions(self) -> List:
-        """
-        Get the permissions based on the request method.
-        """
-
-        try:
-            permission_classes = self.permission_mapping[self.request.method]
-        except KeyError:
-            raise ValueError(f"Method {self.request.method} not allowed")
-
-        return [permission() for permission in permission_classes]
-
-    def get_serializer_class(self) -> Serializer:
-        """
-        Get the serializer class based on the request method.
-        """
-
-        try:
-            serializer = self.serializer_mapping[self.request.method]
-        except KeyError:
-            raise ValueError(f"Method {self.request.method} not allowed")
-
-        return serializer
-
-    def get_application_class(self) -> Callable:
-        """
-        Get the application class based on the request method.
-        """
-
-        try:
-            application_class = self.application_mapping.get(
-                self.request.method, PetSerializer
-            )
-        except KeyError:
-            raise ValueError(f"Method {self.request.method} not allowed")
-
-        return application_class
 
     def permission_denied(self, request: Request, message=None, code=None):
         """
